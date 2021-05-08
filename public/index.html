@@ -48,15 +48,16 @@
       <div class="logo float-left">
         <!-- Uncomment below if you prefer to use an image logo -->
         <h1 class="text-light"><a href="#intro" class="scrollto"><img src="img/logo.png" alt="" class="img-fluid"></a><a href="#intro"><span>TRX CrowdFunding</span></a></h1>
-        
+
       </div>
 
       <nav class="main-nav float-right d-none d-lg-block">
         <ul>
           <li><a href="https://shasta.tronscan.org/#/contract/TJE8gGkYX7YxzjfrsJb5GZdiny6o94QNEb/code">Ver Contrato</a></li>
+          <li id="login"><a href="https://shasta.tronscan.org/#/">Login...</a></li>
         </ul>
       </nav><!-- .main-nav -->
-      
+
     </div>
   </header><!-- #header -->
 
@@ -71,7 +72,7 @@
       </div>
 
       <div class="intro-info">
-        <h2>Gana 200% de TRX<br> 
+        <h2>Gana 200% de TRX<br>
           4 niveles de referidos<br>
         3% por referido*</h2>
         <div>
@@ -135,9 +136,9 @@
 
     <input id="sponsor" type="hidden" value="Mi abuela es la mejor" readonly>
     <input id="tarifa" type="hidden"  value="0" readonly>
-    
+
       <div id="root"></div>
-    
+
     <!-- react js -->
 
   </main>
@@ -175,9 +176,9 @@
             function googleTranslateElementInit(){
               new google.translate.TranlateElement(
                 {
-                  pageLanguage: 'es', 
-                  includedLanguages: 'en,fr,it,pt,dt', 
-                  layout: google.translate.TranlateElement.InlineLayout.SIMPLE, 
+                  pageLanguage: 'es',
+                  includedLanguages: 'en,fr,it,pt,dt',
+                  layout: google.translate.TranlateElement.InlineLayout.SIMPLE,
                   gaTrack: true
                 },
                 'google_translate_element'
@@ -234,17 +235,17 @@
 
   <!-- Copiar Link referido y alertas -->
   <script>
-    
+
     document.getElementById('botoncop').addEventListener('click', copiarAlPortapapeles);
 
     function copiarAlPortapapeles(ev){
-        var codigoACopiar = document.getElementById('textoACopiar');    
-        var seleccion = document.createRange(); 
-        seleccion.selectNodeContents(codigoACopiar);    
+        var codigoACopiar = document.getElementById('textoACopiar');
+        var seleccion = document.createRange();
+        seleccion.selectNodeContents(codigoACopiar);
         window.getSelection().removeAllRanges();
-        window.getSelection().addRange(seleccion);  
+        window.getSelection().addRange(seleccion);
         try {
-            var res = document.execCommand('copy'); 
+            var res = document.execCommand('copy');
             if (res)
                 exito();
             else
@@ -259,7 +260,7 @@
     }
 
     var divAlerta = document.getElementById('alerta');
-    
+
     function exito() {
         divAlerta.innerText = '¡¡Enlace copiado al portapapeles!!';
         divAlerta.classList.add('alert-success');
