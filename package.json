@@ -1,8 +1,7 @@
 {
-  "name": "earntron",
-  "version": "1.0.2",
+  "name": "smartsitecapital",
+  "version": "1.0.3",
   "description": "Es la aplicacion para hacer Crowd Funding en la Blockchain tron",
-  "main": "tronbox.js",
   "directories": {
     "test": "test"
   },
@@ -14,12 +13,12 @@
     "type": "git",
     "url": ""
   },
-  "author": "earntron",
+  "author": "smartsitecapital",
   "license": "Apache 2.0",
   "bugs": {
     "url": ""
   },
-  "homepage": "https://stevenstc.github.io/USDT-CrowdFunding/",
+  "homepage": "https://stevenstc.github.io/",
   "dependencies": {
     "@babel/core": "7.8.4",
     "@svgr/webpack": "4.3.3",
