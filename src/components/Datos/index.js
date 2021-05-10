@@ -40,7 +40,7 @@ export default class EarnTron extends Component {
 
     return (
       <div className="single-about-area wow fadeInUp">
-          <div className="container">
+          <div className="container text-center">
               <div className="row">
                   <div className="col-lg-4">
                       <a href={url} className="single-about">
@@ -59,7 +59,7 @@ export default class EarnTron extends Component {
                               <img src="assets/img/about-icon-2.png" alt="" />
                           </div>
                           <div className="single-about-text">
-                              <h1>{totalInvested} USDT</h1>
+                              <h1>{totalInvested} SITE</h1>
                               <p>Global Inverted</p>
                           </div>
                       </a>
@@ -70,7 +70,7 @@ export default class EarnTron extends Component {
                               <img src="assets/img/about-icon-3.png" alt="" />
                           </div>
                           <div className="single-about-text">
-                              <h1>{totalRefRewards} USDT</h1>
+                              <h1>{totalRefRewards} SITE</h1>
                               <p>Global Referral Rewards</p>
                           </div>
                       </a>

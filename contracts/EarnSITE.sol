@@ -13,7 +13,7 @@ contract TRC20_Interface {
     function balanceOf(address who) public view returns (uint256);
 }
 
-contract EarnTron2021 {
+contract SITECapital {
   using SafeMath for uint;
 
   TRC20_Interface USDT_Contract;
@@ -44,20 +44,16 @@ contract EarnTron2021 {
     uint withdrawn;
   }
 
-  uint public MIN_DEPOSIT = 10 trx;
-  uint public MIN_RETIRO = 50;
-
-  uint public RETIRO_DIARIO = 100000 trx;
-  uint public ULTIMO_REINICIO;
+  uint public MIN_DEPOSIT = 100*100000000;
+  uint public MIN_RETIRO = 70*100000000;
 
   address payable public marketing;
   address payable public owner;
-  address public NoValido = address(0);
 
-  uint[2] public porcientos = [5, 5];
+  uint[5] public porcientos = [4, 1, 0, 0, 0];
 
-  uint[10] public tiempo = [ 200 days, 133 days, 100 days, 80 days, 66 days, 57 days, 50 days, 44 days, 40 days, 33 days];
-  uint[10] public porcent = [ 200, 200, 200, 200, 200,  200, 200, 200, 200, 200];
+  uint public tiempo = 90 days;
+  uint public porcent = 115;
 
   uint public totalInvestors;
   uint public totalInvested;
@@ -72,8 +68,6 @@ contract EarnTron2021 {
     owner = msg.sender;
     investors[msg.sender].registered = true;
     investors[msg.sender].sponsor = marketing;
-
-    ULTIMO_REINICIO = block.number;
 
     totalInvestors++;
 
@@ -122,50 +116,11 @@ contract EarnTron2021 {
     return USDT_Contract.balanceOf(address(this));
   }
 
-  function setTarifa(uint _value) internal pure returns(uint){
+  function setPorcientos(uint _value_1, uint _value_2, uint _value_3, uint _value_4, uint _value_5) public returns(uint, uint, uint, uint, uint){
 
-    uint tariff;
-      if( _value <= 100 trx ){
-          tariff = 0;
-      }
+    porcientos = [_value_1, _value_2, _value_3, _value_4, _value_5];
 
-      if( _value > 100 trx && _value <= 500 trx ){
-          tariff = 1;
-      }
-
-      if( _value > 500 trx && _value <= 1000 trx ){
-          tariff = 2;
-      }
-
-      if( _value > 1000 trx && _value <= 3000 trx ){
-          tariff = 3;
-      }
-
-      if( _value > 3000 trx && _value <= 5000 trx ){
-          tariff = 4;
-      }
-
-      if( _value > 5000 trx && _value <= 10000 trx ){
-          tariff = 5;
-      }
-
-      if( _value > 10000 trx && _value <= 20000 trx ){
-          tariff = 6;
-      }
-
-      if( _value > 20000 trx && _value <= 30000 trx ){
-          tariff = 7;
-      }
-
-      if( _value > 30000 trx && _value <= 50000 trx ){
-          tariff = 8;
-      }
-
-      if( _value > 50000 trx ){
-          tariff = 9;
-      }
-
-      return tariff;
+    return (_value_1, _value_2, _value_3, _value_4, _value_5);
 
   }
 
@@ -183,11 +138,17 @@ contract EarnTron2021 {
   }
 
 
-  function column (address yo) public view returns(address[2] memory res) {
+  function column (address yo) public view returns(address[5] memory res) {
 
     res[0] = investors[yo].sponsor;
     yo = investors[yo].sponsor;
     res[1] = investors[yo].sponsor;
+    yo = investors[yo].sponsor;
+    res[2] = investors[yo].sponsor;
+    yo = investors[yo].sponsor;
+    res[3] = investors[yo].sponsor;
+    yo = investors[yo].sponsor;
+    res[4] = investors[yo].sponsor;
     yo = investors[yo].sponsor;
 
     return res;
@@ -195,32 +156,34 @@ contract EarnTron2021 {
 
   function rewardReferers(address yo, uint amount) internal {
 
-    address[2] memory referi = column(yo);
-    uint[2] memory a;
-    uint[2] memory b;
+    address[5] memory referi = column(yo);
+    uint[5] memory a;
+    uint[5] memory b;
 
-    for (uint i = 0; i < 2; i++) {
-      if (investors[referi[i]].registered && referi[i] != owner ) {
+    for (uint i = 0; i < 5; i++) {
 
-        if ( investors[referi[i]].recompensa ){
+      Investor storage usuario = investors[referi[i]];
+      if (usuario.registered && porcientos[i] != 0 && usuario.recompensa){
+        if ( referi[i] != owner ) {
+
           b[i] = porcientos[i];
           a[i] = amount.mul(b[i]).div(100);
 
-          investors[referi[i]].balanceRef += a[i];
-          investors[referi[i]].totalRef += a[i];
+          usuario.balanceRef += a[i];
+          usuario.totalRef += a[i];
           totalRefRewards += a[i];
+
+        }else{
+
+          b[i] = porcientos[i];
+          a[i] = amount.mul(b[i]).div(100);
+
+          usuario.balanceRef += a[i];
+          usuario.totalRef += a[i];
+          totalRefRewards += a[i];
+
+          break;
         }
-
-      }else{
-
-        b[i] = porcientos[i];
-        a[i] = amount.mul(b[i]).div(100);
-
-        investors[referi[i]].balanceRef += a[i];
-        investors[referi[i]].totalRef += a[i];
-        totalRefRewards += a[i];
-
-        break;
       }
     }
 

@@ -45,10 +45,6 @@ export default class EarnTron extends Component {
       tarifa: 5
     });
 
-    //console.log(min);
-
-
-
   }
 
 
@@ -165,7 +161,7 @@ export default class EarnTron extends Component {
 
     var { min, tarifa } = this.state;
 
-    min = "Min. "+min+" USDT";
+    min = "Min. "+min+" SITE";
 
     switch (tarifa)
         {
@@ -193,7 +189,7 @@ export default class EarnTron extends Component {
 
         <div>
           <h6 className="text-center">
-            Return: <strong>200%</strong><br />
+            Return: <strong>115%</strong><br />
           </h6>
 
           <div className="form-group text-center">

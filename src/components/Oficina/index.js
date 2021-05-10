@@ -122,14 +122,14 @@ export default class EarnTron extends Component {
 
           <div className="row">
             <div className="col-sm-4 single-services">
-              <h4 className="pt-30 pb-20">{invested} USDT</h4>
+              <h4 className="pt-30 pb-20">{invested} SITE</h4>
               <p>
                 Total invested
               </p>
             </div>
 
             <div className="col-sm-4 single-services">
-              <h4 className="pt-30 pb-20">{totalRef} USDT</h4>
+              <h4 className="pt-30 pb-20">{totalRef} SITE</h4>
               <p>
                 Total earnings from referrals
 
@@ -137,14 +137,14 @@ export default class EarnTron extends Component {
             </div>
 
             <div className="col-sm-4 single-services">
-              <h4 className="pt-30 pb-20">{my} USDT</h4>
+              <h4 className="pt-30 pb-20">{my} SITE</h4>
               <p>
                 My Profits
               </p>
             </div>
 
             <div className="col-sm-4 single-services">
-              <h4 className="pt-30 pb-20">{available} USDT</h4>
+              <h4 className="pt-30 pb-20">{available} SITE</h4>
               <p>
                 Available
               </p>
@@ -152,7 +152,7 @@ export default class EarnTron extends Component {
             </div>
 
             <div className="col-sm-4 single-services">
-              <h4 className="pt-30 pb-20">{available} USDT</h4>
+              <h4 className="pt-30 pb-20">{available} SITE</h4>
               <p>
                 <button type="button" className="btn btn-primary" onClick={() => this.withdraw()}>Withdrawal</button>
 
@@ -160,7 +160,7 @@ export default class EarnTron extends Component {
             </div>
 
             <div className="col-sm-4 single-services">
-              <h4 className="pt-30 pb-20">{withdrawn} USDT</h4>
+              <h4 className="pt-30 pb-20">{withdrawn} SITE</h4>
               <p>
                 withdrawn
 
