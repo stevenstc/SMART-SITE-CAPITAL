@@ -3,7 +3,7 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import Utils from "../../utils";
 import contractAddress from "../Contract";
 
-export default class EarnTron extends Component {
+export default class Oficina extends Component {
   constructor(props) {
     super(props);
 

@@ -4,7 +4,7 @@ import contractAddress from "../Contract";
 
 import cons from "../../cons.js";
 
-export default class EarnTron extends Component {
+export default class CrowdFunding extends Component {
   constructor(props) {
     super(props);
 
@@ -160,7 +160,7 @@ export default class EarnTron extends Component {
           <h5 className="card-title">Contrato V 1.0</h5>
           <h6 className="card-text">
             Retorno: <strong>115%</strong><br />
-            Tiempo: <strong>90 dias</strong><br />
+            Tiempo: <strong>90 días</strong><br />
           </h6>
 
           <div className="form-group">

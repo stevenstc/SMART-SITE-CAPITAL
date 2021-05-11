@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Utils from "../../utils";
 import contractAddress from "../Contract";
 
-export default class EarnTron extends Component {
+export default class Datos extends Component {
   constructor(props) {
     super(props);
 
