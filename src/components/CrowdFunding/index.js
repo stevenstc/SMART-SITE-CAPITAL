@@ -155,26 +155,24 @@ export default class EarnTron extends Component {
     min = "Minimo. "+min+" SITE";
 
     return (
-
-
-        <div>
-          <h6 className="text-center">
+      <div className="card wow bounceInUp text-center">
+        <div className="card-body">
+          <h5 className="card-title">Contrato V 1.0</h5>
+          <h6 className="card-text">
             Retorno: <strong>115%</strong><br />
             Tiempo: <strong>90 dias</strong><br />
           </h6>
 
-          <div className="form-group text-center">
+          <div className="form-group">
             <input type="number" className="form-control mb-20 text-center" id="amount" placeholder={min}></input>
             <p className="card-text">Debes de tener ~ 50 TRX para hacer la transacción</p>
 
-            <a href="#amount" className="gradient-btn v2" onClick={() => this.deposit()}>Depositar</a>
-
-
-
+            <a href="#amount" className="btn btn-light" onClick={() => this.deposit()}>Depositar</a>
 
           </div>
 
         </div>
+      </div>
 
 
     );

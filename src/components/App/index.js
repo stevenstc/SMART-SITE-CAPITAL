@@ -120,32 +120,27 @@ class App extends Component {
 
     return (
 
-      <>
-
-      <section className="convert-area" id="convert">
-        <div className="container">
-          <div className="convert-wrap">
-            <div className="row justify-content-center align-items-center flex-column pb-30">
-              <h1 className="text-white">Make your investment</h1>
-            </div>
-            <div className="row justify-content-center align-items-start">
-
-              <div className="col-lg-12 cols">
+      <div>
+        <div>
+          <section id="why-us" className="wow fadeIn">
+            <div className="container">
+              <header className="section-header">
+                  <h3>Has tu inversión</h3>
+              </header>
+              <div  className="row row-eq-height justify-content-center">
                 <CrowdFunding />
               </div>
-
+              <div >
+                <Datos />
+              </div>
             </div>
-          </div>
+          </section>
+
+          <section id="services" className="section-bg">
+            <Oficina />
+          </section>
         </div>
-      </section>
-
-      <Oficina />
-
-      <div class="space-90"></div>
-
-      <Datos />
-
-      </>
+      </div>
     );
 
   }

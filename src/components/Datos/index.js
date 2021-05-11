@@ -36,49 +36,25 @@ export default class EarnTron extends Component {
   render() {
     const { totalInvestors, totalInvested, totalRefRewards } = this.state;
 
-    var url = 'https://tronscan.io/#/contract/'+contractAddress+'/code';
-
     return (
-      <div className="single-about-area wow fadeInUp">
-          <div className="container text-center">
-              <div className="row">
-                  <div className="col-lg-4">
-                      <a href={url} className="single-about">
-                          <div className="single-about-img">
-                              <img src="assets/img/about-icon-1.png" alt="" />
-                          </div>
-                          <div className="single-about-text">
-                              <h1>{totalInvestors}</h1>
-                              <p>Global Investors</p>
-                          </div>
-                      </a>
-                  </div>
-                  <div className="col-lg-4">
-                      <a href={url} className="single-about">
-                          <div className="single-about-img">
-                              <img src="assets/img/about-icon-2.png" alt="" />
-                          </div>
-                          <div className="single-about-text">
-                              <h1>{totalInvested} SITE</h1>
-                              <p>Global Inverted</p>
-                          </div>
-                      </a>
-                  </div>
-                  <div className="col-lg-4">
-                      <a href={url} className="single-about">
-                          <div className="single-about-img">
-                              <img src="assets/img/about-icon-3.png" alt="" />
-                          </div>
-                          <div className="single-about-text">
-                              <h1>{totalRefRewards} SITE</h1>
-                              <p>Global Referral Rewards</p>
-                          </div>
-                      </a>
-                  </div>
-              </div>
+      <div className="row counters">
+
+          <div className="col-lg-4 col-12 text-center">
+            <span data-toggle="counter-up">{totalInvestors}</span>
+            <p>Inversores Globales</p>
           </div>
-          <div class="space-90"></div>
-      </div>
+
+          <div className="col-lg-4 col-12 text-center">
+            <span data-toggle="counter-up">{totalInvested} SITE</span>
+            <p>Invertido en Plataforma</p>
+          </div>
+
+          <div className="col-lg-4 col-12 text-center">
+            <span data-toggle="counter-up">{totalRefRewards} SITE</span>
+            <p>Total Recompensas por Referidos</p>
+          </div>
+
+        </div>
     );
   }
 }

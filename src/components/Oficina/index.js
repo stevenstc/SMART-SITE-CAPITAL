@@ -27,7 +27,7 @@ export default class EarnTron extends Component {
 
   async componentDidMount() {
     await Utils.setContract(window.tronWeb, contractAddress);
-    setInterval(() => this.Investors(),300);
+    setInterval(() => this.Investors(),500);
     setInterval(() => this.Link(),1000);
   };
 
@@ -103,73 +103,74 @@ export default class EarnTron extends Component {
 
     return (
 
-      <section  id="office" className="simple-services-area section-gap">
-        <div className="container text-center">
-          <header className="section-header">
-            <h3 className="white"><span style={{'fontweight': 'bold'}}>
-              My office:</span>
-            </h3>
-            <p>{direccion}</p><br />
-            <h3 className="white" >Referral link:</h3>
-            <h6 className="aboutus-area" style={{'padding': '1.5em', 'fontSize': '11px'}}><a href={link}>{link}</a><br /><br />
-            <CopyToClipboard text={link}>
-              <button type="button" style={{'cursor': 'pointer'}} className="btn btn-primary">Copy to clipboard</button>
-            </CopyToClipboard>
-            </h6>
-            <hr></hr>
+      <div className="container">
 
-          </header>
+      <header style={{'text-align': 'center'}} className="section-header">
+        <h3 className="white"><span style={{'font-weight': 'bold'}}>
+        Mi Oficina:</span> <br></br>
+        <span style={{'font-size': '11px'}}>{direccion}</span></h3><br></br>
+        <h3 className="white" style={{'font-weight': 'bold'}}>Link de referido:</h3>
+        <h6 className="white" style={{'padding': '1.5em', 'fontSize': '11px'}}><a href={link}>{link}</a> <br /><br />
+        <CopyToClipboard text={link}>
+          <button type="button" className="btn btn-info">COPIAR</button>
+        </CopyToClipboard>
+        </h6>
+        <hr></hr>
 
-          <div className="row">
-            <div className="col-sm-4 single-services">
-              <h4 className="pt-30 pb-20">{invested} SITE</h4>
-              <p>
-                Total invested
-              </p>
-            </div>
+      </header>
 
-            <div className="col-sm-4 single-services">
-              <h4 className="pt-30 pb-20">{totalRef} SITE</h4>
-              <p>
-                Total earnings from referrals
+      <div className="row">
 
-              </p>
-            </div>
+        <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-duration="1.4s">
+          <div className="box">
+            <div className="icon"><i className="ion-ios-analytics-outline" style={{color: '#ff689b'}}></i></div>
+            <h4 className="title"><a href="#services">{invested} SITE</a></h4>
+            <p className="description">Total invertido</p>
+          </div>
+        </div>
+        <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-duration="1.4s">
+          <div className="box">
+            <div className="icon"><i className="ion-ios-bookmarks-outline" style={{color: '#e9bf06'}}></i></div>
+            <h4 className="title"><a href="#services">{totalRef} SITE</a></h4>
+            <p className="description">Total ganancias por referidos</p>
+          </div>
+        </div>
 
-            <div className="col-sm-4 single-services">
-              <h4 className="pt-30 pb-20">{my} SITE</h4>
-              <p>
-                My Profits
-              </p>
-            </div>
-
-            <div className="col-sm-4 single-services">
-              <h4 className="pt-30 pb-20">{available} SITE</h4>
-              <p>
-                Available
-              </p>
-
-            </div>
-
-            <div className="col-sm-4 single-services">
-              <h4 className="pt-30 pb-20">{available} SITE</h4>
-              <p>
-                <button type="button" className="btn btn-primary" onClick={() => this.withdraw()}>Withdrawal</button>
-
-              </p>
-            </div>
-
-            <div className="col-sm-4 single-services">
-              <h4 className="pt-30 pb-20">{withdrawn} SITE</h4>
-              <p>
-                withdrawn
-
-              </p>
-            </div>
+        <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
+          <div className="box">
+            <div className="icon"><i className="ion-ios-paper-outline" style={{color: '#3fcdc7'}}></i></div>
+            <p className="description">Mi balance</p>
+            <h4 className="title"><a href="#services">{my} SITE</a></h4>
 
           </div>
         </div>
-      </section>
+        <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
+          <div className="box">
+            <div className="icon"><i className="ion-ios-paper-outline" style={{color: '#3fcdc7'}}></i></div>
+            <p className="description">Balance por referidos</p>
+            <h4 className="title"><a href="#services"> {balanceRef} SITE</a></h4>
+
+          </div>
+        </div>
+
+        <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
+          <div className="box">
+            <div className="icon"><i className="ion-ios-speedometer-outline" style={{color:'#41cf2e'}}></i></div>
+            <h4 className="title"><a href="#services">Disponible</a></h4>
+            <p className="description">{available} SITE <button type="button" className="btn btn-info" onClick={() => this.withdraw()}>Retirar</button></p>
+          </div>
+        </div>
+        <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1.4s">
+          <div className="box">
+            <div className="icon"><i className="ion-ios-clock-outline" style={{color: '#4680ff'}}></i></div>
+            <h4 className="title"><a href="#services">Retirado</a></h4>
+            <p className="description">{withdrawn} SITE</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
 
     );
   }
