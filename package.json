@@ -18,7 +18,7 @@
   "bugs": {
     "url": ""
   },
-  "homepage": "https://stevenstc.github.io/",
+  "homepage": "https://stevenstc.github.io/SMART-SITE-CAPITAL/",
   "dependencies": {
     "@babel/core": "7.8.4",
     "@svgr/webpack": "4.3.3",

@@ -36,15 +36,6 @@ export default class EarnTron extends Component {
 
     document.getElementById("login").innerHTML = '<a href="https://tronscan.io/#/address/'+accountAddress+'" class="logibtn gradient-btn">'+texto+'</a>';
 
-
-    var min = 10;
-
-
-    this.setState({
-      min: min,
-      tarifa: 5
-    });
-
   }
 
 
@@ -159,44 +150,24 @@ export default class EarnTron extends Component {
 
   render() {
 
-    var { min, tarifa } = this.state;
+    var min = this.state.min;
 
-    min = "Min. "+min+" SITE";
-
-    switch (tarifa)
-        {
-            case 0:  tarifa = 2;
-                     break;
-            case 1:  tarifa = 3;
-                     break;
-            case 2:  tarifa = 4;
-                     break;
-            case 3:  tarifa = 5;
-                     break;
-            case 4:  tarifa = 6;
-                     break;
-
-            default: tarifa = "N/A";
-                     break;
-        }
-
-
-
-
+    min = "Minimo. "+min+" SITE";
 
     return (
 
 
         <div>
           <h6 className="text-center">
-            Return: <strong>115%</strong><br />
+            Retorno: <strong>115%</strong><br />
+            Tiempo: <strong>90 dias</strong><br />
           </h6>
 
           <div className="form-group text-center">
             <input type="number" className="form-control mb-20 text-center" id="amount" placeholder={min}></input>
-            <p className="card-text">You must have ~ 50 TRX to make the transaction</p>
+            <p className="card-text">Debes de tener ~ 50 TRX para hacer la transacción</p>
 
-            <a href="#amount" className="gradient-btn v2" onClick={() => this.deposit()}>Deposit</a>
+            <a href="#amount" className="gradient-btn v2" onClick={() => this.deposit()}>Depositar</a>
 
 
 

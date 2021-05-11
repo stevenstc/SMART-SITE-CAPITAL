@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.js": "/USDT-CrowdFunding/static/js/main.6bfe20c8.chunk.js",
-    "main.js.map": "/USDT-CrowdFunding/static/js/main.6bfe20c8.chunk.js.map",
-    "runtime-main.js": "/USDT-CrowdFunding/static/js/runtime-main.250b4843.js",
-    "runtime-main.js.map": "/USDT-CrowdFunding/static/js/runtime-main.250b4843.js.map",
-    "static/js/2.a11b3649.chunk.js": "/USDT-CrowdFunding/static/js/2.a11b3649.chunk.js",
-    "static/js/2.a11b3649.chunk.js.map": "/USDT-CrowdFunding/static/js/2.a11b3649.chunk.js.map",
-    "index.html": "/USDT-CrowdFunding/index.html",
-    "precache-manifest.48839a868b3bad88fb5e7a62e21512aa.js": "/USDT-CrowdFunding/precache-manifest.48839a868b3bad88fb5e7a62e21512aa.js",
-    "service-worker.js": "/USDT-CrowdFunding/service-worker.js",
-    "static/js/2.a11b3649.chunk.js.LICENSE.txt": "/USDT-CrowdFunding/static/js/2.a11b3649.chunk.js.LICENSE.txt",
-    "static/media/TronLinkLogo.png": "/USDT-CrowdFunding/static/media/TronLinkLogo.d3a8f115.png"
+    "main.js": "/SMART-SITE-CAPITAL/static/js/main.74361c53.chunk.js",
+    "main.js.map": "/SMART-SITE-CAPITAL/static/js/main.74361c53.chunk.js.map",
+    "runtime-main.js": "/SMART-SITE-CAPITAL/static/js/runtime-main.03a2598e.js",
+    "runtime-main.js.map": "/SMART-SITE-CAPITAL/static/js/runtime-main.03a2598e.js.map",
+    "static/js/2.150d8b39.chunk.js": "/SMART-SITE-CAPITAL/static/js/2.150d8b39.chunk.js",
+    "static/js/2.150d8b39.chunk.js.map": "/SMART-SITE-CAPITAL/static/js/2.150d8b39.chunk.js.map",
+    "index.html": "/SMART-SITE-CAPITAL/index.html",
+    "precache-manifest.eaf7a6cf8222c4d2b7ad24c10e76cf6c.js": "/SMART-SITE-CAPITAL/precache-manifest.eaf7a6cf8222c4d2b7ad24c10e76cf6c.js",
+    "service-worker.js": "/SMART-SITE-CAPITAL/service-worker.js",
+    "static/js/2.150d8b39.chunk.js.LICENSE.txt": "/SMART-SITE-CAPITAL/static/js/2.150d8b39.chunk.js.LICENSE.txt",
+    "static/media/TronLinkLogo.png": "/SMART-SITE-CAPITAL/static/media/TronLinkLogo.d3a8f115.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.250b4843.js",
-    "static/js/2.a11b3649.chunk.js",
-    "static/js/main.6bfe20c8.chunk.js"
+    "static/js/runtime-main.03a2598e.js",
+    "static/js/2.150d8b39.chunk.js",
+    "static/js/main.74361c53.chunk.js"
   ]
 }
