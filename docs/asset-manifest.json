@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "/SMART-SITE-CAPITAL/static/js/main.74361c53.chunk.js",
-    "main.js.map": "/SMART-SITE-CAPITAL/static/js/main.74361c53.chunk.js.map",
+    "main.js": "/SMART-SITE-CAPITAL/static/js/main.3a969c11.chunk.js",
+    "main.js.map": "/SMART-SITE-CAPITAL/static/js/main.3a969c11.chunk.js.map",
     "runtime-main.js": "/SMART-SITE-CAPITAL/static/js/runtime-main.03a2598e.js",
     "runtime-main.js.map": "/SMART-SITE-CAPITAL/static/js/runtime-main.03a2598e.js.map",
     "static/js/2.150d8b39.chunk.js": "/SMART-SITE-CAPITAL/static/js/2.150d8b39.chunk.js",
     "static/js/2.150d8b39.chunk.js.map": "/SMART-SITE-CAPITAL/static/js/2.150d8b39.chunk.js.map",
     "index.html": "/SMART-SITE-CAPITAL/index.html",
-    "precache-manifest.eaf7a6cf8222c4d2b7ad24c10e76cf6c.js": "/SMART-SITE-CAPITAL/precache-manifest.eaf7a6cf8222c4d2b7ad24c10e76cf6c.js",
+    "precache-manifest.f60376d390e4c56321b0ebd24b7574da.js": "/SMART-SITE-CAPITAL/precache-manifest.f60376d390e4c56321b0ebd24b7574da.js",
     "service-worker.js": "/SMART-SITE-CAPITAL/service-worker.js",
     "static/js/2.150d8b39.chunk.js.LICENSE.txt": "/SMART-SITE-CAPITAL/static/js/2.150d8b39.chunk.js.LICENSE.txt",
     "static/media/TronLinkLogo.png": "/SMART-SITE-CAPITAL/static/media/TronLinkLogo.d3a8f115.png"
@@ -15,6 +15,6 @@
   "entrypoints": [
     "static/js/runtime-main.03a2598e.js",
     "static/js/2.150d8b39.chunk.js",
-    "static/js/main.74361c53.chunk.js"
+    "static/js/main.3a969c11.chunk.js"
   ]
 }
