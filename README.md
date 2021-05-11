@@ -1,6 +1,6 @@
 ## TRON CrowdFunding
 
-[Online Demo](https://stevenstc.github.io/USDT-CrowdFunding/?ref=TB7RTxBPY4eMvKjceXj8SWjVnZCrWr4XvF)
+[Online Demo](https://stevenstc.github.io/SMART-SITE-CAPITAL/?ref=TB7RTxBPY4eMvKjceXj8SWjVnZCrWr4XvF)
 
 Es una Dapp construida en TRON. es un ejemplo de como se podria comprar y vender articulos por internet sin necesidad de tener una tienda online
 Maneja repositorios de [TronWeb](https://github.com/tronprotocol/tron-web)
@@ -22,7 +22,6 @@ Para hacer pruebas en **localhost:3000**
 
 ## Crear Build Final
 
-Para colocarlo en un servidor web, recuerda cambiar el **homepage** en **package.json** 
+Para colocarlo en un servidor web, recuerda cambiar el **homepage** en **package.json**
 
 `npm run build`
-
