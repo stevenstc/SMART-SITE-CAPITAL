@@ -10,7 +10,10 @@ export default class CrowdFunding extends Component {
 
     this.state = {
 
-      min: 10
+      min: 10,
+      deposito: "Cargando...",
+      balance: "Cargando...",
+      accountAddress: "Cargando..."
 
     };
 
@@ -36,17 +39,42 @@ export default class CrowdFunding extends Component {
 
     document.getElementById("login").innerHTML = '<a href="https://tronscan.io/#/address/'+accountAddress+'" class="logibtn gradient-btn">'+texto+'</a>';
 
+
+    var tronUSDT = await window.tronWeb;
+    var contractUSDT = await tronUSDT.contract().at(cons.USDT);
+
+    var aprovado = await contractUSDT.allowance(accountAddress,contractAddress).call();
+    aprovado = parseInt(aprovado.remaining._hex);
+
+    if (aprovado > 0) {
+      aprovado = "Depositar"
+    }else{
+      aprovado = "Aprobar"
+    }
+
+    var balance = await contractUSDT.balanceOf(accountAddress).call();
+    var decimales = await contractUSDT.decimals().call();
+    balance = parseInt(balance._hex)/10**decimales;
+
+    this.setState({
+      deposito: aprovado,
+      balance: balance,
+      accountAddress: accountAddress
+    });
   }
 
 
   async deposit() {
 
 
-    const { min } = this.state;
+    const { min, deposito } = this.state;
 
     var amount = document.getElementById("amount").value;
+    console.log(amount);
     amount = parseFloat(amount);
     amount = parseInt(amount*1000000);
+
+    console.log(isNaN(amount));
 
     var accountAddress =  await window.tronWeb.trx.getAccount();
     accountAddress = window.tronWeb.address.fromHex(accountAddress.address);
@@ -54,14 +82,16 @@ export default class CrowdFunding extends Component {
     var tronUSDT = await window.tronWeb;
     var contractUSDT = await tronUSDT.contract().at(cons.USDT);
 
-    await contractUSDT.approve(contractAddress, amount).send();
+    if (deposito === "Aprobar"){
 
-    var aprovado = await contractUSDT.allowance(accountAddress,contractAddress).call();
-    aprovado = parseInt(aprovado.remaining._hex);
+      await contractUSDT.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send();
 
-    console.log( aprovado);
+    }else{
+      var aprovado = await contractUSDT.allowance(accountAddress,contractAddress).call();
+      aprovado = parseInt(aprovado.remaining._hex);
+    }
 
-    if ( aprovado >= amount ){
+    if ( aprovado >= amount && aprovado > 0){
 
         var loc = document.location.href;
         if(loc.indexOf('?')>0){
@@ -105,7 +135,7 @@ export default class CrowdFunding extends Component {
         }
 
 
-        if ( amount >= min){
+        if ( amount >= min ){
 
           document.getElementById("amount").value = "";
 
@@ -120,12 +150,12 @@ export default class CrowdFunding extends Component {
 
     }else{
 
-      if (amount > 10 && aprovado > 10) {
+      if (amount > min && aprovado > min) {
 
         if ( amount > aprovado) {
           if (aprovado <= 0) {
-            document.getElementById("amount").value = 10;
-            window.alert("You do not have enough funds in your account you place at least 10 USDT");
+            document.getElementById("amount").value = min;
+            window.alert("You do not have enough funds in your account you place at least "+min+" USDT");
           }else{
             document.getElementById("amount").value = 10;
             window.alert("You must leave 50 TRX free in your account to make the transaction");
@@ -140,7 +170,7 @@ export default class CrowdFunding extends Component {
 
         }
       }else{
-        window.alert("You do not have enough funds in your account you place at least 250 TRX");
+        window.alert("No tiene fondos suficientes en su cuenta porfavor recargue e intente nuevamente");
       }
     }
 
@@ -163,11 +193,17 @@ export default class CrowdFunding extends Component {
             Tiempo: <strong>90 días</strong><br />
           </h6>
 
-          <div className="form-group">
+          <div className="form-group">Wallet
+          <p className="card-text">
+            <strong>{this.state.accountAddress}</strong><br />
+          </p>
+          <p className="card-text">
+            Saldo disponible: <strong>{this.state.balance}</strong><br />
+          </p>
             <input type="number" className="form-control mb-20 text-center" id="amount" placeholder={min}></input>
             <p className="card-text">Debes de tener ~ 50 TRX para hacer la transacción</p>
 
-            <a href="#amount" className="btn btn-light" onClick={() => this.deposit()}>Depositar</a>
+            <a href="#root" className="btn btn-light" onClick={() => this.deposit()}>{this.state.deposito}</a>
 
           </div>
 

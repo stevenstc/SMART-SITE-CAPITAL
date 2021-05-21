@@ -105,11 +105,11 @@ export default class Oficina extends Component {
 
       <div className="container">
 
-      <header style={{'text-align': 'center'}} className="section-header">
-        <h3 className="white"><span style={{'font-weight': 'bold'}}>
+      <header style={{'textAlign': 'center'}} className="section-header">
+        <h3 className="white"><span style={{'fontWeight': 'bold'}}>
         Mi Oficina:</span> <br></br>
-        <span style={{'font-size': '11px'}}>{direccion}</span></h3><br></br>
-        <h3 className="white" style={{'font-weight': 'bold'}}>Link de referido:</h3>
+        <span style={{'fontSize': '11px'}}>{direccion}</span></h3><br></br>
+        <h3 className="white" style={{'fontWeight': 'bold'}}>Link de referido:</h3>
         <h6 className="white" style={{'padding': '1.5em', 'fontSize': '11px'}}><a href={link}>{link}</a> <br /><br />
         <CopyToClipboard text={link}>
           <button type="button" className="btn btn-info">COPIAR</button>

@@ -11,6 +11,8 @@ contract TRC20_Interface {
     function transfer(address direccion, uint cantidad) public returns (bool);
 
     function balanceOf(address who) public view returns (uint256);
+
+    function decimals() public view returns(uint);
 }
 
 contract SITECapital {
@@ -21,7 +23,8 @@ contract SITECapital {
   TRC20_Interface OTRO_Contract;
 
   struct Deposit {
-    uint tariff;
+    uint porciento;
+    uint tiempo;
     uint amount;
     uint at;
   }
@@ -44,8 +47,11 @@ contract SITECapital {
     uint withdrawn;
   }
 
-  uint public MIN_DEPOSIT = 100*100000000;
-  uint public MIN_RETIRO = 70*100000000;
+  uint public MIN_DEPOSIT = 100*10**8;
+  uint public MAX_DEPOSIT = 500000*10**8;
+
+  uint public MIN_RETIRO = 70*10**8;
+  uint public MAX_RETIRO = 500000*10**8;
 
   address payable public marketing;
   address payable public owner;
@@ -112,8 +118,16 @@ contract SITECapital {
       return (totalInvestors, totalInvested, totalRefRewards);
   }
 
-  function InContract() public view returns (uint){
+  function InContractSITE() public view returns (uint){
     return USDT_Contract.balanceOf(address(this));
+  }
+
+  function InContractOTRO() public view returns (uint){
+    return OTRO_Contract.balanceOf(address(this));
+  }
+
+  function InContractTRX() public view returns (uint){
+    return address(this).balance;
   }
 
   function setPorcientos(uint _value_1, uint _value_2, uint _value_3, uint _value_4, uint _value_5) public returns(uint, uint, uint, uint, uint){
@@ -124,18 +138,23 @@ contract SITECapital {
 
   }
 
-  function setmarketing(address payable _marketing) public returns (address){
-    require (msg.sender == marketing, "You are not marketing");
-    require (_marketing != marketing, "You are already registered");
+  function setTiempo(uint _dias) public returns(uint){
 
-    marketing = _marketing;
-    investors[marketing].registered = true;
-    investors[marketing].sponsor = marketing;
+    tiempo = _dias * 1 days;
 
-    totalInvestors++;
 
-    return marketing;
+    return (tiempo);
+
   }
+
+  function setRetorno(uint _porcentaje) public returns(uint){
+
+    porcent = _porcentaje;
+
+    return (porcent);
+
+  }
+
 
 
   function column (address yo) public view returns(address[5] memory res) {
@@ -209,15 +228,10 @@ contract SITECapital {
       rewardReferers(msg.sender, _value);
     }
 
-    usuario.deposits.push(Deposit(setTarifa(_value), _value, block.number));
+    usuario.deposits.push(Deposit(tiempo, porcent, _value, block.number));
 
     usuario.invested += _value;
     totalInvested += _value;
-
-    USDT_Contract.transfer(owner, _value.mul(3).div(100));
-    USDT_Contract.transfer(marketing,_value.mul(2).div(100));
-
-    reInicio();
 
   }
 
@@ -227,8 +241,8 @@ contract SITECapital {
 
     for (uint i = 0; i < investor.deposits.length; i++) {
       Deposit storage dep = investor.deposits[i];
-      uint tiempoD = tiempo[dep.tariff];
-      uint porcientD = porcent[dep.tariff];
+      uint tiempoD = dep.tiempo;
+      uint porcientD = dep.porciento;
 
       uint finish = dep.at + tiempoD;
       uint since = investor.paidAt > dep.at ? investor.paidAt : dep.at;
@@ -246,8 +260,8 @@ contract SITECapital {
 
     for (uint i = 0; i < investor.deposits.length; i++) {
       Deposit storage dep = investor.deposits[i];
-      uint tiempoD = tiempo[dep.tariff];
-      uint porcientD = porcent[dep.tariff];
+      uint tiempoD = dep.tiempo;
+      uint porcientD = dep.porciento;
 
       uint finish = dep.at + tiempoD;
       uint since = investor.paidAt > dep.at ? investor.paidAt : dep.at;
@@ -273,36 +287,20 @@ contract SITECapital {
 
   }
 
-  function reInicio() public {
-
-    uint hora = ULTIMO_REINICIO + 1*28800;
-
-    if ( block.number >= hora ){
-
-      RETIRO_DIARIO = 100000 trx;
-      ULTIMO_REINICIO = hora;
-
-    }
-
-  }
 
   function withdraw() external {
 
     uint amount = withdrawable(msg.sender);
     amount = amount+investors[msg.sender].balanceRef;
-    reInicio();
 
     require ( USDT_Contract.balanceOf(address(this)) >= amount, "The contract has no balance");
     require ( amount >= MIN_RETIRO, "The minimum withdrawal limit reached");
-    require ( RETIRO_DIARIO >= amount, "Global daily withdrawal limit reached");
-
-    profit();
 
     uint amount92 = amount.mul(92).div(100);
 
     require ( true != USDT_Contract.transfer(msg.sender,amount92), "whitdrawl Fail" );
 
-    RETIRO_DIARIO -= amount;
+    profit();
 
     investors[msg.sender].withdrawn += amount92;
 
