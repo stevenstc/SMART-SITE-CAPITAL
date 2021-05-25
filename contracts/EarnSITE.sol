@@ -231,7 +231,7 @@ contract SITECapital {
       rewardReferers(msg.sender, _value);
     }
 
-    usuario.deposits.push(Deposit(tiempo, porcent, _value, block.number));
+    usuario.deposits.push(Deposit(porcent, tiempo, _value, block.number));
 
     usuario.invested += _value;
     totalInvested += _value;

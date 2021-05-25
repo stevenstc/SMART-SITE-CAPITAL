@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Utils from "../../utils";
 import contractAddress from "../Contract";
 
+import cons from "../../cons.js";
+
 export default class Datos extends Component {
   constructor(props) {
     super(props);
@@ -23,11 +25,15 @@ export default class Datos extends Component {
   async totalInvestors() {
 
     let esto = await Utils.contract.setstate().call();
+
+    var tronUSDT = await window.tronWeb;
+    var contractUSDT = await tronUSDT.contract().at(cons.USDT);
+    var decimales = await contractUSDT.decimals().call();
     //console.log(esto);
     this.setState({
       totalInvestors: parseInt(esto.Investors._hex),
-      totalInvested: parseInt(esto.Invested._hex)/1000000,
-      totalRefRewards: parseInt(esto.RefRewards._hex)/1000000
+      totalInvested: parseInt(esto.Invested._hex)/10**decimales,
+      totalRefRewards: parseInt(esto.RefRewards._hex)/10**decimales
 
     });
 

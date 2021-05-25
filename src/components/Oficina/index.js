@@ -3,6 +3,8 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import Utils from "../../utils";
 import contractAddress from "../Contract";
 
+import cons from "../../cons.js";
+
 export default class Oficina extends Component {
   constructor(props) {
     super(props);
@@ -58,17 +60,20 @@ export default class Oficina extends Component {
     let direccion = await window.tronWeb.trx.getAccount();
     let esto = await Utils.contract.investors(direccion.address).call();
     let My = await Utils.contract.MYwithdrawable().call();
-    //console.log(esto);
-    //console.log(My);
+    
+    var tronUSDT = await window.tronWeb;
+    var contractUSDT = await tronUSDT.contract().at(cons.USDT);
+    var decimales = await contractUSDT.decimals().call();
+
     this.setState({
       direccion: window.tronWeb.address.fromHex(direccion.address),
       registered: esto.registered,
-      balanceRef: parseInt(esto.balanceRef._hex)/1000000,
-      totalRef: parseInt(esto.totalRef._hex)/1000000,
-      invested: parseInt(esto.invested._hex)/1000000,
-      paidAt: parseInt(esto.paidAt._hex)/1000000,
-      my: parseInt(My.amount._hex)/1000000,
-      withdrawn: parseInt(esto.withdrawn._hex)/1000000
+      balanceRef: parseInt(esto.balanceRef._hex)/10**decimales,
+      totalRef: parseInt(esto.totalRef._hex)/10**decimales,
+      invested: parseInt(esto.invested._hex)/10**decimales,
+      paidAt: parseInt(esto.paidAt._hex)/10**decimales,
+      my: parseInt(My.amount._hex)/10**decimales,
+      withdrawn: parseInt(esto.withdrawn._hex)/10**decimales
     });
 
   };
@@ -86,16 +91,16 @@ export default class Oficina extends Component {
     available = available.toFixed(6);
     available = parseFloat(available);
 
-    balanceRef = balanceRef.toFixed(2);
+    balanceRef = balanceRef.toFixed(6);
     balanceRef = parseFloat(balanceRef);
 
-    totalRef = totalRef.toFixed(2);
+    totalRef = totalRef.toFixed(6);
     totalRef = parseFloat(totalRef);
 
-    invested = invested.toFixed(2);
+    invested = invested.toFixed(6);
     invested = parseFloat(invested);
 
-    withdrawn = withdrawn.toFixed(2);
+    withdrawn = withdrawn.toFixed(6);
     withdrawn = parseFloat(withdrawn);
 
     my = my.toFixed(6);

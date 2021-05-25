@@ -58,12 +58,17 @@ export default class CrowdFunding extends Component {
     var decimales = await contractUSDT.decimals().call();
     balance = parseInt(balance._hex)/10**decimales;
 
+    var MIN_DEPOSIT = await Utils.contract.MIN_DEPOSIT().call();
+    MIN_DEPOSIT = parseInt(MIN_DEPOSIT._hex)/10**decimales;
+
     this.setState({
       deposito: aprovado,
       balance: balance,
+      decimales: decimales,
       accountAddress: accountAddress,
       porcentaje: 115,
-      dias: 90
+      dias: 90,
+      min: MIN_DEPOSIT
     });
   }
 
@@ -71,12 +76,12 @@ export default class CrowdFunding extends Component {
   async deposit() {
 
 
-    const { min, deposito } = this.state;
+    const { min, deposito, decimales } = this.state;
 
     var amount = document.getElementById("amount").value;
     console.log(amount);
     amount = parseFloat(amount);
-    amount = parseInt(amount*1000000);
+    amount = parseInt(amount*10**decimales);
 
     console.log(isNaN(amount));
 
@@ -202,10 +207,10 @@ export default class CrowdFunding extends Component {
             <strong>{this.state.accountAddress}</strong><br />
           </p>
           <p className="card-text">
-            Saldo disponible: <strong>{this.state.balance}</strong><br />
+            SITE disponible: <strong>{this.state.balance}</strong><br />
           </p>
             <input type="number" className="form-control mb-20 text-center" id="amount" placeholder={min}></input>
-            <p className="card-text">Debes de tener ~ 50 TRX para hacer la transacción</p>
+            <p className="card-text">Debes de tener TRX para hacer la transacción</p>
 
             <a href="#root" className="btn btn-light" onClick={() => this.deposit()}>{this.state.deposito}</a>
 
