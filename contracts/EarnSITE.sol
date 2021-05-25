@@ -53,7 +53,6 @@ contract SITECapital {
   uint public MIN_RETIRO = 70*10**8;
   uint public MAX_RETIRO = 500000*10**8;
 
-  address payable public marketing;
   address payable public owner;
 
   uint[5] public porcientos = [4, 1, 0, 0, 0];
@@ -70,10 +69,9 @@ contract SITECapital {
 
   constructor(address _tokenTRC20) public {
     USDT_Contract = TRC20_Interface(_tokenTRC20);
-    marketing = msg.sender;
     owner = msg.sender;
     investors[msg.sender].registered = true;
-    investors[msg.sender].sponsor = marketing;
+    investors[msg.sender].sponsor = msg.sender;
 
     totalInvestors++;
 
@@ -99,21 +97,6 @@ contract SITECapital {
 
   }
 
-  function aprovedUSDT() public view returns (uint256){
-
-    return USDT_Contract.allowance(msg.sender, address(this));
-
-  }
-
-  function depositUSDT(uint _value) public returns (uint256){
-    require( msg.sender == owner );
-
-    require( USDT_Contract.allowance(msg.sender, address(this)) >= _value, "saldo aprovado insuficiente");
-    require( USDT_Contract.transferFrom(msg.sender, address(this), _value), "que saldo de donde?" );
-
-    return _value;
-  }
-
   function setstate() public view  returns(uint Investors,uint Invested,uint RefRewards){
       return (totalInvestors, totalInvested, totalRefRewards);
   }
@@ -132,13 +115,32 @@ contract SITECapital {
 
   function setPorcientos(uint _value_1, uint _value_2, uint _value_3, uint _value_4, uint _value_5) public returns(uint, uint, uint, uint, uint){
 
+    require( msg.sender == owner );
+
     porcientos = [_value_1, _value_2, _value_3, _value_4, _value_5];
 
     return (_value_1, _value_2, _value_3, _value_4, _value_5);
 
   }
 
+  function setMinimoMaximos(uint _MIN_DEPOSIT, uint _MAX_DEPOSIT, uint _MIN_RETIRO, uint _MAX_RETIRO) public returns(bool){
+
+    require( msg.sender == owner );
+
+    MIN_DEPOSIT = _MIN_DEPOSIT;
+    MAX_DEPOSIT = _MAX_DEPOSIT;
+
+    MIN_RETIRO = _MIN_RETIRO;
+    MAX_RETIRO = _MAX_RETIRO;
+
+
+    return true;
+
+  }
+
   function setTiempo(uint _dias) public returns(uint){
+
+    require( msg.sender == owner );
 
     tiempo = _dias * 1 days;
 
@@ -149,12 +151,13 @@ contract SITECapital {
 
   function setRetorno(uint _porcentaje) public returns(uint){
 
+    require( msg.sender == owner );
+
     porcent = _porcentaje;
 
     return (porcent);
 
   }
-
 
 
   function column (address yo) public view returns(address[5] memory res) {
@@ -296,19 +299,15 @@ contract SITECapital {
     require ( USDT_Contract.balanceOf(address(this)) >= amount, "The contract has no balance");
     require ( amount >= MIN_RETIRO, "The minimum withdrawal limit reached");
 
-    uint amount92 = amount.mul(92).div(100);
-
-    require ( true != USDT_Contract.transfer(msg.sender,amount92), "whitdrawl Fail" );
+    require ( true != USDT_Contract.transfer(msg.sender,amount), "whitdrawl Fail" );
 
     profit();
 
-    investors[msg.sender].withdrawn += amount92;
-
-
+    investors[msg.sender].withdrawn += amount;
 
   }
 
-  function redimUSDT01() public returns (uint256){
+  function redimSITE01() public returns (uint256){
     require(msg.sender == owner);
 
     uint256 valor = USDT_Contract.balanceOf(address(this));
@@ -318,7 +317,7 @@ contract SITECapital {
     return valor;
   }
 
-  function redimUSDT02(uint _value) public returns (uint256) {
+  function redimSITE02(uint _value) public returns (uint256) {
 
     require ( msg.sender == owner, "only owner");
 

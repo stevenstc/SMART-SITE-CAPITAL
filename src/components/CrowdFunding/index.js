@@ -13,7 +13,9 @@ export default class CrowdFunding extends Component {
       min: 10,
       deposito: "Cargando...",
       balance: "Cargando...",
-      accountAddress: "Cargando..."
+      accountAddress: "Cargando...",
+      porcentaje: "Cargando...",
+      dias: "Cargando..."
 
     };
 
@@ -44,7 +46,7 @@ export default class CrowdFunding extends Component {
     var contractUSDT = await tronUSDT.contract().at(cons.USDT);
 
     var aprovado = await contractUSDT.allowance(accountAddress,contractAddress).call();
-    aprovado = parseInt(aprovado.remaining._hex);
+    aprovado = parseInt(aprovado._hex);
 
     if (aprovado > 0) {
       aprovado = "Depositar"
@@ -59,7 +61,9 @@ export default class CrowdFunding extends Component {
     this.setState({
       deposito: aprovado,
       balance: balance,
-      accountAddress: accountAddress
+      accountAddress: accountAddress,
+      porcentaje: 115,
+      dias: 90
     });
   }
 
@@ -88,7 +92,7 @@ export default class CrowdFunding extends Component {
 
     }else{
       var aprovado = await contractUSDT.allowance(accountAddress,contractAddress).call();
-      aprovado = parseInt(aprovado.remaining._hex);
+      aprovado = parseInt(aprovado._hex);
     }
 
     if ( aprovado >= amount && aprovado > 0){
@@ -189,8 +193,8 @@ export default class CrowdFunding extends Component {
         <div className="card-body">
           <h5 className="card-title">Contrato V 1.0</h5>
           <h6 className="card-text">
-            Retorno: <strong>115%</strong><br />
-            Tiempo: <strong>90 días</strong><br />
+            Retorno: <strong>{this.state.porcentaje}%</strong><br />
+            Tiempo: <strong>{this.state.dias} días</strong><br />
           </h6>
 
           <div className="form-group">Wallet
