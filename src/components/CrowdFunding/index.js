@@ -50,9 +50,10 @@ export default class CrowdFunding extends Component {
     aprovado = parseInt(aprovado._hex);
 
     if (aprovado > 0) {
-      aprovado = "Depositar"
+      aprovado = "Depositar";
     }else{
-      aprovado = "Aprobar"
+      document.getElementById("amount").value = "";
+      aprovado = "Registrar";
     }
 
     var balance = await contractUSDT.balanceOf(accountAddress).call();
@@ -89,13 +90,23 @@ export default class CrowdFunding extends Component {
         }
     }
 
+    var dias = await Utils.contract.tiempo().call();
+
+    var velocidad = await Utils.contract.velocidad().call();
+
+    dias = (parseInt(dias)/86400)*velocidad;
+
+    var porcentaje = await Utils.contract.porcent().call();
+
+    porcentaje = parseInt(porcentaje);
+
     this.setState({
       deposito: aprovado,
       balance: balance,
       decimales: decimales,
       accountAddress: accountAddress,
-      porcentaje: 115,
-      dias: 90,
+      porcentaje: porcentaje,
+      dias: dias,
       min: MIN_DEPOSIT,
       partner: partner
     });
@@ -109,6 +120,7 @@ export default class CrowdFunding extends Component {
 
     var amount = document.getElementById("amount").value;
     console.log(amount);
+
     amount = parseFloat(amount);
     amount = parseInt(amount*10**decimales);
 
@@ -120,10 +132,9 @@ export default class CrowdFunding extends Component {
     var tronUSDT = await window.tronWeb;
     var contractUSDT = await tronUSDT.contract().at(cons.USDT);
 
-    if (deposito === "Aprobar"){
-
+    if (deposito === "Registrar"){
+      document.getElementById("amount").value = "";
       await contractUSDT.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send();
-
     }else{
       var aprovado = await contractUSDT.allowance(accountAddress,contractAddress).call();
       aprovado = parseInt(aprovado._hex);
@@ -179,9 +190,13 @@ export default class CrowdFunding extends Component {
 
           await Utils.contract.deposit(amount,sponsor).send();
 
+          window.alert("Felicidades inversión exitosa");
+
+          document.getElementById("services").scrollIntoView({block: "end", behavior: "smooth"});;
+
         }else{
-          window.alert("Please enter an amount greater than 10 USDT");
-          document.getElementById("amount").value = 10;
+          window.alert("Please enter an amount greater than 100 SITE");
+          document.getElementById("amount").value = 100;
         }
 
 
@@ -207,8 +222,6 @@ export default class CrowdFunding extends Component {
           window.alert("You must leave 50 TRX free in your account to make the transaction");
 
         }
-      }else{
-        window.alert("No tiene fondos suficientes en su cuenta porfavor recargue e intente nuevamente");
       }
     }
 

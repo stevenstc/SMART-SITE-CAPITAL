@@ -88,22 +88,22 @@ export default class Oficina extends Component {
     var { balanceRef, totalRef, invested,  withdrawn , my, direccion, link} = this.state;
 
     var available = (balanceRef+my);
-    available = available.toFixed(6);
+    available = available.toFixed(8);
     available = parseFloat(available);
 
-    balanceRef = balanceRef.toFixed(6);
+    balanceRef = balanceRef.toFixed(8);
     balanceRef = parseFloat(balanceRef);
 
-    totalRef = totalRef.toFixed(6);
+    totalRef = totalRef.toFixed(8);
     totalRef = parseFloat(totalRef);
 
-    invested = invested.toFixed(6);
+    invested = invested.toFixed(8);
     invested = parseFloat(invested);
 
-    withdrawn = withdrawn.toFixed(6);
+    withdrawn = withdrawn.toFixed(8);
     withdrawn = parseFloat(withdrawn);
 
-    my = my.toFixed(6);
+    my = my.toFixed(8);
     my = parseFloat(my);
 
     return (

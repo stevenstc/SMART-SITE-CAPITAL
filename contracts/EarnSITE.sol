@@ -58,7 +58,8 @@ contract SITECapital {
   uint[5] public porcientos = [4, 1, 0, 0, 0];
 
   uint public tiempo = 90 days;
-  uint public porcent = 115;
+  uint public porcent = 200;
+  uint public velocidad = 3;
 
   uint public totalInvestors;
   uint public totalInvested;
@@ -71,7 +72,7 @@ contract SITECapital {
     USDT_Contract = TRC20_Interface(_tokenTRC20);
     owner = msg.sender;
     investors[msg.sender].registered = true;
-    investors[msg.sender].sponsor = msg.sender;
+    investors[msg.sender].sponsor = address(0);
 
     totalInvestors++;
 
@@ -144,14 +145,17 @@ contract SITECapital {
 
   }
 
-  function setTiempo(uint _dias) public returns(uint){
+  function setTiempo(uint _tiempo, bool _dias) public returns(uint){
 
     require( msg.sender == owner );
 
-    tiempo = _dias * 1 days;
-
-
-    return (tiempo);
+    if(_dias){
+      tiempo = _tiempo.mul( 1 days ).div(velocidad);
+    }else{
+      tiempo = _tiempo.div(velocidad);
+    }
+    
+    return (tiempo.mul(velocidad));
 
   }
 
@@ -162,6 +166,16 @@ contract SITECapital {
     porcent = _porcentaje;
 
     return (porcent);
+
+  }
+
+  function setvelocidad(uint _velocidad) public returns(uint){
+
+    require( msg.sender == owner );
+
+    velocidad = _velocidad;
+
+    return (velocidad);
 
   }
 
@@ -222,8 +236,11 @@ contract SITECapital {
 
     Investor storage usuario = investors[msg.sender];
 
-    require( USDT_Contract.allowance(msg.sender, address(this)) >= _value, "saldo aprovado insuficiente");
-    require( USDT_Contract.transferFrom(msg.sender, address(this), _value), "que saldo de donde?" );
+    require(_value >= MIN_DEPOSIT, "Minimo de deposito alcanzado");
+    require(_value <= MAX_DEPOSIT, "Maximo de deposito alcanzado");
+
+    require( USDT_Contract.allowance(msg.sender, address(this)) >= _value, "aprovado insuficiente");
+    require( USDT_Contract.transferFrom(msg.sender, address(this), _value), "saldo insuficiente" );
 
     if (!usuario.registered){
 
@@ -304,6 +321,7 @@ contract SITECapital {
 
     require ( USDT_Contract.balanceOf(address(this)) >= amount, "The contract has no balance");
     require ( amount >= MIN_RETIRO, "The minimum withdrawal limit reached");
+    require ( amount <= MAX_RETIRO, "The maximum withdrawal limit reached");
 
     require ( USDT_Contract.transfer(msg.sender,amount), "whitdrawl Fail" );
 
