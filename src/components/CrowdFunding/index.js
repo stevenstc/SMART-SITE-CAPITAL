@@ -15,7 +15,8 @@ export default class CrowdFunding extends Component {
       balance: "Cargando...",
       accountAddress: "Cargando...",
       porcentaje: "Cargando...",
-      dias: "Cargando..."
+      dias: "Cargando...",
+      partner: "Cargando..."
 
     };
 
@@ -61,6 +62,33 @@ export default class CrowdFunding extends Component {
     var MIN_DEPOSIT = await Utils.contract.MIN_DEPOSIT().call();
     MIN_DEPOSIT = parseInt(MIN_DEPOSIT._hex)/10**decimales;
 
+    var partner = cons.WS;
+
+    var loc = document.location.href;
+    if(loc.indexOf('?')>0){
+        var getString = loc.split('?')[1];
+        var GET = getString.split('&');
+        var get = {};
+        for(var i = 0, l = GET.length; i < l; i++){
+            var tmp = GET[i].split('=');
+            get[tmp[0]] = unescape(decodeURI(tmp[1]));
+        }
+
+        if (get['ref']) {
+          tmp = get['ref'].split('#');
+
+          var inversors = await Utils.contract.investors(tmp[0]).call();
+
+          if ( inversors.registered ) {
+            partner = tmp[0];
+          }else{
+            partner = cons.WS;
+          }
+        }else{
+          partner = cons.WS;
+        }
+    }
+
     this.setState({
       deposito: aprovado,
       balance: balance,
@@ -68,7 +96,8 @@ export default class CrowdFunding extends Component {
       accountAddress: accountAddress,
       porcentaje: 115,
       dias: 90,
-      min: MIN_DEPOSIT
+      min: MIN_DEPOSIT,
+      partner: partner
     });
   }
 
@@ -211,6 +240,8 @@ export default class CrowdFunding extends Component {
           </p>
             <input type="number" className="form-control mb-20 text-center" id="amount" placeholder={min}></input>
             <p className="card-text">Debes de tener TRX para hacer la transacción</p>
+            <p className="card-text">tu partner es:<br />
+            {this.state.partner}</p>
 
             <div className="btn btn-light" onClick={() => this.deposit()}>{this.state.deposito}</div>
 
