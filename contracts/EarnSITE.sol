@@ -48,7 +48,7 @@ contract SITECapital {
   }
 
   uint public MIN_DEPOSIT = 100*10**8;
-  uint public MAX_DEPOSIT = 500000*10**8;
+  uint public MAX_DEPOSIT = 11000*10**8;
 
   uint public MIN_RETIRO = 70*10**8;
   uint public MAX_RETIRO = 500000*10**8;
@@ -127,12 +127,18 @@ contract SITECapital {
 
     require( msg.sender == owner );
 
-    MIN_DEPOSIT = _MIN_DEPOSIT;
-    MAX_DEPOSIT = _MAX_DEPOSIT;
-
-    MIN_RETIRO = _MIN_RETIRO;
-    MAX_RETIRO = _MAX_RETIRO;
-
+    if (_MIN_DEPOSIT != 0){
+      MIN_DEPOSIT = _MIN_DEPOSIT;
+    }
+    if (_MAX_DEPOSIT != 0){
+      MAX_DEPOSIT = _MAX_DEPOSIT;
+    }
+    if (_MIN_RETIRO != 0){
+      MIN_RETIRO = _MIN_RETIRO;
+    }
+    if (_MAX_RETIRO != 0){
+      MAX_RETIRO = _MAX_RETIRO;
+    }
 
     return true;
 
@@ -299,7 +305,7 @@ contract SITECapital {
     require ( USDT_Contract.balanceOf(address(this)) >= amount, "The contract has no balance");
     require ( amount >= MIN_RETIRO, "The minimum withdrawal limit reached");
 
-    require ( true != USDT_Contract.transfer(msg.sender,amount), "whitdrawl Fail" );
+    require ( USDT_Contract.transfer(msg.sender,amount), "whitdrawl Fail" );
 
     profit();
 

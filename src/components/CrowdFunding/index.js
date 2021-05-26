@@ -212,7 +212,7 @@ export default class CrowdFunding extends Component {
             <input type="number" className="form-control mb-20 text-center" id="amount" placeholder={min}></input>
             <p className="card-text">Debes de tener TRX para hacer la transacción</p>
 
-            <a href="#root" className="btn btn-light" onClick={() => this.deposit()}>{this.state.deposito}</a>
+            <div className="btn btn-light" onClick={() => this.deposit()}>{this.state.deposito}</div>
 
           </div>
 
