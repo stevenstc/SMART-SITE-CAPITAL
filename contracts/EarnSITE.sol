@@ -57,8 +57,8 @@ contract SITECapital {
 
   uint[5] public porcientos = [4, 1, 0, 0, 0];
 
-  uint public tiempo = 90 days;
-  uint public porcent = 200;
+  uint public tiempo = (90 days).div(3);
+  uint public porcent = 115;
   uint public velocidad = 3;
 
   uint public totalInvestors;
