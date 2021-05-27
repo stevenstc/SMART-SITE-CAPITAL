@@ -55,9 +55,11 @@ contract SITECapital {
 
   address payable public owner;
 
-  uint[5] public porcientos = [4, 1, 0, 0, 0];
+  uint[5] public primervez = [4, 1, 0, 0, 0];
 
-  uint public tiempo = (90 days).div(3);
+  uint[5] public porcientos = [1, 1, 0, 0, 0];
+
+  uint public dias = 90;
   uint public porcent = 115;
   uint public velocidad = 3;
 
@@ -72,6 +74,7 @@ contract SITECapital {
     USDT_Contract = TRC20_Interface(_tokenTRC20);
     owner = msg.sender;
     investors[msg.sender].registered = true;
+    investors[msg.sender].recompensa = true;
     investors[msg.sender].sponsor = address(0);
 
     totalInvestors++;
@@ -113,12 +116,26 @@ contract SITECapital {
   function InContractTRX() public view returns (uint){
     return address(this).balance;
   }
+  
+  function tiempo() public view returns (uint){
+     return dias.mul(86400).div(velocidad);
+  }
 
   function setPorcientos(uint _value_1, uint _value_2, uint _value_3, uint _value_4, uint _value_5) public returns(uint, uint, uint, uint, uint){
 
     require( msg.sender == owner );
 
     porcientos = [_value_1, _value_2, _value_3, _value_4, _value_5];
+
+    return (_value_1, _value_2, _value_3, _value_4, _value_5);
+
+  }
+
+  function setPrimeravezPorcientos(uint _value_1, uint _value_2, uint _value_3, uint _value_4, uint _value_5) public returns(uint, uint, uint, uint, uint){
+
+    require( msg.sender == owner );
+
+    primervez = [_value_1, _value_2, _value_3, _value_4, _value_5];
 
     return (_value_1, _value_2, _value_3, _value_4, _value_5);
 
@@ -145,17 +162,15 @@ contract SITECapital {
 
   }
 
-  function setTiempo(uint _tiempo, bool _dias) public returns(uint){
+  function setTiempo(uint _dias) public returns(uint){
 
     require( msg.sender == owner );
 
-    if(_dias){
-      tiempo = _tiempo.mul( 1 days ).div(velocidad);
-    }else{
-      tiempo = _tiempo.div(velocidad);
-    }
     
-    return (tiempo.mul(velocidad));
+    dias = _dias;
+    
+    
+    return (_dias);
 
   }
 
@@ -196,6 +211,35 @@ contract SITECapital {
     return res;
   }
 
+  function rewardPrimervez(address yo, uint amount) internal {
+
+    address[5] memory referi = column(yo);
+    uint[5] memory a;
+    uint[5] memory b;
+
+    for (uint i = 0; i < 5; i++) {
+
+      Investor storage usuario = investors[referi[i]];
+      if (usuario.registered && primervez[i] != 0 && usuario.recompensa){
+        if ( referi[i] != address(0) ) {
+
+          b[i] = primervez[i];
+          a[i] = amount.mul(b[i]).div(100);
+
+          usuario.balanceRef += a[i];
+          usuario.totalRef += a[i];
+          totalRefRewards += a[i];
+
+        }else{
+
+          break;
+        }
+      }
+    }
+
+
+  }
+
   function rewardReferers(address yo, uint amount) internal {
 
     address[5] memory referi = column(yo);
@@ -206,7 +250,7 @@ contract SITECapital {
 
       Investor storage usuario = investors[referi[i]];
       if (usuario.registered && porcientos[i] != 0 && usuario.recompensa){
-        if ( referi[i] != owner ) {
+        if ( referi[i] != address(0) ) {
 
           b[i] = porcientos[i];
           a[i] = amount.mul(b[i]).div(100);
@@ -216,14 +260,6 @@ contract SITECapital {
           totalRefRewards += a[i];
 
         }else{
-
-          b[i] = porcientos[i];
-          a[i] = amount.mul(b[i]).div(100);
-
-          usuario.balanceRef += a[i];
-          usuario.totalRef += a[i];
-          totalRefRewards += a[i];
-
           break;
         }
       }
@@ -247,14 +283,19 @@ contract SITECapital {
       usuario.registered = true;
       usuario.recompensa = true;
       usuario.sponsor = _sponsor;
+      if (_sponsor != address(0) ){
+        rewardPrimervez(msg.sender, _value);
+      }
+      
       totalInvestors++;
+
+    }else{
+      if (usuario.sponsor != address(0) ){
+        rewardReferers(msg.sender, _value);
+      }
     }
 
-    if (usuario.sponsor != address(0) && _sponsor != address(0) ){
-      rewardReferers(msg.sender, _value);
-    }
-
-    usuario.deposits.push(Deposit(porcent, tiempo, _value, block.number));
+    usuario.deposits.push(Deposit(porcent, tiempo(), _value, block.number));
 
     usuario.invested += _value;
     totalInvested += _value;

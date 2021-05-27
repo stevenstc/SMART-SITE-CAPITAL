@@ -79,8 +79,34 @@ export default class Oficina extends Component {
   };
 
   async withdraw(){
-    var cosa = await Utils.contract.withdraw().send();
-    console.log(cosa);
+    const { balanceRef, my } = this.state;
+
+    var available = (balanceRef+my);
+    available = available.toFixed(8);
+    available = parseFloat(available);
+
+    var tronUSDT = await window.tronWeb;
+    var contractUSDT = await tronUSDT.contract().at(cons.USDT);
+
+    var decimales = await contractUSDT.decimals().call();
+
+    var MIN_RETIRO = await Utils.contract.MIN_RETIRO().call();
+    MIN_RETIRO = parseInt(MIN_RETIRO._hex)/10**decimales;
+
+    var MAX_RETIRO = await Utils.contract.MAX_RETIRO().call();
+    MAX_RETIRO = parseInt(MAX_RETIRO._hex)/10**decimales;
+
+
+    if ( available < MAX_RETIRO && available > MIN_RETIRO ){
+      await Utils.contract.withdraw().send();
+    }else{
+      if (available > MAX_RETIRO) {
+        window.alert("Por favor contacta con el soporte técnico de SITE");
+      }
+      if (available < MIN_RETIRO) {
+        window.alert("El minimo para retirar son: "+(MIN_RETIRO)+" SITE");
+      }
+    }
   };
 
 

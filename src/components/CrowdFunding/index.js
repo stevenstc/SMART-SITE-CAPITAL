@@ -57,11 +57,16 @@ export default class CrowdFunding extends Component {
     }
 
     var balance = await contractUSDT.balanceOf(accountAddress).call();
+
     var decimales = await contractUSDT.decimals().call();
+    
     balance = parseInt(balance._hex)/10**decimales;
 
     var MIN_DEPOSIT = await Utils.contract.MIN_DEPOSIT().call();
     MIN_DEPOSIT = parseInt(MIN_DEPOSIT._hex)/10**decimales;
+
+    var MAX_DEPOSIT = await Utils.contract.MAX_DEPOSIT().call();
+    MAX_DEPOSIT = parseInt(MAX_DEPOSIT._hex)/10**decimales;
 
     var partner = cons.WS;
 
@@ -100,6 +105,9 @@ export default class CrowdFunding extends Component {
 
     porcentaje = parseInt(porcentaje);
 
+    var balancesite = await contractUSDT.balanceOf(accountAddress).call();
+    balancesite = parseInt(balancesite._hex);
+
     this.setState({
       deposito: aprovado,
       balance: balance,
@@ -108,7 +116,9 @@ export default class CrowdFunding extends Component {
       porcentaje: porcentaje,
       dias: dias,
       min: MIN_DEPOSIT,
-      partner: partner
+      max: MAX_DEPOSIT,
+      partner: partner,
+      balanceSite: balancesite
     });
   }
 
@@ -116,13 +126,19 @@ export default class CrowdFunding extends Component {
   async deposit() {
 
 
-    const { min, deposito, decimales } = this.state;
+    const {  deposito, decimales, balanceSite } = this.state;
+
+    var { min, max } = this.state
+
+    min = min*10**decimales;
+    max = max*10**decimales;
 
     var amount = document.getElementById("amount").value;
-    console.log(amount);
 
     amount = parseFloat(amount);
     amount = parseInt(amount*10**decimales);
+
+    console.log(amount);
 
     console.log(isNaN(amount));
 
@@ -140,7 +156,7 @@ export default class CrowdFunding extends Component {
       aprovado = parseInt(aprovado._hex);
     }
 
-    if ( aprovado >= amount && aprovado > 0){
+    if ( aprovado >= amount && aprovado > 0 && balanceSite >= amount && amount >= min && amount <= max ){
 
         var loc = document.location.href;
         if(loc.indexOf('?')>0){
@@ -194,34 +210,25 @@ export default class CrowdFunding extends Component {
 
           document.getElementById("services").scrollIntoView({block: "end", behavior: "smooth"});;
 
-        }else{
-          window.alert("Please enter an amount greater than 100 SITE");
-          document.getElementById("amount").value = 100;
         }
-
 
 
     }else{
 
-      if (amount > min && aprovado > min) {
+      
+      if (amount < min ) {
+        document.getElementById("amount").value = "";
+        window.alert("coloca una cantidad mayor que "+(min/10**decimales)+" SITE");
+      }
 
-        if ( amount > aprovado) {
-          if (aprovado <= 0) {
-            document.getElementById("amount").value = min;
-            window.alert("You do not have enough funds in your account you place at least "+min+" USDT");
-          }else{
-            document.getElementById("amount").value = 10;
-            window.alert("You must leave 50 TRX free in your account to make the transaction");
-          }
+      if (amount > max ) {
+        document.getElementById("amount").value = "";
+        window.alert("coloca una cantidad menor que "+(max/10**decimales)+" SITE");
+      }
 
-
-
-        }else{
-
-          document.getElementById("amount").value = amount;
-          window.alert("You must leave 50 TRX free in your account to make the transaction");
-
-        }
+      if (balanceSite < amount) {
+        document.getElementById("amount").value = min;
+        window.alert("No tienes suficiente SITE");
       }
     }
 
