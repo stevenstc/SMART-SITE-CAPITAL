@@ -274,6 +274,7 @@ contract SITECapital {
 
     require(_value >= MIN_DEPOSIT, "Minimo de deposito alcanzado");
     require(_value <= MAX_DEPOSIT, "Maximo de deposito alcanzado");
+    require(usuario.invested+_value <= MAX_DEPOSIT, "Maximo de deposito alcanzado");
 
     require( USDT_Contract.allowance(msg.sender, address(this)) >= _value, "aprovado insuficiente");
     require( USDT_Contract.transferFrom(msg.sender, address(this), _value), "saldo insuficiente" );
@@ -290,9 +291,11 @@ contract SITECapital {
       totalInvestors++;
 
     }else{
+
       if (usuario.sponsor != address(0) ){
         rewardReferers(msg.sender, _value);
       }
+
     }
 
     usuario.deposits.push(Deposit(porcent, tiempo(), _value, block.number));
@@ -357,18 +360,21 @@ contract SITECapital {
 
   function withdraw() external {
 
+    Investor storage usuario = investors[msg.sender];
+
     uint amount = withdrawable(msg.sender);
-    amount = amount+investors[msg.sender].balanceRef;
+    amount = amount+usuario.balanceRef;
 
     require ( USDT_Contract.balanceOf(address(this)) >= amount, "The contract has no balance");
     require ( amount >= MIN_RETIRO, "The minimum withdrawal limit reached");
     require ( amount <= MAX_RETIRO, "The maximum withdrawal limit reached");
+    require ( usuario.withdrawn+amount <= MAX_RETIRO, "The maximum withdrawal limit reached");
 
     require ( USDT_Contract.transfer(msg.sender,amount), "whitdrawl Fail" );
 
     profit();
 
-    investors[msg.sender].withdrawn += amount;
+    usuario.withdrawn += amount;
 
   }
 
