@@ -105,6 +105,11 @@ export default class CrowdFunding extends Component {
 
     }
 
+    if(partner === "T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb"){
+      partner = "---------------------------------";
+    }
+    
+
     var dias = await Utils.contract.tiempo().call();
 
     var velocidad = await Utils.contract.velocidad().call();

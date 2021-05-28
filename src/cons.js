@@ -1,7 +1,7 @@
 const proxy = "https://proxy-ewozx.herokuapp.com/";
 const PRU = "shasta.";// red 
 
-const WS = "TB7RTxBPY4eMvKjceXj8SWjVnZCrWr4XvF";//T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb recibe los huerfanos por defecto
+const WS = "T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb";//T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb recibe los huerfanos por defecto
 
 const SC = "TRRqbjTANUDU8vZ2UgLGeznozyguCVUaYP";// direccion del contrato
 
