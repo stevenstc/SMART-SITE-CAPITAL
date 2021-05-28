@@ -10,7 +10,7 @@ export default class CrowdFunding extends Component {
 
     this.state = {
 
-      min: 10,
+      min: 100,
       deposito: "Cargando...",
       balance: "Cargando...",
       accountAddress: "Cargando...",
@@ -129,7 +129,8 @@ export default class CrowdFunding extends Component {
       max: MAX_DEPOSIT,
       partner: partner,
       balanceSite: balancesite,
-      balanceTRX:balanceTRX
+      balanceTRX:balanceTRX,
+      maxAlcanzado: inversors.invested <= MAX_DEPOSIT
     });
   }
 
@@ -137,7 +138,7 @@ export default class CrowdFunding extends Component {
   async deposit() {
 
 
-    const {  deposito, decimales, balanceSite, balanceTRX } = this.state;
+    const {  deposito, decimales, balanceSite, balanceTRX, maxAlcanzado } = this.state;
 
     var { min, max } = this.state
 
@@ -173,7 +174,15 @@ export default class CrowdFunding extends Component {
 
     }
 
-    if ( aprovado >= amount && aprovado > 0 && balanceSite >= amount && amount >= min && amount <= max && balanceTRX >= 50 && deposito !== "Registrar" ){
+    if ( aprovado >= amount && 
+      aprovado > 0 && 
+      balanceSite >= amount && 
+      amount >= min && 
+      amount <= max && 
+      balanceTRX >= 50 && 
+      deposito !== "Registrar" &&
+      maxAlcanzado
+      ){
 
 
         var loc = document.location.href;
@@ -247,6 +256,11 @@ export default class CrowdFunding extends Component {
       if ( balanceSite < amount ) {
         document.getElementById("amount").value = "";
         window.alert("No tienes suficiente SITE");
+      }
+
+      if (!maxAlcanzado) {
+        document.getElementById("amount").value = "";
+        window.alert("Limite de deposito máximo alcanzado");
       }
 
       
