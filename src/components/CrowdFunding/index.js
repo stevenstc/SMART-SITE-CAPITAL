@@ -41,6 +41,8 @@ export default class CrowdFunding extends Component {
 
     var texto = inicio+"..."+fin;
 
+    document.getElementById("contract").innerHTML = '<a href="https://tronscan.org/#/contract/'+contractAddress+'/code">Ver Contrato</a>';
+
     document.getElementById("login").innerHTML = '<a href="https://tronscan.io/#/address/'+accountAddress+'" class="logibtn gradient-btn">'+texto+'</a>';
 
 
