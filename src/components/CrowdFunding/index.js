@@ -116,7 +116,7 @@ export default class CrowdFunding extends Component {
     balancesite = parseInt(balancesite._hex);
 
     var balanceTRX = await window.tronWeb.trx.getBalance();
-    balanceTRX = balanceTRX/10**6;
+    balanceTRX = balanceTRX/10**decimales;
 
     this.setState({
       deposito: aprovado,
@@ -130,7 +130,7 @@ export default class CrowdFunding extends Component {
       partner: partner,
       balanceSite: balancesite,
       balanceTRX:balanceTRX,
-      maxAlcanzado: inversors.invested <= MAX_DEPOSIT
+      maxAlcanzado: parseInt(inversors.invested)/10**decimales <= MAX_DEPOSIT
     });
   }
 
