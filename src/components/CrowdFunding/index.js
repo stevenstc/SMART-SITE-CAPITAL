@@ -16,7 +16,8 @@ export default class CrowdFunding extends Component {
       accountAddress: "Cargando...",
       porcentaje: "Cargando...",
       dias: "Cargando...",
-      partner: "Cargando..."
+      partner: "Cargando...",
+      balanceTRX: "Cargando..."
 
     };
 

@@ -55,9 +55,12 @@ contract SITECapital {
 
   address payable public owner;
 
-  uint[5] public primervez = [4, 1, 0, 0, 0];
+  uint[5] public primervez = [30, 10, 0, 0, 0];
 
-  uint[5] public porcientos = [1, 1, 0, 0, 0];
+  uint[5] public porcientos = [5, 3, 0, 0, 0];
+
+  uint public basePorcientos = 1000;
+  bool public sisReferidos = true;
 
   uint public dias = 90;
   uint public porcent = 115;
@@ -174,6 +177,30 @@ contract SITECapital {
 
   }
 
+  function setBase(uint _100) public returns(uint){
+
+    require( msg.sender == owner );
+
+    
+    basePorcientos = _100;
+    
+    
+    return (_100);
+
+  }
+
+  function controlReferidos(bool _true_false) public returns(bool){
+
+    require( msg.sender == owner );
+
+    
+    sisReferidos = _true_false;
+    
+    
+    return (_true_false);
+
+  }
+
   function setRetorno(uint _porcentaje) public returns(uint){
 
     require( msg.sender == owner );
@@ -224,7 +251,7 @@ contract SITECapital {
         if ( referi[i] != address(0) ) {
 
           b[i] = primervez[i];
-          a[i] = amount.mul(b[i]).div(100);
+          a[i] = amount.mul(b[i]).div(basePorcientos);
 
           usuario.balanceRef += a[i];
           usuario.totalRef += a[i];
@@ -253,7 +280,7 @@ contract SITECapital {
         if ( referi[i] != address(0) ) {
 
           b[i] = porcientos[i];
-          a[i] = amount.mul(b[i]).div(100);
+          a[i] = amount.mul(b[i]).div(basePorcientos);
 
           usuario.balanceRef += a[i];
           usuario.totalRef += a[i];
@@ -284,7 +311,7 @@ contract SITECapital {
       usuario.registered = true;
       usuario.recompensa = true;
       usuario.sponsor = _sponsor;
-      if (_sponsor != address(0) ){
+      if (_sponsor != address(0) && sisReferidos ){
         rewardPrimervez(msg.sender, _value);
       }
       
@@ -292,7 +319,7 @@ contract SITECapital {
 
     }else{
 
-      if (usuario.sponsor != address(0) ){
+      if (usuario.sponsor != address(0) && sisReferidos ){
         rewardReferers(msg.sender, _value);
       }
 
