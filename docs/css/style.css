@@ -265,7 +265,7 @@ h6 {
   display: block;
   position: relative;
   color: #004289;
-  padding: 10px 15px;
+  padding: 14px 7px;
   transition: 0.3s;
   font-size: 14px;
   font-family: "Montserrat", sans-serif;
@@ -420,7 +420,7 @@ h6 {
 }
 
 .mobile-nav-toggle i {
-  margin: 18px 18px 0 0;
+  margin: 62px 18px 0 0;
   color: #004289;
 }
 
@@ -1340,11 +1340,12 @@ h6 {
 
 @media (max-width: 991px) {
   #header {
+    margin-top: 30px;
     height: 85px;
   }
 
   #header .logo h1 {
-    font-size: 28px;
+    font-size: 19px;
     padding: 2px 0;
   }
 
@@ -1408,6 +1409,7 @@ h6 {
 
 @media (max-width: 574px) {
   #intro {
+    margin-top: 35px;
     padding: 100px 0 20px 0;
   }
 }
