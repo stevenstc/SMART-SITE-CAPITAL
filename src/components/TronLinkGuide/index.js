@@ -38,7 +38,7 @@ const TronLinkGuide = props => {
     return (
     <> <a href='/'>
 
-        <div className='tronLink row' style={{'padding': '3em','color': 'black','textDecoration': 'none'}}>
+        <div className='tronLink row' style={{'padding': '5rem 3rem','color': 'black','textDecoration': 'none'}}>
 
             <div className='info col-sm-8'>
                 <h1>Requiere Iniciar Sesión</h1>

@@ -188,7 +188,8 @@ export default class Oficina extends Component {
           <div className="box">
             <div className="icon"><i className="ion-ios-speedometer-outline" style={{color:'#41cf2e'}}></i></div>
             <h4 className="title"><a href="#services">Disponible</a></h4>
-            <p className="description">{available} SITE <button type="button" className="btn btn-info" onClick={() => this.withdraw()}>Retirar</button></p>
+            <p className="description">{available} SITE</p>
+            <button type="button" className="btn btn-info d-block text-center mx-auto mt-1" onClick={() => this.withdraw()}>Retirar</button>
           </div>
         </div>
         <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1.4s">

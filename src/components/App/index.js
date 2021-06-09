@@ -122,7 +122,7 @@ class App extends Component {
 
       <div>
         <div>
-          <section id="why-us" className="wow fadeIn">
+          <section id="why-us" className="wow fadeIn mt-5">
             <div className="container">
               <header className="section-header">
                   <h3>Has tu inversión</h3>

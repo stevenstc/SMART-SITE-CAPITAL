@@ -306,7 +306,7 @@ export default class CrowdFunding extends Component {
             <p className="card-text">Partner:<br />
             <strong>{this.state.partner}</strong></p>
 
-            <div className="btn btn-light" onClick={() => this.deposit()}>{this.state.deposito}</div>
+            <div className="btn btn-lg btn-success" onClick={() => this.deposit()}>{this.state.deposito}</div>
 
           </div>
 

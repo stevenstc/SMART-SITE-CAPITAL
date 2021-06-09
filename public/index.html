@@ -47,15 +47,28 @@
 
       <div class="logo float-left">
         <!-- Uncomment below if you prefer to use an image logo -->
-        <h1 class="text-light"><a href="#intro" class="scrollto"><img src="img/logo.png" alt="" class="img-fluid"></a><a href="#intro"><span>SMART CAPITAL</span></a></h1>
+        <h4 class="text-light"><a href="#intro" class="scrollto"><img src="img/logo.png" alt="" class="img-fluid"></a><a href="#intro"><span>SMART CAPITAL</span></a></h4>
 
       </div>
-
       <nav class="main-nav float-right d-none d-lg-block">
         <ul>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+              Comercios
+            </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" target="_blank" href="https://www.travala.com">Travala</a>
+            </div>
+          </li>
           <li><a href="#root">Invertir</a></li>
           <li><a href="#services">Oficina</a></li>
-          <li><a href="https://justswap.io/?lang=en-US?tokenAddress=TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz&type=swap#/home">Comprar SITE</a></li>
+          <li>
+            <a href="https://justswap.io/?lang=en-US?tokenAddress=TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz&type=swap#/home">
+              <i class="fa fa-exchange" aria-hidden="true"></i>
+              Exchange
+            </a>
+          </li>
           <li><a href="https://tronscan.io/#/token20/TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz">Ver Token</a></li>
           <li id="contract"><a href="https://tronscan.org/#/">Ver Contrato</a></li>
           <li id="login"><a href="/">Login...</a></li>
@@ -68,14 +81,14 @@
   <!--==========================
     Intro Section
   ============================-->
-  <section id="intro" class="clearfix">
+  <section id="intro" class="clearfix d-none">
     <div class="container">
 
-      <div class="intro-img">
+      <div class="intro-img d-none">
         <img src="img/intro-img.svg" alt="" class="img-fluid">
       </div>
 
-      <div class="intro-info">
+      <div class="intro-info d-none">
         <h2>Gana 115% de SITE<br>
           en 90 dias con<br>
           2 niveles de referidos<br>
@@ -91,14 +104,14 @@
       <!--==========================
       About Us Section
     ============================-->
-    <section id="about">
+    <section id="about d-none">
       <div class="container">
 
-        <header class="section-header">
+        <header class="section-header d-none">
           <h3>Sobre Nosostros</h3>
         </header>
 
-        <div class="row about-container">
+        <div class="row about-container d-none">
 
           <div class="col-lg-6 content order-lg-1 order-2">
 
@@ -141,7 +154,7 @@
     <input id="sponsor" type="hidden" value="Mi abuela es la mejor" readonly>
     <input id="tarifa" type="hidden"  value="0" readonly>
 
-    <div id="root"></div>
+    <div id="root" class="clearfix mt-5"></div>
 
     <!-- react js -->
 
@@ -205,7 +218,7 @@
 
   <!-- JavaScript Bootstrap ONLINE Libraries -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+  <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>-->
 
   <!-- JavaScript Libraries -->
   <script src="lib/jquery/jquery.min.js"></script>
