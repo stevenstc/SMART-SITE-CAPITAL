@@ -17,12 +17,14 @@ export default class CrowdFunding extends Component {
       porcentaje: "Cargando...",
       dias: "Cargando...",
       partner: "Cargando...",
-      balanceTRX: "Cargando..."
+      balanceTRX: "Cargando...",
+      maxButton:"Cargando..."
 
     };
 
     this.deposit = this.deposit.bind(this);
     this.estado = this.estado.bind(this);
+    this.getMax = this.getMax.bind(this);
   }
 
   async componentDidMount() {
@@ -138,7 +140,8 @@ export default class CrowdFunding extends Component {
       partner: partner,
       balanceSite: balancesite,
       balanceTRX: balanceTRX,
-      maxAlcanzado: parseInt(inversors.invested)/10**decimales <= MAX_DEPOSIT
+      maxAlcanzado: parseInt(inversors.invested)/10**decimales <= MAX_DEPOSIT,
+      maxButton:"Max"
     });
   }
 
@@ -274,9 +277,12 @@ export default class CrowdFunding extends Component {
       
     }
 
-
   };
 
+  
+  getMax() {
+    document.getElementById("amount").value = this.state.balance;
+  }
 
   render() {
 
@@ -288,7 +294,25 @@ export default class CrowdFunding extends Component {
       <div className="card wow bounceInUp text-center">
         <div className="card-body">
           <h5 className="card-title">Contrato V 1.0</h5>
-          <h6 className="card-text">
+
+          <table className="table borderless">
+            <tbody>
+            <tr>
+              <td><i className="fa fa-check-circle-o text-success"></i>TASA E.A</td><td>60%</td>
+            </tr>
+            <tr>
+              <td><i className="fa fa-check-circle-o text-success"></i>RETORNO TOTAL</td><td>115%</td>
+            </tr>
+            <tr>
+              <td><i className="fa fa-check-circle-o text-success"></i>RECOMPENSA</td><td>15%</td>
+            </tr>
+            <tr>
+              <td><i className="fa fa-check-circle-o text-success"></i>Tiempo en días</td><td>90</td>
+            </tr>
+            </tbody>
+          </table>
+
+          <h6 className="card-text d-none">
             Retorno: <strong>{this.state.porcentaje}%</strong><br />
             Tiempo: <strong>{this.state.dias} días</strong><br />
           </h6>
@@ -301,7 +325,14 @@ export default class CrowdFunding extends Component {
             SITE disponible: <strong>{this.state.balance}</strong><br />
             TRX: <strong>{this.state.balanceTRX}</strong><br />
           </p>
-            <input type="number" className="form-control mb-20 text-center" id="amount" placeholder={min}></input>
+
+          <div className="input-group mb-3">
+            <input id="amount" type="number" className="form-control mb-20 text-center" placeholder={min}></input>
+            <div className="input-group-append">
+              <button className="btn btn-outline-secondary" type="button" onClick={this.getMax}>{this.state.maxButton}</button>
+            </div>
+          </div>
+
             <p className="card-text">Recomendamos tener más de 150 TRX para ejecutar las transacciones correctamente</p>
             <p className="card-text">Partner:<br />
             <strong>{this.state.partner}</strong></p>

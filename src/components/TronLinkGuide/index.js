@@ -1,6 +1,6 @@
 import React from 'react';
 
-import TronLinkLogo from './TronLinkLogo.png';
+import TronLinkLogo from './tronlink-logo.png';
 
 
 const WEBSTORE_URL = 'https://chrome.google.com/webstore/detail/ibnejdfjmmkpcnlpebklmnkoeoihofec/';
