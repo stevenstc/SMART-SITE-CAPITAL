@@ -1455,3 +1455,7 @@ table.table.borderless i {
 main#main {
   min-height: 25rem;
 }
+
+span#login-my-wallet {
+  padding-left: 0.3rem;
+}
