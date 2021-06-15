@@ -17,12 +17,14 @@ export default class CrowdFunding extends Component {
       porcentaje: "Cargando...",
       dias: "Cargando...",
       partner: "Cargando...",
-      balanceTRX: "Cargando..."
+      balanceTRX: "Cargando...",
+      maxButton:"Cargando..."
 
     };
 
     this.deposit = this.deposit.bind(this);
     this.estado = this.estado.bind(this);
+    this.getMax = this.getMax.bind(this);
   }
 
   async componentDidMount() {
@@ -43,8 +45,9 @@ export default class CrowdFunding extends Component {
 
     document.getElementById("contract").innerHTML = '<a href="https://tronscan.org/#/contract/'+contractAddress+'/code">Ver Contrato</a>';
 
-    document.getElementById("login").innerHTML = '<a href="https://tronscan.io/#/address/'+accountAddress+'" class="logibtn gradient-btn">'+texto+'</a>';
-
+    //document.getElementById("login").innerHTML = '<a href="https://tronscan.io/#/address/'+accountAddress+'" class="logibtn gradient-btn">'+texto+'</a>';
+    document.getElementById("login").href = `https://tronscan.io/#/address/${accountAddress}`;
+    document.getElementById("login-my-wallet").innerHTML = texto;
 
     var tronUSDT = await window.tronWeb;
     var contractUSDT = await tronUSDT.contract().at(cons.USDT);
@@ -138,7 +141,8 @@ export default class CrowdFunding extends Component {
       partner: partner,
       balanceSite: balancesite,
       balanceTRX: balanceTRX,
-      maxAlcanzado: parseInt(inversors.invested)/10**decimales <= MAX_DEPOSIT
+      maxAlcanzado: parseInt(inversors.invested)/10**decimales <= MAX_DEPOSIT,
+      maxButton:"Max"
     });
   }
 
@@ -277,6 +281,9 @@ export default class CrowdFunding extends Component {
 
   };
 
+  getMax() {
+    document.getElementById("amount").value = this.state.balance;
+  }
 
   render() {
 
@@ -288,10 +295,23 @@ export default class CrowdFunding extends Component {
       <div className="card wow bounceInUp text-center">
         <div className="card-body">
           <h5 className="card-title">Contrato V 1.0</h5>
-          <h6 className="card-text">
-            Retorno: <strong>{this.state.porcentaje}%</strong><br />
-            Tiempo: <strong>{this.state.dias} días</strong><br />
-          </h6>
+
+          <table className="table borderless">
+            <tbody>
+            <tr>
+              <td><i className="fa fa-check-circle-o text-success"></i>TASA E.A</td><td>{((((this.state.porcentaje)-100)*365)/(this.state.dias)).toFixed(2)}%</td>
+            </tr>
+            <tr>
+              <td><i className="fa fa-check-circle-o text-success"></i>RETORNO TOTAL</td><td>{this.state.porcentaje}%</td>
+            </tr>
+            <tr>
+              <td><i className="fa fa-check-circle-o text-success"></i>RECOMPENSA</td><td>{(this.state.porcentaje)-100}%</td>
+            </tr>
+            <tr>
+              <td><i className="fa fa-check-circle-o text-success"></i>Tiempo en días</td><td>{this.state.dias}</td>
+            </tr>
+            </tbody>
+          </table>
 
           <div className="form-group">Wallet
           <p className="card-text">
@@ -301,12 +321,19 @@ export default class CrowdFunding extends Component {
             SITE disponible: <strong>{this.state.balance}</strong><br />
             TRX: <strong>{this.state.balanceTRX}</strong><br />
           </p>
-            <input type="number" className="form-control mb-20 text-center" id="amount" placeholder={min}></input>
+
+          <div className="input-group mb-3">
+            <input id="amount" type="number" className="form-control mb-20 text-center" placeholder={min}></input>
+            <div className="input-group-append">
+              <button className="btn btn-outline-secondary" type="button" onClick={this.getMax}>{this.state.maxButton}</button>
+            </div>
+          </div>
+
             <p className="card-text">Recomendamos tener más de 150 TRX para ejecutar las transacciones correctamente</p>
             <p className="card-text">Partner:<br />
             <strong>{this.state.partner}</strong></p>
 
-            <div className="btn btn-light" onClick={() => this.deposit()}>{this.state.deposito}</div>
+            <div className="btn btn-lg btn-success" onClick={() => this.deposit()}>{this.state.deposito}</div>
 
           </div>
 

@@ -136,72 +136,73 @@ export default class Oficina extends Component {
 
       <div className="container">
 
-      <header style={{'textAlign': 'center'}} className="section-header">
-        <h3 className="white"><span style={{'fontWeight': 'bold'}}>
-        Mi Oficina:</span> <br></br>
-        <span style={{'fontSize': '11px'}}>{direccion}</span></h3><br></br>
-        <h3 className="white" style={{'fontWeight': 'bold'}}>Link de referido:</h3>
-        <h6 className="white" style={{'padding': '1.5em', 'fontSize': '11px'}}><a href={link}>{link}</a> <br /><br />
-        <CopyToClipboard text={link}>
-          <button type="button" className="btn btn-info">COPIAR</button>
-        </CopyToClipboard>
-        </h6>
-        <hr></hr>
+        <header style={{'textAlign': 'center'}} className="section-header">
+          <h3 className="white"><i className="fa fa-user mr-2" aria-hidden="true"></i><span style={{'fontWeight': 'bold'}}>
+          Mi Oficina:</span> <br></br>
+          <span style={{'fontSize': '11px'}}>{direccion}</span></h3><br></br>
+          <h3 className="white" style={{'fontWeight': 'bold'}}><i className="fa fa-users mr-2" aria-hidden="true"></i>Link de referido:</h3>
+          <h6 className="white" style={{'padding': '1.5em', 'fontSize': '11px'}}><a href={link}>{link}</a> <br /><br />
+          <CopyToClipboard text={link}>
+            <button type="button" className="btn btn-info">COPIAR</button>
+          </CopyToClipboard>
+          </h6>
+          <hr></hr>
 
-      </header>
+        </header>
 
-      <div className="row">
+        <div className="row">
 
-        <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-duration="1.4s">
-          <div className="box">
-            <div className="icon"><i className="ion-ios-analytics-outline" style={{color: '#ff689b'}}></i></div>
-            <h4 className="title"><a href="#services">{invested} SITE</a></h4>
-            <p className="description">Total invertido</p>
+          <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-duration="1.4s">
+            <div className="box">
+              <div className="icon"><i className="ion-ios-analytics-outline" style={{color: '#ff689b'}}></i></div>
+              <h4 className="title"><a href="#services">{invested} SITE</a></h4>
+              <p className="description">Total invertido</p>
+            </div>
           </div>
-        </div>
-        <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-duration="1.4s">
-          <div className="box">
-            <div className="icon"><i className="ion-ios-bookmarks-outline" style={{color: '#e9bf06'}}></i></div>
-            <h4 className="title"><a href="#services">{totalRef} SITE</a></h4>
-            <p className="description">Total ganancias por referidos</p>
+          <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-duration="1.4s">
+            <div className="box">
+              <div className="icon"><i className="ion-ios-bookmarks-outline" style={{color: '#e9bf06'}}></i></div>
+              <h4 className="title"><a href="#services">{totalRef} SITE</a></h4>
+              <p className="description">Total ganancias por referidos</p>
+            </div>
           </div>
-        </div>
 
-        <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
-          <div className="box">
-            <div className="icon"><i className="ion-ios-paper-outline" style={{color: '#3fcdc7'}}></i></div>
-            <p className="description">Mi balance</p>
-            <h4 className="title"><a href="#services">{my} SITE</a></h4>
+          <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
+            <div className="box">
+              <div className="icon"><i className="ion-ios-paper-outline" style={{color: '#3fcdc7'}}></i></div>
+              <p className="description">Mi balance</p>
+              <h4 className="title"><a href="#services">{my} SITE</a></h4>
 
+            </div>
           </div>
-        </div>
-        <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
-          <div className="box">
-            <div className="icon"><i className="ion-ios-paper-outline" style={{color: '#3fcdc7'}}></i></div>
-            <p className="description">Balance por referidos</p>
-            <h4 className="title"><a href="#services"> {balanceRef} SITE</a></h4>
+          <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
+            <div className="box">
+              <div className="icon"><i className="ion-ios-paper-outline" style={{color: '#3fcdc7'}}></i></div>
+              <p className="description">Balance por referidos</p>
+              <h4 className="title"><a href="#services"> {balanceRef} SITE</a></h4>
 
+            </div>
           </div>
-        </div>
 
-        <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
-          <div className="box">
-            <div className="icon"><i className="ion-ios-speedometer-outline" style={{color:'#41cf2e'}}></i></div>
-            <h4 className="title"><a href="#services">Disponible</a></h4>
-            <p className="description">{available} SITE <button type="button" className="btn btn-info" onClick={() => this.withdraw()}>Retirar</button></p>
+          <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
+            <div className="box">
+              <div className="icon"><i className="ion-ios-speedometer-outline" style={{color:'#41cf2e'}}></i></div>
+              <h4 className="title"><a href="#services">Disponible</a></h4>
+              <p className="description">{available} SITE</p>
+              <button type="button" className="btn btn-info d-block text-center mx-auto mt-1" onClick={() => this.withdraw()}>Retirar</button>
+            </div>
           </div>
-        </div>
-        <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1.4s">
-          <div className="box">
-            <div className="icon"><i className="ion-ios-clock-outline" style={{color: '#4680ff'}}></i></div>
-            <h4 className="title"><a href="#services">Retirado</a></h4>
-            <p className="description">{withdrawn} SITE</p>
+          <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1.4s">
+            <div className="box">
+              <div className="icon"><i className="ion-ios-clock-outline" style={{color: '#4680ff'}}></i></div>
+              <h4 className="title"><a href="#services">Retirado</a></h4>
+              <p className="description">{withdrawn} SITE</p>
+            </div>
           </div>
+
         </div>
 
       </div>
-
-    </div>
 
     );
   }

@@ -45,22 +45,22 @@ export default class Datos extends Component {
     return (
       <div className="row counters">
 
-          <div className="col-lg-4 col-12 text-center">
-            <span data-toggle="counter-up">{totalInvestors}</span>
-            <p>Inversores Globales</p>
-          </div>
-
-          <div className="col-lg-4 col-12 text-center">
-            <span data-toggle="counter-up">{totalInvested} SITE</span>
-            <p>Invertido en Plataforma</p>
-          </div>
-
-          <div className="col-lg-4 col-12 text-center">
-            <span data-toggle="counter-up">{totalRefRewards} SITE</span>
-            <p>Total Recompensas por Referidos</p>
-          </div>
-
+        <div className="col-lg-4 col-12 text-center">
+          <span data-toggle="counter-up">{totalInvestors}</span>
+          <p>Inversores Globales</p>
         </div>
+
+        <div className="col-lg-4 col-12 text-center">
+          <span data-toggle="counter-up">{totalInvested} SITE</span>
+          <p>Invertido en Plataforma</p>
+        </div>
+
+        <div className="col-lg-4 col-12 text-center">
+          <span data-toggle="counter-up">{totalRefRewards} SITE</span>
+          <p>Total Recompensas por Referidos</p>
+        </div>
+
+      </div>
     );
   }
 }
