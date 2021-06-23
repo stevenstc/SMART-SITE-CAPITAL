@@ -42,6 +42,7 @@ export default class Datos extends Component {
   render() {
     const { totalInvestors, totalInvested, totalRefRewards } = this.state;
 
+
     return (
       <div className="row counters">
 
@@ -51,12 +52,12 @@ export default class Datos extends Component {
         </div>
 
         <div className="col-lg-4 col-12 text-center">
-          <span data-toggle="counter-up">{totalInvested} SITE</span>
+          <span data-toggle="counter-up">{totalInvested.toFixed(2)} SITE</span>
           <p>Invertido en Plataforma</p>
         </div>
 
         <div className="col-lg-4 col-12 text-center">
-          <span data-toggle="counter-up">{totalRefRewards} SITE</span>
+          <span data-toggle="counter-up">{totalRefRewards.toFixed(2)} SITE</span>
           <p>Total Recompensas por Referidos</p>
         </div>
 
