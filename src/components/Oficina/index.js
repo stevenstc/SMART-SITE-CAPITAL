@@ -205,7 +205,7 @@ export default class Oficina extends Component {
             <div className="box">
               <div className="icon"><i className="ion-ios-speedometer-outline" style={{color:'#41cf2e'}}></i></div>
               <h4 className="title"><a href="#services">Disponible</a></h4>
-              <p className="description">{available} SITE</p> (${(this.state.available*this.state.precioSITE).toFixed(2)})
+              <p className="description">{available} SITE</p> (${(available*this.state.precioSITE).toFixed(2)})
               <button type="button" className="btn btn-info d-block text-center mx-auto mt-1" onClick={() => this.withdraw()}>Retirar</button>
             </div>
           </div>
