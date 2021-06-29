@@ -18,19 +18,34 @@ export default class CrowdFunding extends Component {
       dias: "Cargando...",
       partner: "Cargando...",
       balanceTRX: "Cargando...",
-      maxButton:"Cargando..."
+      balanceUSDT: "Cargando...",
+      maxButton:"Cargando...",
+      precioSITE: 0
 
     };
 
     this.deposit = this.deposit.bind(this);
     this.estado = this.estado.bind(this);
     this.getMax = this.getMax.bind(this);
+
+    this.rateSITE = this.rateSITE.bind(this);
   }
 
   async componentDidMount() {
     await Utils.setContract(window.tronWeb, contractAddress);
     this.estado();
     setInterval(() => this.estado(),3*1000);
+  };
+
+  async rateSITE(){
+    var proxyUrl = cons.proxy;
+    var apiUrl = 'https://servicios-pesodigital.herokuapp.com/api/v1/servicio/precio/SITE';
+    const response = await fetch(proxyUrl+apiUrl)
+    .catch(error =>{console.error(error)})
+    const json = await response.json();
+
+    return json.Data.precio;
+
   };
 
   async estado(){
@@ -43,16 +58,15 @@ export default class CrowdFunding extends Component {
 
     var texto = inicio+"..."+fin;
 
-    document.getElementById("contract").innerHTML = '<a href="https://tronscan.org/#/contract/'+contractAddress+'/code">Ver Contrato</a>';
+    document.getElementById("contract").innerHTML = '<a href="https://tronscan.org/#/contract/'+contractAddress+'/code">Contrato V 1.0</a>';
 
     //document.getElementById("login").innerHTML = '<a href="https://tronscan.io/#/address/'+accountAddress+'" class="logibtn gradient-btn">'+texto+'</a>';
     document.getElementById("login").href = `https://tronscan.io/#/address/${accountAddress}`;
     document.getElementById("login-my-wallet").innerHTML = texto;
 
-    var tronUSDT = await window.tronWeb;
-    var contractUSDT = await tronUSDT.contract().at(cons.USDT);
+    var contractSITE = await window.tronWeb.contract().at(cons.USDT);
 
-    var aprovado = await contractUSDT.allowance(accountAddress,contractAddress).call();
+    var aprovado = await contractSITE.allowance(accountAddress,contractAddress).call();
     aprovado = parseInt(aprovado._hex);
 
     if (aprovado > 0) {
@@ -62,9 +76,9 @@ export default class CrowdFunding extends Component {
       aprovado = "Registrar";
     }
 
-    var decimales = await contractUSDT.decimals().call();
+    var decimales = await contractSITE.decimals().call();
 
-    var balance = await contractUSDT.balanceOf(accountAddress).call();
+    var balance = await contractSITE.balanceOf(accountAddress).call();
     balance = parseInt(balance._hex)/10**decimales;
 
     var MIN_DEPOSIT = await Utils.contract.MIN_DEPOSIT().call();
@@ -123,11 +137,19 @@ export default class CrowdFunding extends Component {
 
     porcentaje = parseInt(porcentaje);
 
-    var balancesite = await contractUSDT.balanceOf(accountAddress).call();
+    var balancesite = await contractSITE.balanceOf(accountAddress).call();
     balancesite = parseInt(balancesite._hex);
 
     var balanceTRX = await window.tronWeb.trx.getBalance();
     balanceTRX = balanceTRX/10**6;
+
+    var contractUSDT = await window.tronWeb.contract().at("TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t");
+
+    var balanceUSDT = await contractUSDT.balanceOf(accountAddress).call();
+
+    balanceUSDT = parseInt(balanceUSDT)/10**6;
+
+    var precioSITE = await this.rateSITE();
 
     this.setState({
       deposito: aprovado,
@@ -141,6 +163,8 @@ export default class CrowdFunding extends Component {
       partner: partner,
       balanceSite: balancesite,
       balanceTRX: balanceTRX,
+      balanceUSDT: balanceUSDT,
+      precioSITE: precioSITE,
       maxAlcanzado: parseInt(inversors.invested)/10**decimales <= MAX_DEPOSIT,
       maxButton:"Max"
     });
@@ -291,10 +315,12 @@ export default class CrowdFunding extends Component {
 
     min = "Minimo. "+min+" SITE";
 
+
+
     return (
       <div className="card wow bounceInUp text-center">
         <div className="card-body">
-          <h5 className="card-title">Contrato V 1.0</h5>
+          <h5 className="card-title" id="contract" >Contrato V 1.0</h5>
 
           <table className="table borderless">
             <tbody>
@@ -317,9 +343,11 @@ export default class CrowdFunding extends Component {
           <p className="card-text">
             <strong>{this.state.accountAddress}</strong><br />
           </p>
-          <p className="card-text">
-            SITE disponible: <strong>{this.state.balance}</strong><br />
-            TRX: <strong>{this.state.balanceTRX}</strong><br />
+          <p className="card-text ">
+        
+            SITE: <strong>{this.state.balance}</strong> (${(this.state.balance*this.state.precioSITE).toFixed(2)})<br />
+            TRX: <strong>{(this.state.balanceTRX*1).toFixed(6)}</strong><br />
+            USDT: <strong>{(this.state.balanceUSDT*1).toFixed(6)}</strong><br />
           </p>
 
           <div className="input-group mb-3">
