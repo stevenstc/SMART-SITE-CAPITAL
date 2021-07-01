@@ -19,7 +19,9 @@ export default class Oficina extends Component {
       paidAt: 0,
       my: 0,
       withdrawn: 0,
-      precioSITE: 0
+      precioSITE: 0,
+      valueSITE: 0,
+      valueUSDT: 0
 
     };
 
@@ -28,6 +30,16 @@ export default class Oficina extends Component {
     this.withdraw = this.withdraw.bind(this);
 
     this.rateSITE = this.rateSITE.bind(this);
+    this.handleChangeSITE = this.handleChangeSITE.bind(this);
+    this.handleChangeUSDT = this.handleChangeUSDT.bind(this);
+  }
+
+  handleChangeSITE(event) {
+    this.setState({valueSITE: event.target.value});
+  }
+
+  handleChangeUSDT(event) {
+    this.setState({valueUSDT: event.target.value});
   }
 
   async componentDidMount() {
@@ -149,6 +161,9 @@ export default class Oficina extends Component {
     my = my.toFixed(8);
     my = parseFloat(my);
 
+    var imageUSDT = "https://coin.top/production/logo/usdtlogo.png";
+    var imageSITE = "https://coin.top/production/upload/logo/TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz.png";
+
     return (
 
       <div className="container">
@@ -169,14 +184,14 @@ export default class Oficina extends Component {
 
         <div className="row text-center">
 
-          <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-duration="1.4s">
+          <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-duration="1s">
             <div className="box">
               <div className="icon"><i className="ion-ios-analytics-outline" style={{color: '#ff689b'}}></i></div>
               <h4 className="title"><a href="#services">{invested} SITE</a></h4> (${(this.state.invested*this.state.precioSITE).toFixed(2)})
               <p className="description">Total invertido</p>
             </div>
           </div>
-          <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-duration="1.4s">
+          <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-duration="1s">
             <div className="box">
               <div className="icon"><i className="ion-ios-bookmarks-outline" style={{color: '#e9bf06'}}></i></div>
               <h4 className="title"><a href="#services">{totalRef} SITE</a></h4> (${(this.state.totalRef*this.state.precioSITE).toFixed(2)})
@@ -184,7 +199,7 @@ export default class Oficina extends Component {
             </div>
           </div>
 
-          <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
+          <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1s">
             <div className="box">
               <div className="icon"><i className="ion-ios-paper-outline" style={{color: '#3fcdc7'}}></i></div>
               <p className="description">Mi balance</p>
@@ -192,7 +207,7 @@ export default class Oficina extends Component {
 
             </div>
           </div>
-          <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
+          <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1s">
             <div className="box">
               <div className="icon"><i className="ion-ios-paper-outline" style={{color: '#3fcdc7'}}></i></div>
               <p className="description">Balance por referidos</p>
@@ -201,7 +216,7 @@ export default class Oficina extends Component {
             </div>
           </div>
 
-          <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1.4s">
+          <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-delay="0.1s" data-wow-duration="1s">
             <div className="box">
               <div className="icon"><i className="ion-ios-speedometer-outline" style={{color:'#41cf2e'}}></i></div>
               <h4 className="title"><a href="#services">Disponible</a></h4>
@@ -209,11 +224,47 @@ export default class Oficina extends Component {
               <button type="button" className="btn btn-info d-block text-center mx-auto mt-1" onClick={() => this.withdraw()}>Retirar</button>
             </div>
           </div>
-          <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1.4s">
+          <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1s">
             <div className="box">
               <div className="icon"><i className="ion-ios-clock-outline" style={{color: '#4680ff'}}></i></div>
               <h4 className="title"><a href="#services">Retirado</a></h4>
               <p className="description">{withdrawn} SITE</p> (${(this.state.withdrawn*this.state.precioSITE).toFixed(2)})
+            </div>
+          </div>
+
+        </div>
+
+
+        <div className="row text-center">
+
+          <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-duration="1s">
+            <div className="box">
+
+            <img src={imageSITE} alt="usdt logo trx" width="50" />
+            
+              <input id="amountSITE" type="number" className="form-control mb-20 text-center" value={this.state.valueSITE} onChange={this.handleChangeSITE}  ></input>
+              <div className="input-group-append">
+              
+            </div>
+              <h4 className="title"> {this.state.valueSITE} SITE <br />
+              =<br />
+              {(this.state.valueSITE*this.state.precioSITE).toFixed(2)} USDT
+
+
+              </h4> 
+
+            </div>
+          </div>
+          <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-duration="1s">
+            <div className="box">
+              <img src={imageUSDT} alt="usdt logo trx" width="50" />
+              <input id="amountSITE" type="number" className="form-control mb-20 text-center" value={this.state.valueUSDT} onChange={this.handleChangeUSDT}  ></input>
+              <h4 className="title"> {this.state.valueUSDT} USDT<br />
+              =<br />
+              {(this.state.valueUSDT/this.state.precioSITE).toFixed(8)} SITE
+
+
+              </h4> 
             </div>
           </div>
 

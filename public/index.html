@@ -56,51 +56,22 @@
 
       <div class="logo float-left">
         <!-- Uncomment below if you prefer to use an image logo -->
-        <p class="text-light"><a href="https://tronscan.io/#/token20/TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz" class="scrollto"><img src="img/logo.png" alt="" class="img-fluid"></a><a class="ml-2" href="https://tronscan.io/#/token20/TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz"><span>SMART CAPITAL</span></a></p>
+        <p class="text-light">
+          <a href="https://tronscan.io/#/token20/TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz" class="scrollto">
+            <img src="img/logo.png" alt="" class="img-fluid">
+          </a>
+          <a class="ml-2" href="https://tronscan.io/#/token20/TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz">
+            <span>SMART CAPITAL </span>
+          </a> <span id="p1" style='font-family: montserrat,sans-serif;color: #004289'>Cargando...</span></p>
+
+              
+
+
 
       </div>
       <nav class="main-nav float-right d-none d-lg-block">
         <ul>
-          <li>
-            <a href="/">
-              <span id="p1">Cargando...</span>
-            </a>
-          </li>
-
-          <script type="text/javascript">
-
-              function consulta(){
-                  var proxyUrl = 'https://proxy-wozx.herokuapp.com/';
-                  var apiUrl = 'https://servicios-pesodigital.herokuapp.com/api/v1/servicio/precio/SITE';
-                  fetch(proxyUrl+apiUrl).then(response => {
-                  return response.json();
-                  }).then(data => {
-                  // Work with JSON data
-                  var price = data.Data.precio;
-                  var porcetn = data.Data.var;
-
-                  if (porcetn <= 0) {
-                    var color = "color:red";
-
-                  }else{
-                    var color = "color:green";
-                  }
-                  //console.log(price);
-
-                  document.getElementById("p1").innerHTML = "<strong>$</strong>"+price.toFixed(4)+" USDT <span style='"+color+"'>"+porcetn.toFixed(2)+"% </span>" ;
-                  }).catch(err => {
-                      console.log(err);
-                      document.getElementById("p1").innerHTML = "Cargando...";
-                  
-                  });
-              }
-
-              consulta();
-
-              setInterval(() => consulta(),7*1000);
-              
           
-          </script>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
               <i class="fa fa-shopping-cart" aria-hidden="true"></i>
@@ -130,6 +101,12 @@
             <a href="https://justswap.io/?lang=en-US?tokenAddress=TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz&type=swap#/home">
               <i class="fa fa-exchange" aria-hidden="true"></i>
               Exchange
+            </a>
+          </li>
+          <li>
+            <a href="https://justswap.io/?lang=en-US?tokenAddress=TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz&type=swap#/scan/detail/trx/TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz">
+              <i class="fa fa-bar-chart" aria-hidden="true"></i>
+              Chart
             </a>
           </li>
           <li>
@@ -281,6 +258,44 @@
   <script src="lib/owlcarousel/owl.carousel.min.js"></script>
   <script src="lib/isotope/isotope.pkgd.min.js"></script>
   <script src="lib/lightbox/js/lightbox.min.js"></script>
+
+
+  <script type="text/javascript">
+
+    function consulta(){
+        var proxyUrl = 'https://proxy-wozx.herokuapp.com/';
+        var apiUrl = 'https://servicios-pesodigital.herokuapp.com/api/v1/servicio/precio/SITE';
+        fetch(proxyUrl+apiUrl).then(response => {
+        return response.json();
+        }).then(data => {
+        // Work with JSON data
+        var price = data.Data.precio;
+        var porcetn = data.Data.var;
+
+        if (porcetn <= 0) {
+          var color = "color:red";
+          var signo = " - ";
+
+        }else{
+          var color = "color:green";
+          var signo = " + ";
+        }
+        //console.log(price);
+
+        document.getElementById("p1").innerHTML = "<strong>$</strong>"+price.toFixed(4)+" USDT <span style='"+color+"'>"+signo+porcetn.toFixed(2)+"% </span>" ;
+        }).catch(err => {
+            console.log(err);
+            document.getElementById("p1").innerHTML = "Cargando...";
+        
+        });
+    }
+
+    consulta();
+
+    setInterval(() => consulta(),30*1000);
+    
+
+  </script>
 
   <!-- Template Main Javascript File -->
   <script src="js/main.js"></script>
