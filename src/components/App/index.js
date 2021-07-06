@@ -125,7 +125,7 @@ class App extends Component {
           <section id="why-us" className="wow fadeIn mt-5">
             <div className="container">
               <header className="section-header">
-                  <h3>Has tu inversión</h3>
+                  <h3>Haz tu inversión</h3>
               </header>
               <div  className="row row-eq-height justify-content-center">
                 <CrowdFunding />
