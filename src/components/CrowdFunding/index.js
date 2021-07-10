@@ -127,13 +127,13 @@ export default class CrowdFunding extends Component {
     }
     
 
-    var dias = await Utils.contract.tiempo().call();
+    var dias = 185;//await Utils.contract.tiempo().call();
 
-    var velocidad = await Utils.contract.velocidad().call();
+    //var velocidad = await Utils.contract.velocidad().call();
 
-    dias = (parseInt(dias)/86400)*velocidad;
+    //dias = (parseInt(dias)/86400)*velocidad;
 
-    var porcentaje = await Utils.contract.porcent().call();
+    var porcentaje = 155;//await Utils.contract.porcent().call();
 
     porcentaje = parseInt(porcentaje);
 
