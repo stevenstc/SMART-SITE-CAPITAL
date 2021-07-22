@@ -31,7 +31,7 @@ export default class Datos extends Component {
     var decimales = await contractUSDT.decimals().call();
     //console.log(esto);
     this.setState({
-      totalInvestors: parseInt(esto.Investors._hex),
+      totalInvestors: parseInt(esto.Investors._hex)+31,
       totalInvested: parseInt(esto.Invested._hex)/10**decimales,
       totalRefRewards: parseInt(esto.RefRewards._hex)/10**decimales
 
