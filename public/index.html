@@ -263,8 +263,8 @@
   <script type="text/javascript">
 
     function consulta(){
-        var proxyUrl = 'https://proxy-wozx.herokuapp.com/';
-        var apiUrl = 'https://servicios-pesodigital.herokuapp.com/api/v1/servicio/precio/SITE';
+        var proxyUrl = 'https://proxy-sites.herokuapp.com/';
+        var apiUrl = 'https://precio-site.herokuapp.com/api/v1/servicio/precio/SITE';
         fetch(proxyUrl+apiUrl).then(response => {
         return response.json();
         }).then(data => {

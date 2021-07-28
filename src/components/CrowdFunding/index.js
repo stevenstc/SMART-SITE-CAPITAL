@@ -39,7 +39,7 @@ export default class CrowdFunding extends Component {
 
   async rateSITE(){
     var proxyUrl = cons.proxy;
-    var apiUrl = 'https://servicios-pesodigital.herokuapp.com/api/v1/servicio/precio/SITE';
+    var apiUrl = cons.PRE;
     const response = await fetch(proxyUrl+apiUrl)
     .catch(error =>{console.error(error)})
     const json = await response.json();
