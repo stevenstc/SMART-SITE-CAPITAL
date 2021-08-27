@@ -16,8 +16,9 @@ const openTronLink = () => {
 };
 
 const TronLinkGuide = props => {
-    const {
-        installed = false
+    var {
+        installed = false,
+        url = "javascript:location.reload()"
     } = props;
 
     if(!installed) {
@@ -36,7 +37,7 @@ const TronLinkGuide = props => {
     }
 
     return (
-    <> <a href='/'>
+    <> <a href={url}>
 
         <div className='tronLink row' style={{'padding': '3em','color': 'black','textDecoration': 'none'}}>
 

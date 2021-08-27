@@ -4,6 +4,7 @@ import TronWeb from "tronweb";
 import Utils from "../../utils";
 import Home from "../v1Home";
 import V2Home from "../v2Home";
+import V3Home from "../v3Home";
 import TronLinkGuide from "../TronLinkGuide";
 
 
@@ -127,11 +128,16 @@ class App extends Component {
       );
 
     switch (getString) {
-      case "staking":
-        return(<V2Home />);
+      case "staking": 
+      case "stakingv2":
+      case "stakingV2": return(<V2Home />);
+
+      case "sub": 
+      case "stakingSITE": 
+      case "stakingv3": 
+      case "stakingV3": return(<V3Home />);
     
-      default:
-        return(<Home />);
+      default:  return(<Home />);
     }
 
 

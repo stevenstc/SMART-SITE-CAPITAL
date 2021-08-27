@@ -9,7 +9,7 @@ const SC = "TTXotPkx5YypmMjgzvGb9496XmrCxbNNaZ";// direccion del contrato
 
 const SC2 = "TPd9Xhoas9rWYsihNJFuShNnNbqd3vYbsV";// direccion del contrato V2
 
-const SC3 = "TTXotPkx5YypmMjgzvGb9496XmrCxbNNaZ";// direccion del contrato V3
+const SC3 = "TREf1XbM2n6tVRJnHGJoTs7dMfMitxjWic";// direccion del contrato V3
 
 const USDT = "TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz";// USDT contract or token trc20 
 

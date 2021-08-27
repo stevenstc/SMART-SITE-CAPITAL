@@ -8,11 +8,13 @@ import "./Ownable.sol";
 contract BinarySystem is Ownable{
   using SafeMath for uint256;
 
-  TRC20_Interface USDT_Contract;
+  address token = 0x66D6E5bA1544BbB5b10afE9e0e45F6E3C297838A;
 
-  TRC20_Interface SALIDA_Contract;
+  TRC20_Interface USDT_Contract = TRC20_Interface(token);
 
-  TRC20_Interface OTRO_Contract;
+  TRC20_Interface SALIDA_Contract = TRC20_Interface(token);
+
+  TRC20_Interface OTRO_Contract = TRC20_Interface(token);
 
   struct Hand {
     uint256 lReclamados;
@@ -42,11 +44,11 @@ contract BinarySystem is Ownable{
     Hand hands;
   }
 
-  uint256 public MIN_RETIRO = 1*10**6;
+  uint256 public MIN_RETIRO = 100*10**8;
   uint256 public MIN_RETIRO_interno;
 
-  address public tokenPricipal;
-  address public tokenPago;
+  address public tokenPricipal = token;
+  address public tokenPago = token;
 
   uint256 public rate = 1000000;
   uint256 public rate2 = 1000000;
@@ -56,8 +58,8 @@ contract BinarySystem is Ownable{
 
   uint256[] public primervez = [100, 0, 0, 0, 0];
   uint256[] public porcientos = [0, 0, 0, 0, 0];
-  uint256[] public plans = [0, 25*10**6, 50*10**6, 100*10**6, 300*10**6, 500*10**6, 1000*10**6, 2000*10**6, 5000*10**6, 100000*10**6, 1000000*10**6, 2000000*10**6, 3000000*10**6, 5000000*10**6, 1000000000*10**6, 2000000000*10**6];
-  bool[] public active = [false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true];
+  uint256[] public plans = [0, 50*10**8, 100*10**8, 200*10**8, 500*10**8, 1000*10**8, 2000*10**8, 5000*10**8, 10000*10**8, 20000*10**8, 50000*10**8, 100000*10**8, 200000*10**8, 500000*10**8, 1000000*10**8, 2000000*10**8];
+  bool[] public active = [false, false, false, false, false, false, false, true, true, true, true, true, true, true, false, false];
 
   uint256 public basePorcientos = 1000;
 
@@ -75,7 +77,7 @@ contract BinarySystem is Ownable{
   uint256 public descuento = 100;
   uint256 public personas = 2;
 
-  uint256 public precioRegistro = 5 * 10**6;
+  uint256 public precioRegistro = 50 * 10**8;
 
   uint256 public totalInvestors = 1;
   uint256 public totalInvested;
