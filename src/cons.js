@@ -7,6 +7,10 @@ const WS = "T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb";//T9yD14Nj9j7xAB4dbGeiX9h8unkKHx
 
 const SC = "TTXotPkx5YypmMjgzvGb9496XmrCxbNNaZ";// direccion del contrato
 
-const USDT = "TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz";// USDT contract or token trc20
+const SC2 = "TPd9Xhoas9rWYsihNJFuShNnNbqd3vYbsV";// direccion del contrato V2
 
-export default {proxy, PRU, WS,  SC, USDT, PRE};
+const SC3 = "TTXotPkx5YypmMjgzvGb9496XmrCxbNNaZ";// direccion del contrato V3
+
+const USDT = "TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz";// USDT contract or token trc20 
+
+export default {proxy, PRU, WS,  SC, SC2, SC3, USDT, PRE};

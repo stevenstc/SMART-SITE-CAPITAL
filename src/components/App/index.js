@@ -2,9 +2,8 @@ import React, { Component } from "react";
 import TronWeb from "tronweb";
 
 import Utils from "../../utils";
-import CrowdFunding from "../CrowdFunding";
-import Datos from "../Datos";
-import Oficina from "../Oficina";
+import Home from "../v1Home";
+import V2Home from "../v2Home";
 import TronLinkGuide from "../TronLinkGuide";
 
 
@@ -102,6 +101,15 @@ class App extends Component {
   }
 
   render() {
+    var getString = false;
+    var loc = document.location.href;
+    //console.log(loc);
+    if(loc.indexOf('?')>0){
+              
+      getString = loc.split('?')[1];
+      getString = getString.split('#')[0];
+    }
+
     if (!this.state.tronWeb.installed) return (
       <>
         <div className="container">
@@ -118,30 +126,14 @@ class App extends Component {
       </>
       );
 
-    return (
+    switch (getString) {
+      case "staking":
+        return(<V2Home />);
+    
+      default:
+        return(<Home />);
+    }
 
-      <div>
-        <div>
-          <section id="why-us" className="wow fadeIn mt-5">
-            <div className="container">
-              <header className="section-header">
-                  <h3>Haz tu inversión</h3>
-              </header>
-              <div  className="row row-eq-height justify-content-center">
-                <CrowdFunding />
-              </div>
-              <div >
-                <Datos />
-              </div>
-            </div>
-          </section>
-
-          <section id="services" className="section-bg">
-            <Oficina />
-          </section>
-        </div>
-      </div>
-    );
 
   }
 }
