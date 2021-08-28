@@ -18,7 +18,7 @@ const openTronLink = () => {
 const TronLinkGuide = props => {
     var {
         installed = false,
-        url = "javascript:location.reload()"
+        url = "/"
     } = props;
 
     if(!installed) {

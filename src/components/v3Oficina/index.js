@@ -207,7 +207,7 @@ export default class Oficina extends Component {
     var available = (balanceRef+my+almacen);
 
     if(directos >= 2 && available < valorPlan ){
-      bonusBinario.amount = parseInt(bonusBinario.amount._hex)/10**6;
+      bonusBinario.amount = parseInt(bonusBinario.amount._hex)/10**8;
     }else{
       bonusBinario.amount = 0;
     }
@@ -222,19 +222,19 @@ export default class Oficina extends Component {
       personasIzquierda: parseInt(puntos.pLeft._hex),
       personasDerecha: parseInt(puntos.pRigth._hex),
 
-      puntosIzquierda: parseInt(puntos.left._hex)/10**6,
-      puntosDerecha: parseInt(puntos.rigth._hex)/10**6,
+      puntosIzquierda: parseInt(puntos.left._hex)/10**8,
+      puntosDerecha: parseInt(puntos.rigth._hex)/10**8,
 
       bonusBinario: bonusBinario.amount,
 
-      puntosEfectivosIzquierda: parseInt(bonusBinario.left._hex)/10**6,
-      puntosEfectivosDerecha: parseInt(bonusBinario.rigth._hex)/10**6,
+      puntosEfectivosIzquierda: parseInt(bonusBinario.left._hex)/10**8,
+      puntosEfectivosDerecha: parseInt(bonusBinario.rigth._hex)/10**8,
 
-      puntosReclamadosIzquierda: parseInt(brazoIzquierdo.reclamados._hex)/10**6,
-      puntosReclamadosDerecha: parseInt(brazoDerecho.reclamados._hex)/10**6,
+      puntosReclamadosIzquierda: parseInt(brazoIzquierdo.reclamados._hex)/10**8,
+      puntosReclamadosDerecha: parseInt(brazoDerecho.reclamados._hex)/10**8,
 
-      puntosLostIzquierda: parseInt(brazoIzquierdo.lost._hex)/10**6,
-      puntosLostDerecha: parseInt(brazoDerecho.lost._hex)/10**6,
+      puntosLostIzquierda: parseInt(brazoIzquierdo.lost._hex)/10**8,
+      puntosLostDerecha: parseInt(brazoDerecho.lost._hex)/10**8,
     });
 
   };

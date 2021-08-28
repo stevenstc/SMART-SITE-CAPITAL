@@ -119,11 +119,11 @@ export default class CrowdFunding extends Component {
       for (let index = 0; index < top; index++) {
         var precio = await Utils.contract.plans(index).call();
         var active = await Utils.contract.active(index).call();
-        precio = parseInt(precio)/10**6;
+        precio = parseInt(precio)/10**8;
         if( precio > 0 && active && inversors.registered){
           datos = {};
           datos.value = index;
-          datos.label = precio+' USDT';
+          datos.label = precio+' SITE';
           options[index] = datos;
 
         }
@@ -310,8 +310,11 @@ export default class CrowdFunding extends Component {
     var contractUSDT = await tronUSDT.contract().at(direccioncontract);
     var aprovado = await contractUSDT.allowance(accountAddress,contractAddress).call();
 
-    aprovado = parseInt(aprovado.remaining._hex);
-    //aprovado = parseInt(aprovado._hex);
+    if(aprovado.remaining){
+      aprovado = parseInt(aprovado.remaining._hex);
+    }else{
+      aprovado = parseInt(aprovado._hex);
+    }
 
     if (aprovado <= 0 && balanceTRX >= 50){
       await contractUSDT.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send();

@@ -102,13 +102,15 @@ class App extends Component {
   }
 
   render() {
-    var getString = false;
+    var getString = "/";
     var loc = document.location.href;
+    var interrogant = "";
     //console.log(loc);
     if(loc.indexOf('?')>0){
               
       getString = loc.split('?')[1];
       getString = getString.split('#')[0];
+      interrogant = "?";
     }
 
     if (!this.state.tronWeb.installed) return (
@@ -122,7 +124,7 @@ class App extends Component {
     if (!this.state.tronWeb.loggedIn) return (
       <>
         <div className="container">
-          <TronLinkGuide installed />
+          <TronLinkGuide installed url={interrogant+getString}/>
         </div>
       </>
       );
