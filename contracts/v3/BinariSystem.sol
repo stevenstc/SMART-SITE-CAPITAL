@@ -59,7 +59,7 @@ contract BinarySystem is Ownable{
   uint256[] public primervez = [100, 0, 0, 0, 0];
   uint256[] public porcientos = [0, 0, 0, 0, 0];
   uint256[] public plans = [0, 50*10**8, 100*10**8, 200*10**8, 500*10**8, 1000*10**8, 2000*10**8, 5000*10**8, 10000*10**8, 20000*10**8, 50000*10**8, 100000*10**8, 200000*10**8, 500000*10**8, 1000000*10**8, 2000000*10**8];
-  bool[] public active = [false, false, false, false, false, false, true, true, true, true, true, true, true, true, false, false];
+  bool[] public active = [false, false, false, false, false, true, true, true, true, true, true, true, true, true, false, false];
 
   uint256 public basePorcientos = 1000;
 

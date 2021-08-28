@@ -314,7 +314,7 @@ export default class CrowdFunding extends Component {
         
         ){
 
-          var loc = document.location.href;
+          
           var sponsor = cons.WS;
           var hand = 0;
           var investors = await Utils.contract.investors(accountAddress).call();
@@ -325,6 +325,7 @@ export default class CrowdFunding extends Component {
 
           }else{
 
+            var loc = document.location.href;
             loc = loc.split('?');
           if(loc.length > 2){
               var getString = loc[2];
