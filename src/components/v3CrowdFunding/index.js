@@ -215,7 +215,7 @@ export default class CrowdFunding extends Component {
 
       var loc = document.location.href;
       loc = loc.split('?');
-      if(loc.length > 1){
+      if(loc.length > 2){
           var getString = loc[2];
           var GET = getString.split('&');
           var get = {};

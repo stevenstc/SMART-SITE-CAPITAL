@@ -195,7 +195,7 @@ export default class Oficina extends Component {
 
     var {balanceRef, my, almacen, directos, valorPlan } = this.state;
 
-    let direccion = await window.tronWeb.trx.getAccount();
+    let direccion = window.tronWeb.defaultAddress.base58;
 
     //Personas y puntos totales
     let puntos = await Utils.contract.personasBinary(direccion.address).call();
