@@ -24,7 +24,7 @@ const TronLinkGuide = props => {
     var loc = document.location.href;
       loc = loc.split('?');
       var getString = "";
-      if(loc.length > 1){
+      if(loc.length > 2){
           getString = "?"+loc[2];
       }
 

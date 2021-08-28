@@ -99,8 +99,7 @@ export default class Oficina extends Component {
       if(loc.indexOf('#')>0){
         loc = loc.split('#')[0];
       }
-      let mydireccion = await window.tronWeb.trx.getAccount();
-      mydireccion = window.tronWeb.address.fromHex(mydireccion.address)
+      let mydireccion = window.tronWeb.defaultAddress.base58;
       mydireccion = await Utils.contract.addressToId(mydireccion).call();
       mydireccion = loc+this.props.url+'?ref='+mydireccion;
       var link = mydireccion+"&hand=izq";
@@ -120,9 +119,9 @@ export default class Oficina extends Component {
 
   async Investors() {
 
-    let direccion = await window.tronWeb.trx.getAccount();
-    let usuario = await Utils.contract.investors(direccion.address).call();
-    usuario.withdrawable = await Utils.contract.withdrawable(direccion.address).call();
+    let direccion = window.tronWeb.defaultAddress.base58;
+    let usuario = await Utils.contract.investors(direccion).call();
+    usuario.withdrawable = await Utils.contract.withdrawable(direccion).call();
     
     var tronUSDT = await window.tronWeb;
     var direccioncontract = await Utils.contract.tokenPricipal().call();
@@ -162,7 +161,7 @@ export default class Oficina extends Component {
     fecha = ""+fecha;
 
     this.setState({
-      direccion: window.tronWeb.address.fromHex(direccion.address),
+      direccion: direccion,
       registered: usuario.registered,
       balanceRef: usuario.balanceRef/10**decimales,
       totalRef: usuario.totalRef/10**decimales,
@@ -198,10 +197,10 @@ export default class Oficina extends Component {
     let direccion = window.tronWeb.defaultAddress.base58;
 
     //Personas y puntos totales
-    let puntos = await Utils.contract.personasBinary(direccion.address).call();
+    let puntos = await Utils.contract.personasBinary(direccion).call();
 
     // monto de bonus y puntos efectivos
-    let bonusBinario = await Utils.contract.withdrawableBinary(direccion.address).call();
+    let bonusBinario = await Utils.contract.withdrawableBinary(direccion).call();
   
     var available = (balanceRef+my+almacen);
 
@@ -211,9 +210,9 @@ export default class Oficina extends Component {
       bonusBinario.amount = 0;
     }
 
-    let brazoIzquierdo = await Utils.contract.handLeft(direccion.address).call();
+    let brazoIzquierdo = await Utils.contract.handLeft(direccion).call();
 
-    let brazoDerecho = await Utils.contract.handRigth(direccion.address).call();
+    let brazoDerecho = await Utils.contract.handRigth(direccion).call();
 
     //console.log(brazoDerecho);
 
