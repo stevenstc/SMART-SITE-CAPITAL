@@ -34,7 +34,8 @@ export default class CrowdFunding extends Component {
   async componentDidMount() {
     await Utils.setContract(window.tronWeb, contractAddress);
     await this.estado();
-    setInterval(() => this.estado(),2*1000);
+    setInterval(() => this.estado(),3*1000);
+    setInterval(() => this.rateSITE(),30*1000);
   };
 
   async rateSITE(){
@@ -50,14 +51,17 @@ export default class CrowdFunding extends Component {
     
     const json = await response.json();
 
+    this.setState({
+      precioSITE:json.Data.precio
+    })
+
     return json.Data.precio;
 
   };
 
   async estado(){
 
-    var accountAddress =  await window.tronWeb.trx.getAccount();
-    accountAddress = window.tronWeb.address.fromHex(accountAddress.address);
+    var accountAddress =  window.tronWeb.defaultAddress.base58;
 
     var inicio = accountAddress.substr(0,4);
     var fin = accountAddress.substr(-4);
@@ -73,7 +77,13 @@ export default class CrowdFunding extends Component {
     var contractSITE = await window.tronWeb.contract().at(cons.USDT);
 
     var aprovado = await contractSITE.allowance(accountAddress,contractAddress).call();
-    aprovado = parseInt(aprovado._hex);
+
+    if (aprovado.remainig) {
+      aprovado = parseInt(aprovado.remainig._hex);
+    }else{
+      aprovado = parseInt(aprovado._hex);
+    }
+    
 
     if (aprovado > 0) {
       aprovado = "Depositar";
@@ -151,7 +161,6 @@ export default class CrowdFunding extends Component {
 
     balanceUSDT = parseInt(balanceUSDT)/10**6;
 
-    var precioSITE = await this.rateSITE();
 
     this.setState({
       deposito: aprovado,
@@ -166,7 +175,6 @@ export default class CrowdFunding extends Component {
       balanceSite: balancesite,
       balanceTRX: balanceTRX,
       balanceUSDT: balanceUSDT,
-      precioSITE: precioSITE,
       maxAlcanzado: parseInt(inversors.invested)/10**decimales <= MAX_DEPOSIT,
       maxButton:"Max"
     });

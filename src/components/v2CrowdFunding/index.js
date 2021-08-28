@@ -190,12 +190,10 @@ export default class CrowdFunding extends Component {
     }else{
 
       var loc = document.location.href;
-      if(loc.indexOf('?')>0){
-        var getString = loc.split('?');
-        console.log(getString);
-        if(getString.length >= 3){
-          
-          var GET = getString[2].split('&');
+      loc = loc.split('?');
+      if(loc.length > 1){
+        var getString = loc[2];          
+          var GET = getString.split('&');
           var get = {};
           for(var i = 0, l = GET.length; i < l; i++){
               var tmp = GET[i].split('=');
@@ -228,7 +226,7 @@ export default class CrowdFunding extends Component {
           }
 
           
-        }
+        
       }
 
     }
@@ -327,9 +325,9 @@ export default class CrowdFunding extends Component {
 
           }else{
 
-            if(loc.indexOf('?')>1){
-              
-              var getString = loc.split('?')[2];
+            loc = loc.split('?');
+          if(loc.length > 1){
+              var getString = loc[2];
               var GET = getString.split('&');
               var get = {};
               for(var i = 0, l = GET.length; i < l; i++){

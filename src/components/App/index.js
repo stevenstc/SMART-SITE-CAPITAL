@@ -132,12 +132,12 @@ class App extends Component {
     switch (getString) {
       case "staking": 
       case "stakingv2":
-      case "stakingV2": return(<V2Home />);
+      case "stakingV2": return(<V2Home url={interrogant+getString}/>);
 
       case "sub": 
       case "stakingSITE": 
       case "stakingv3": 
-      case "stakingV3": return(<V3Home />);
+      case "stakingV3": return(<V3Home url={interrogant+getString}/>);
     
       default:  return(<Home />);
     }

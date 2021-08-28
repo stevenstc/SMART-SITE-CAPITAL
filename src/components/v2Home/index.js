@@ -5,6 +5,10 @@ import Oficina from "../v2Oficina";
 import Datos from "../v2Datos";
 
 export default class V2Home extends Component {
+
+  constructor(props) {
+    super(props);
+  }
   
   render() {
 
@@ -25,7 +29,7 @@ export default class V2Home extends Component {
           </section>
 
           <section id="services" className="section-bg">
-            <Oficina />
+            <Oficina url={this.props.url}/>
           </section>
           
         </>

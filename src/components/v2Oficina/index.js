@@ -102,7 +102,7 @@ export default class Oficina extends Component {
       let mydireccion = await window.tronWeb.trx.getAccount();
       mydireccion = window.tronWeb.address.fromHex(mydireccion.address)
       mydireccion = await Utils.contract.addressToId(mydireccion).call();
-      mydireccion = loc+'?ref='+mydireccion;
+      mydireccion = loc+this.props.url+'?ref='+mydireccion;
       var link = mydireccion+"&hand=izq";
       var link2 = mydireccion+"&hand=der";
       this.setState({

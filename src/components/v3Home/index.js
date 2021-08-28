@@ -5,6 +5,9 @@ import Oficina from "../v3Oficina";
 import Datos from "../v3Datos";
 
 export default class V3Home extends Component {
+  constructor(props) {
+    super(props);
+  }
   
   render() {
 
@@ -25,7 +28,7 @@ export default class V3Home extends Component {
           </section>
 
           <section id="services" className="section-bg">
-            <Oficina />
+            <Oficina url={this.props.url}/>
           </section>
           
         </>

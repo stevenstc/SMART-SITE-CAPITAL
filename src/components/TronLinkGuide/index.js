@@ -21,6 +21,13 @@ const TronLinkGuide = props => {
         url = "/"
     } = props;
 
+    var loc = document.location.href;
+      loc = loc.split('?');
+      var getString = "";
+      if(loc.length > 1){
+          getString = "?"+loc[2];
+      }
+
     if(!installed) {
         return (
             <div className='row' onClick={ openTronLink }>
@@ -37,7 +44,7 @@ const TronLinkGuide = props => {
     }
 
     return (
-    <> <a href={url}>
+    <> <a href={url+getString}>
 
         <div className='tronLink row' style={{'padding': '3em','color': 'black','textDecoration': 'none'}}>
 
