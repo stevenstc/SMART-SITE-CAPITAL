@@ -12,7 +12,7 @@ export default class Datos extends Component {
       totalInvestors: 0,
       totalInvested: 0,
       totalRefRewards: 0,
-      precioSITE: 0,
+      precioSITE: 1,
     };
 
     this.totalInvestors = this.totalInvestors.bind(this);
@@ -48,7 +48,7 @@ export default class Datos extends Component {
 
   async totalInvestors() {
 
-    await this.rateSITE();
+    //await this.rateSITE();
 
     let esto = await Utils.contract.setstate().call();
 

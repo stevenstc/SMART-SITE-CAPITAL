@@ -66,7 +66,7 @@ export default class Oficina extends Component {
   };
 
   async rateSITE(){
-    /*var proxyUrl = cons.proxy;
+    var proxyUrl = cons.proxy;
     var apiUrl = cons.PRE;
     var response;
 
@@ -83,9 +83,7 @@ export default class Oficina extends Component {
       precioSITE: json.Data.precio
     });
 
-    return json.Data.precio;*/
-
-    return 1;
+    return json.Data.precio;
 
   };
 
@@ -184,11 +182,7 @@ export default class Oficina extends Component {
 
   async Investors2() {
 
-    var precioSITE = await this.rateSITE();
-
-    this.setState({
-      precioSITE: precioSITE
-    });
+    await this.rateSITE();
 
   };
 
@@ -307,7 +301,7 @@ export default class Oficina extends Component {
                   <div className="progress-bar-striped progress-bar-animated bg-success" role="progressbar" style={{"width": this.state.porcentiempo+"%"}} aria-valuenow={this.state.porcentiempo} aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                 <br></br>
-                <b>{(this.state.withdrawn+available).toFixed(2)} USDT</b> ganancias de <b>{this.state.valorPlan} USDT</b>
+                <b>{(this.state.withdrawn+available).toFixed(2)} SITE</b> ganancias de <b>{this.state.valorPlan} SITE</b>
                 <div className="progress" style={{"height": "20px"}}>
                   <div className="progress-bar bg-info " role="progressbar" style={{"width": this.state.progresoUsdt+"%"}} aria-valuenow={this.state.progresoUsdt} aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
@@ -315,10 +309,10 @@ export default class Oficina extends Component {
                 <div className="progress" style={{"height": "20px"}}>
                   <div className="progress-bar bg-warning " role="progressbar" style={{"width": this.state.progresoRetiro+"%"}} aria-valuenow={this.state.progresoRetiro} aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                Reclamados <b>{(this.state.withdrawn).toFixed(2)} USDT</b>
+                Reclamados <b>{(this.state.withdrawn).toFixed(2)} SITE</b>
 
                 <br></br>
-                <button type="button" className="btn btn-success d-block text-center mx-auto mt-1" onClick={() => document.getElementById("why-us").scrollIntoView({block: "end", behavior: "smooth"}) }>Upgrade Plan</button>
+                <button type="button" className="btn btn-success d-block text-center mx-auto mt-1" onClick={() => document.getElementById("why-us").scrollIntoView({block: "end", behavior: "smooth"}) }>Update Plan</button>
 
 
               </div>
@@ -378,25 +372,24 @@ export default class Oficina extends Component {
             <div className="box">
               <div className="icon"><i className="ion-ios-speedometer-outline" style={{color: '#ff689b'}}></i></div>
               
-              <h4 className="title"><a href="#services">Disponible {available} USDT</a></h4>
+              <h4 className="title"><a href="#services">Disponible {available} SITE</a></h4>
                 
-              <button type="button" className="btn btn-info d-block text-center mx-auto mt-1" onClick={() => this.withdraw()}>Retirar ~ {(available/this.state.precioSITE).toFixed(2)} SITE</button>
+              <button type="button" className="btn btn-info d-block text-center mx-auto mt-1" onClick={() => this.withdraw()}>Retirar ~ {(available).toFixed(2)} SITE</button>
                  
               
               <hr></hr>
-              <p className="description">Retirado <b>{(this.state.withdrawn).toFixed(2)} USDT</b> </p>
-              <p className="description">Total invertido <b>{invested} USDT</b> </p>
+              <p className="description">Retirado <b>{(this.state.withdrawn).toFixed(2)} SITE</b> </p>
+              <p className="description">Total invertido <b>{invested} SITE</b> </p>
             </div>
           </div>
           <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-duration="1s">
             <div className="box">
               <div className="icon"><i className="ion-ios-analytics-outline" style={{color: '#ff689b'}}></i></div>
               <p className="description">Bonus </p>
-              <h4 className="title"><a href="#services">{(this.state.balanceRef+this.state.bonusBinario).toFixed(2)} USDT</a></h4>
-              <p>(~ {(this.state.balanceRef+this.state.bonusBinario/this.state.precioSITE).toFixed(2)} SITE)</p>
+              <h4 className="title"><a href="#services">{(this.state.balanceRef+this.state.bonusBinario).toFixed(2)} SITE</a></h4>
               <hr></hr>
-              <p className="description">({this.state.directos}) Referidos directos <b>{(this.state.balanceRef).toFixed(2)} USDT</b> </p>
-              <p className="description">({this.state.personasDerecha+this.state.personasIzquierda}) Red binaria <b>{(this.state.bonusBinario).toFixed(2)} USDT</b> </p>
+              <p className="description">({this.state.directos}) Referidos directos <b>{(this.state.balanceRef).toFixed(2)} SITE</b> </p>
+              <p className="description">({this.state.personasDerecha+this.state.personasIzquierda}) Red binaria <b>{(this.state.bonusBinario).toFixed(2)} SITE</b> </p>
               
             </div>
           </div>

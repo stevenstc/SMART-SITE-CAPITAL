@@ -12,14 +12,14 @@ export default class CrowdFunding extends Component {
     this.state = {
 
       min: 100,
-      deposito: "Cargando...",
-      balance: "Cargando...",
+      deposito: 0,
+      balance: 0,
       accountAddress: "Cargando...",
-      porcentaje: "Cargando...",
-      dias: "Cargando...",
+      porcentaje: 100,
+      dias: 1,
       partner: "Cargando...",
-      balanceTRX: "Cargando...",
-      balanceUSDT: "Cargando...",
+      balanceTRX: 0,
+      balanceUSDT: 0,
       precioSITE: 0,
       valueUSDT: 0,
       hand: 0
@@ -44,10 +44,12 @@ export default class CrowdFunding extends Component {
     this.estado();
     setInterval(() => this.estado(),3*1000);
     setInterval(() => this.estado2(),3*1000);
+    await this.rateSITE();
+    setInterval(() => this.rateSITE(),30*1000);
   };
 
   async rateSITE(){
-    /*
+
     var proxyUrl = cons.proxy;
     var apiUrl = cons.PRE;
     var response;
@@ -65,21 +67,11 @@ export default class CrowdFunding extends Component {
       precioSITE: json.Data.precio
     });
 
-    return json.Data.precio;*/
-
-    return 1;
-
   };
 
   async estado(){
     var accountAddress =  window.tronWeb.defaultAddress.base58;
     var inversors = await Utils.contract.investors(accountAddress).call();
-
-    var precioSITE = this.state.precioSITE
-
-    if (precioSITE === 0){
-      precioSITE = await this.rateSITE();
-    }
 
     var options = [];
 
@@ -133,11 +125,8 @@ export default class CrowdFunding extends Component {
     }
 
     this.setState({
-      precioSITE: precioSITE,
       options: options
     });
-
-    this.rateSITE();
   }
 
   async estado2(){
