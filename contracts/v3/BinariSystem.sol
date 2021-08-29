@@ -44,7 +44,7 @@ contract BinarySystem is Ownable{
     Hand hands;
   }
 
-  uint256 public MIN_RETIRO = 100*10**8;
+  uint256 public MIN_RETIRO = 500*10**8;
   uint256 public MIN_RETIRO_interno;
 
   address public tokenPricipal = token;

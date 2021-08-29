@@ -374,7 +374,7 @@ export default class Oficina extends Component {
               
               <h4 className="title"><a href="#services">Disponible {available} SITE</a></h4>
                 
-              <button type="button" className="btn btn-info d-block text-center mx-auto mt-1" onClick={() => this.withdraw()}>Retirar ~ {(available).toFixed(2)} SITE</button>
+              <button type="button" className="btn btn-info d-block text-center mx-auto mt-1" onClick={() => this.withdraw()}>Retirar {(available).toFixed(2)} SITE (${(available*this.state.precioSITE).toFixed(2)})</button>
                  
               
               <hr></hr>

@@ -406,7 +406,7 @@ export default class CrowdFunding extends Component {
           document.getElementById("services").scrollIntoView({block: "start", behavior: "smooth"});
 
         }else{
-          if(!investors.registered){
+          if(!investors.registered && sponsor !== "T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb"){
             await Utils.contract.registro(sponsor, hand).send();
             window.alert("Felicidades registro: exitoso");
           }if (await Utils.contract.active(valueUSDT).call() === false) {
