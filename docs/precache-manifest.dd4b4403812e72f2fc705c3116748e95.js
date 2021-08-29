@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "6ef14c9d343ab442fb979ebc0df73498",
+    "revision": "3f89bdff7144aa39eb28ff496ce592f2",
     "url": "/index.html"
   },
   {
@@ -12,15 +12,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/2.d4b27c5f.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "0119138c6b69e39db9aa",
-    "url": "/static/js/main.3cfbb7ad.chunk.js"
+    "revision": "e7df13e66bb38295221a",
+    "url": "/static/js/main.d06a51c8.chunk.js"
   },
   {
     "revision": "579c6349691bde1bcd38",
     "url": "/static/js/runtime-main.746353a0.js"
-  },
-  {
-    "revision": "d3a8f115f144c07658c6ec16d878680a",
-    "url": "/static/media/TronLinkLogo.d3a8f115.png"
   }
 ]);
