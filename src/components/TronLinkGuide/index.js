@@ -28,7 +28,7 @@ const TronLinkGuide = props => {
           getString = "?"+loc[2];
       };
 
-    const estilo = {'paddingTop': '5em','color': 'black','textDecoration': 'none','backgroundColor': '#ffffffbf'};
+    const estilo = {'marginTop': '12em','color': 'black','textDecoration': 'none','backgroundColor': '#ffffffbf'};
 
     if(!installed) {
         return (
