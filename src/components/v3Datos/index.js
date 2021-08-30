@@ -25,7 +25,7 @@ export default class Datos extends Component {
   };
 
   async rateSITE(){
-    var proxyUrl = cons.proxy;
+    /*var proxyUrl = cons.proxy;
     var apiUrl = cons.PRE;
     var response;
 
@@ -42,7 +42,8 @@ export default class Datos extends Component {
       precioSITE: json.Data.precio
     });
 
-    return json.Data.precio;
+    return json.Data.precio;*/
+    return 1;
 
   };
 
@@ -78,12 +79,12 @@ export default class Datos extends Component {
         </div>
 
         <div className="col-lg-4 col-12 text-center">
-          <span data-toggle="counter-up">{(totalInvested/this.state.precioSITE).toFixed(2)} SITE</span>
+          <span data-toggle="counter-up">{(totalInvested).toFixed(2)} SITE</span>
           <p>Invertido en Plataforma</p>
         </div>
 
         <div className="col-lg-4 col-12 text-center">
-          <span data-toggle="counter-up">{(totalRefRewards/this.state.precioSITE).toFixed(2)} SITE</span>
+          <span data-toggle="counter-up">{(totalRefRewards).toFixed(2)} SITE</span>
           <p>Total Recompensas por Referidos</p>
         </div>
 

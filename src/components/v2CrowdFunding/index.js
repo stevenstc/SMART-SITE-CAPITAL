@@ -48,7 +48,7 @@ export default class CrowdFunding extends Component {
 
   async rateSITE(){
     var proxyUrl = cons.proxy;
-    var apiUrl = cons.PRE;
+    var apiUrl = cons.PRE2;
     var response;
 
     try {

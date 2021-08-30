@@ -8,7 +8,7 @@ import "./Ownable.sol";
 contract BinarySystem is Ownable{
   using SafeMath for uint256;
 
-  address token = 0x66D6E5bA1544BbB5b10afE9e0e45F6E3C297838A;
+  address token = 0x23A8737B395f5822617a606088fa605b33802782;
 
   TRC20_Interface USDT_Contract = TRC20_Interface(token);
 
@@ -66,10 +66,10 @@ contract BinarySystem is Ownable{
   bool public sisReferidos = true;
   bool public sisBinario = true;
 
-  uint256 public dias = 1;
+  uint256 public dias = 365;
   uint256 public unidades = 86400;
 
-  uint256 public maxTime = 90;
+  uint256 public maxTime = 100;
   uint256 public porcent = 200;
 
   uint256 public porcentPuntosBinario = 10;
