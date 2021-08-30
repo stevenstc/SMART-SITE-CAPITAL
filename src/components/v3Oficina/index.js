@@ -255,7 +255,7 @@ export default class Oficina extends Component {
       await Utils.contract.withdraw().send();
     }else{
       if (available < MIN_RETIRO) {
-        window.alert("El minimo para retirar son: "+(MIN_RETIRO)+" USDT");
+        window.alert("El minimo para retirar son: "+(MIN_RETIRO)+" SITE");
       }
     }
   };
