@@ -103,7 +103,7 @@ export default class CrowdFunding extends Component {
       inversors.plan++;
     }
 
-    if (aprovado > 0) {
+    if (aprovado > 0 && false) { 
 
       for (let index = inversors.plan; index < 16; index++) {
         var precio = await Utils.contract.plans(index).call();
