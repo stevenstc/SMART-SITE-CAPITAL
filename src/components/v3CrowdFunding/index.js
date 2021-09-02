@@ -407,12 +407,21 @@ export default class CrowdFunding extends Component {
 
         }else{
           if(!investors.registered && sponsor !== "T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb"){
-            await Utils.contract.registro(sponsor, hand).send();
-            window.alert("Felicidades registro: exitoso");
+            if( balanceSite >= 50){
+              await Utils.contract.registro(sponsor, hand).send();
+              window.alert("Felicidades registro: exitoso");
+              return;
+            }else{
+              window.alert("Debes tener 50 SITE para pagar el registro en la plataforma");
+              return;
+            }
+            
           }if (await Utils.contract.active(valueUSDT).call() === false) {
             window.alert("Por favor selecciona un plan activo");
+            return;
           } else {
             window.alert("Por favor usa link de referido para comprar un plan");
+            return;
           }
 
           
