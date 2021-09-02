@@ -12,7 +12,7 @@ export default class CrowdFunding extends Component {
     this.state = {
 
       min: 100,
-      deposito: 0,
+      deposito: "Cargando...",
       balance: 0,
       accountAddress: "Cargando...",
       porcentaje: 100,
