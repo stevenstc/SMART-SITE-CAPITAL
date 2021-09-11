@@ -5,10 +5,6 @@ import Oficina from "../v2Oficina";
 import Datos from "../v2Datos";
 
 export default class V2Home extends Component {
-
-  constructor(props) {
-    super(props);
-  }
   
   render() {
 

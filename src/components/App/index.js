@@ -5,6 +5,7 @@ import Utils from "../../utils";
 import Home from "../v1Home";
 import V2Home from "../v2Home";
 import V3Home from "../v3Home";
+import Calculadora from "../Calculadora";
 import TronLinkGuide from "../TronLinkGuide";
 
 
@@ -115,31 +116,33 @@ class App extends Component {
 
     if (!this.state.tronWeb.installed) return (
       <>
-        <div className="container">
+        <div className="container mb-5">
           <TronLinkGuide />
         </div>
+        <Calculadora />
       </>
       );
 
     if (!this.state.tronWeb.loggedIn) return (
       <>
-        <div className="container">
+        <div className="container mb-5">
           <TronLinkGuide installed url={interrogant+getString}/>
         </div>
+        <Calculadora />
       </>
       );
 
     switch (getString) {
       case "staking": 
       case "stakingv2":
-      case "stakingV2": return(<V2Home url={interrogant+getString}/>);
+      case "stakingV2": return(<><V2Home url={interrogant+getString}/><Calculadora /></>);
 
       case "sub": 
       case "stakingSITE": 
       case "stakingv3": 
-      case "stakingV3": return(<V3Home url={interrogant+getString}/>);
+      case "stakingV3": return(<><V3Home url={interrogant+getString}/><Calculadora /></>);
     
-      default:  return(<Home />);
+      default:  return(<><Home /><Calculadora /></>);
     }
 
 

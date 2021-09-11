@@ -315,7 +315,6 @@ export default class CrowdFunding extends Component {
     var amount = await Utils.contract.plans(valueUSDT).call();
     amount = parseInt(amount._hex)/10**8;
     amount = amount-balance;
-    amount = amount;
 
     if ( aprovado > 0 && 
       balanceSite >= amount && 

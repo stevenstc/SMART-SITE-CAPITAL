@@ -5,9 +5,6 @@ import Oficina from "../v3Oficina";
 import Datos from "../v3Datos";
 
 export default class V3Home extends Component {
-  constructor(props) {
-    super(props);
-  }
   
   render() {
 
