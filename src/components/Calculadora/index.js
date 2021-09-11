@@ -53,6 +53,8 @@ export default class Oficina extends Component {
   change() {
     var moneda = this.state.monedaIn;
     var imagen = this.state.imageIn;
+    document.getElementById("selIN").value = this.state.monedaOut;
+    document.getElementById("selOUT").value = moneda;
     this.setState({
       monedaIn: this.state.monedaOut,
       imageIn: this.state.imageOut,
@@ -125,6 +127,8 @@ export default class Oficina extends Component {
         moneda2 = "USDT";
         break;
     }
+    document.getElementById("selIN").value = event.target.value;
+    document.getElementById("selOUT").value = moneda2;
     this.setState({
       monedaIn: event.target.value,
       imageIn: image,
@@ -157,6 +161,8 @@ export default class Oficina extends Component {
         moneda2 = "SITE";
         break;
     }
+    document.getElementById("selIN").value = moneda2;
+    document.getElementById("selOUT").value = event.target.value;
     this.setState({
       monedaOut: event.target.value,
       imageOut: image,
@@ -213,8 +219,8 @@ export default class Oficina extends Component {
           <div className="col-sm-6 col-md-10 offset-md-1 wow bounceInUp" data-wow-duration="1s">
             <div className="box">
 
-            <img src={this.state.imageIn} alt="usdt logo trx" width="50" style={{"cursor": "pointer"}} onClick={()=> this.change()}/><img src={this.state.imageOut} alt="usdt logo trx" width="50" style={{"cursor": "pointer"}} onClick={()=> this.change()}/>
-            <input id="amountSITE" type="number" className="form-control mb-20 text-center" onChange={this.handleChangeValueIN}  ></input>
+            <div onClick={()=> this.change()} style={{"cursor": "pointer"}}><img src={this.state.imageIn} alt="usdt logo trx" width="50" /> <button className="btn btn-info"><i class="fa fa-exchange" aria-hidden="true"></i></button> <img src={this.state.imageOut} alt="usdt logo trx" width="50"/></div>
+            <input id="amountSITE" type="number" className="form-control mb-20 mt-3 text-center" onChange={this.handleChangeValueIN}  placeholder="Ingresa una cantidad"></input>
 
             </div>
           </div>
@@ -227,13 +233,9 @@ export default class Oficina extends Component {
           <div className="box">  
                         
             <img src={this.state.imageIn} alt="usdt logo trx" width="50" />
-            <h4 className="title"> 
-                <br />
-                {(this.state.valueIn*1).toFixed(6)} <b>{this.state.monedaIn}</b> <br />
-              </h4> 
             
               <div className="input-group-append">
-                <select className="form-control mb-20 text-center" onChange={this.handleChangeIN} style={{"cursor": "pointer"}}>
+                <select id="selIN" className="form-control mb-20 text-center" onChange={this.handleChangeIN} style={{"cursor": "pointer"}}>
                   {this.state.listaIn}
                 </select>
                 
@@ -246,14 +248,22 @@ export default class Oficina extends Component {
           <div className="col-sm-6 col-md-5  wow bounceInUp" data-wow-duration="1s">
             <div className="box">
               <img src={this.state.imageOut} alt="usdt logo trx" width="50" />
-              <h4 className="title"> 
-                <br />
-                {(this.state.precioOut).toFixed(6)} <b>{this.state.monedaOut}</b><br />
-              </h4> 
-              <select className="form-control mb-20 text-center" onChange={this.handleChangeOUT} style={{"cursor": "pointer"}}>
+              <select id="selOUT" className="form-control mb-20 text-center" onChange={this.handleChangeOUT} style={{"cursor": "pointer"}}>
                 {this.state.listaOut}
               </select>
               
+            </div>
+          </div>
+
+        </div>
+
+        <div className="row text-center">
+          <div className="col-sm-6 col-md-10  offset-md-1 wow bounceInUp" data-wow-duration="1s">
+            <div className="box">  
+                          
+              <h4 className="title"> 
+                  <br />{(this.state.valueIn*1).toFixed(6)} <b>{this.state.monedaIn}</b> = {(this.state.precioOut).toFixed(6)} <b>{this.state.monedaOut}</b>
+              </h4> 
             </div>
           </div>
 
