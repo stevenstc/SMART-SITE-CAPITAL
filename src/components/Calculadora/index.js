@@ -10,7 +10,7 @@ const imageUSDT = "https://coin.top/production/logo/usdtlogo.png";
 
 const imageCOPT = "https://nile.tronscan.org/upload/logo/TEukpkVusQQWnKzyfyUy8Yz9B9Khei6MCm.png";
 
-
+const imageBOB = "img/bob.png";
 
 export default class Oficina extends Component {
   constructor(props) {
@@ -19,6 +19,7 @@ export default class Oficina extends Component {
     this.state = {
       SiteUsdt: 0.0172,
       CoptUsdt: 0.000260630465095065,
+      BobUsdt: 0.143472023,
       monedaIn: "SITE",
       monedaOut: "USDT",
       valueIn: 0,
@@ -28,11 +29,13 @@ export default class Oficina extends Component {
       listaIn: <>
       <option value="SITE">SITE</option>
       <option value="USDT">USDT</option>
-      <option value="COPT">COPT</option></>,
+      <option value="COPT">COPT</option>
+      <option value="BOB">BOB</option></>,
       listaOut: <>
       <option value="USDT">USDT</option>
       <option value="SITE">SITE</option>
-      <option value="COPT">COPT</option></>,
+      <option value="COPT">COPT</option>
+      <option value="BOB">BOB</option></>,
 
     };
 
@@ -86,6 +89,16 @@ export default class Oficina extends Component {
         precio = precio/this.state.SiteUsdt;
         break;
 
+      case "SITE_BOB":
+        precio = this.state.valueIn*this.state.SiteUsdt;
+        precio = precio/this.state.BobUsdt;
+        break;
+
+      case "BOB_SITE":
+        precio = this.state.valueIn*this.state.BobUsdt;
+        precio = precio/this.state.SiteUsdt;
+        break;
+
       case "COPT_USDT":
         precio = this.state.valueIn*this.state.CoptUsdt;
         break;
@@ -120,6 +133,12 @@ export default class Oficina extends Component {
         image2 = imageSITE;
         moneda2 = "SITE";
         break;
+
+      case "BOB":
+        image = imageBOB;
+        image2 = imageSITE;
+        moneda2 = "SITE";
+        break;
     
       default:
         image = imageSITE;
@@ -145,6 +164,12 @@ export default class Oficina extends Component {
       
       case "COPT":
         image = imageCOPT;
+        image2 = imageSITE;
+        moneda2 = "SITE";
+        break;
+
+      case "BOB":
+        image = imageBOB;
         image2 = imageSITE;
         moneda2 = "SITE";
         break;
@@ -247,7 +272,7 @@ export default class Oficina extends Component {
 
           <div className="col-sm-6 col-md-5  wow bounceInUp" data-wow-duration="1s">
             <div className="box">
-              <img src={this.state.imageOut} alt="usdt logo trx" width="50" />
+              <div width="50" heigth="50"><img src={this.state.imageOut} alt="usdt logo trx" width="50" /></div>
               <select id="selOUT" className="form-control mb-20 text-center" onChange={this.handleChangeOUT} style={{"cursor": "pointer"}}>
                 {this.state.listaOut}
               </select>
