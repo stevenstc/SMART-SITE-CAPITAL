@@ -100,11 +100,15 @@
             </div>
           </li>
           <li><a href="#services"><i class="fa fa-user mr-2" aria-hidden="true"></i>Office</a></li>
-          <li>
-            <a href="https://justswap.io/?lang=en-US?tokenAddress=TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz&type=swap#/home">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
               <i class="fa fa-exchange" aria-hidden="true"></i>
-              Exchange
+              Exchanges
             </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="https://justswap.io/?lang=en-US?tokenAddress=TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz&type=swap#/home">JustSwap</a>
+              <a class="dropdown-item" href="https://crex24.com/exchange/SITE-USDT">CREX24</a>
+            </div>
           </li>
           <li>
             <a href="https://justswap.io/?lang=en-US?tokenAddress=TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz&type=swap#/scan/detail/trx/TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz">
@@ -165,6 +169,20 @@
                   </span>
                 </a>
               </li>
+              <li>
+                <a href="https://justswap.io/?lang=en-US?tokenAddress=TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz&type=swap#/scan/detail/trx/TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz">
+                  <span id="p3" style='font-family: montserrat,sans-serif;font-size: 16px;'>
+                    Loading...
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://crex24.com/es/exchange/SITE-USDT">
+                  <span id="p4" style='font-family: montserrat,sans-serif;font-size: 16px;'>
+                    Loading...
+                  </span>
+                </a>
+              </li>
             </ul>
 
           </div>
@@ -210,7 +228,8 @@
 
     function consulta(){
         var proxyUrl = 'https://proxy-sites.herokuapp.com/';
-        var apiUrl = 'https://precio-site.herokuapp.com/api/v1/servicio/precio/SITE';
+        //var apiUrl = 'https://precio-site.herokuapp.com/api/v1/servicio/precio/SITE';// precio justswap
+        var apiUrl = 'https://precio-site.herokuapp.com/api/v1/servicio/precio/v5/SITE';// precio crex24
         fetch(proxyUrl+apiUrl).then(response => {
         return response.json();
         }).then(data => {
@@ -252,11 +271,51 @@
         });
     }
 
+    function consulta3(){
+        var proxyUrl = 'https://proxy-sites.herokuapp.com/';
+        var apiUrl = 'https://precio-site.herokuapp.com/api/v1/servicio/precio/SITE';
+        fetch(proxyUrl+apiUrl).then(response => {
+        return response.json();
+        }).then(data => {
+        // Work with JSON data
+        var price = data.Data.precio;
+
+        document.getElementById("p3").innerHTML = "<strong>1 SITE = "+price.toFixed(4)+" USDT | JustSwap </strong>" ;
+        }).catch(err => {
+            console.log(err);
+            document.getElementById("p3").innerHTML = "Loading...";
+        
+        });
+    }
+
+    function consulta4(){
+        var proxyUrl = 'https://proxy-sites.herokuapp.com/';
+        var apiUrl = 'https://precio-site.herokuapp.com/api/v1/servicio/precio/v5/SITE';
+        fetch(proxyUrl+apiUrl).then(response => {
+        return response.json();
+        }).then(data => {
+        // Work with JSON data
+        var price = data.Data.precio;
+
+        document.getElementById("p4").innerHTML = "<strong>1 SITE = "+price.toFixed(4)+" USDT | CREX24 </strong>" ;
+        }).catch(err => {
+            console.log(err);
+            document.getElementById("p4").innerHTML = "Loading...";
+        
+        });
+    }
+
     consulta();
     consulta2();
+    consulta3();
+    consulta4();
 
-    setInterval(() => consulta(),30*1000);
-    setInterval(() => consulta2(),30*1000);
+    setInterval(() => {
+      consulta();
+      consulta2();
+      consulta3();
+      consulta4();
+    },30*1000);
     
 
   </script>
