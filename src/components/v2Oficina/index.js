@@ -160,6 +160,9 @@ export default class Oficina extends Component {
     var fecha = new Date(usuario.inicio+tiempo);
     fecha = ""+fecha;
 
+    var migracion = await tronUSDT.contract().at(cons.SC2_1); 
+
+
     this.setState({
       direccion: direccion,
       registered: usuario.registered,
@@ -175,7 +178,8 @@ export default class Oficina extends Component {
       progresoRetiro: progresoRetiro,
       valorPlan: valorPlan/10**decimales,
       fecha: fecha,
-      directos: usuario.directos
+      directos: usuario.directos,
+      available: 0,
     });
 
   };
@@ -240,6 +244,9 @@ export default class Oficina extends Component {
   async withdraw(){
     const { balanceRef, my, almacen, directos, valorPlan, bonusBinario } = this.state;
 
+    if (await window.confirm("Acepte la siguiente transacción para continuar recibiendo sus pagos en token SITE")){
+
+    }
     var available = (balanceRef+my+almacen);
     if(directos >= 2 && available < valorPlan){
       available += bonusBinario;
@@ -273,7 +280,7 @@ export default class Oficina extends Component {
 
 
   render() {
-    var { balanceRef, invested, my, direccion, link, link2, almacen, valorPlan, directos, bonusBinario} = this.state;
+    var { balanceRef, invested, my, direccion, link, link2, almacen, valorPlan, directos, bonusBinario, available} = this.state;
 
     var available = balanceRef+my+almacen;
     if(directos >= 2 && available < valorPlan ){
@@ -383,14 +390,15 @@ export default class Oficina extends Component {
             <div className="box">
               <div className="icon"><i className="ion-ios-speedometer-outline" style={{color: '#ff689b'}}></i></div>
               
-              <h4 className="title"><a href="#services">Disponible {available} USDT</a></h4>
+              <h4 className="title"><a href="#services">Disponible {available} SITE</a></h4>
                 
-              <button type="button" className="btn btn-info d-block text-center mx-auto mt-1" onClick={() => this.withdraw()}>Retirar ~ {(available/this.state.precioSITE).toFixed(2)} SITE</button>
-                 
+              <button type="button" className="btn btn-info d-block text-center mx-auto mt-1" onClick={() => this.withdraw()}>Retirar ~ {(available).toFixed(2)} SITE</button>
               
               <hr></hr>
-              <p className="description">Retirado <b>{(this.state.withdrawn).toFixed(2)} USDT</b> </p>
-              <p className="description">Total invertido <b>{invested} USDT</b> </p>
+
+              <p className="description">Retirado <b>{(this.state.withdrawn).toFixed(2)} SITE</b> </p>
+              <p className="description">Total invertido <b>{invested} USDT {'->'} {invested} SITE</b> </p>
+
             </div>
           </div>
           <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-duration="1s">

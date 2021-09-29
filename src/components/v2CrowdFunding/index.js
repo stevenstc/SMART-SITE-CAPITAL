@@ -95,7 +95,12 @@ export default class CrowdFunding extends Component {
 
     var contractSITE = await window.tronWeb.contract().at(direccioncontract);
     var aprovado = await contractSITE.allowance(accountAddress,contractAddress).call();
-    aprovado = parseInt(aprovado._hex);
+    
+    if (aprovado.remaining) {
+      aprovado = parseInt(aprovado.remaining._hex);
+    }else{
+      aprovado = parseInt(aprovado._hex);
+    }
 
     if(porcentiempo >= 100){
       inversors.plan = 1;
@@ -103,7 +108,7 @@ export default class CrowdFunding extends Component {
       inversors.plan++;
     }
 
-    if (aprovado > 0 && false) { 
+    if (aprovado > 0 && true) { 
 
       for (let index = inversors.plan; index < 16; index++) {
         var precio = await Utils.contract.plans(index).call();
@@ -150,7 +155,12 @@ export default class CrowdFunding extends Component {
 
     var aprovado = await contractSITE.allowance(accountAddress,contractAddress).call();
     //console.log(aprovado);
-    aprovado = parseInt(aprovado._hex);
+
+    if (aprovado.remaining) {
+      aprovado = parseInt(aprovado.remaining._hex);
+    }else{
+      aprovado = parseInt(aprovado._hex);
+    }
 
 
     if (aprovado > 0) {
@@ -249,8 +259,8 @@ export default class CrowdFunding extends Component {
     var balanceTRX = await window.tronWeb.trx.getBalance();
     balanceTRX = balanceTRX/10**6;
 
-    //var direccioncontract2 = await Utils.contract.tokenPago().call();  
-    var direccioncontract2 = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";// USDT contrato o secundario
+    var direccioncontract2 = await Utils.contract.tokenPago().call();  
+    //var direccioncontract2 = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";// USDT contrato o secundario
 
     var contractUSDT = await window.tronWeb.contract().at(direccioncontract2);
     var nameToken2 = await contractUSDT.symbol().call();
@@ -288,7 +298,13 @@ export default class CrowdFunding extends Component {
     var direccioncontract = await Utils.contract.tokenPricipal().call();
     var contractUSDT = await tronUSDT.contract().at(direccioncontract);
     var aprovado = await contractUSDT.allowance(accountAddress,contractAddress).call();
-    aprovado = parseInt(aprovado._hex);
+
+    if (aprovado.remaining) {
+      aprovado = parseInt(aprovado.remaining._hex);
+    }else{
+      aprovado = parseInt(aprovado._hex);
+    }
+    
 
     var minTRX = 150;
 
