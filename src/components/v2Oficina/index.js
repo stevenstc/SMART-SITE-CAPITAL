@@ -92,7 +92,7 @@ export default class Oficina extends Component {
 
   async Link() {
     const {registered} = this.state;
-    if(registered){
+    if(registered && false){
 
       let loc = document.location.href;
       if(loc.indexOf('?')>0){
