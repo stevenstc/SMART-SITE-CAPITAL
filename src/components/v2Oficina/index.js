@@ -35,6 +35,9 @@ export default class Oficina extends Component {
       puntosLostIzquierda: 0,
       puntosLostDerecha: 0,
       directos: 0,
+      withdrawn2: 0,
+      available: 0,
+      available2: 0,
 
     };
 
@@ -160,8 +163,27 @@ export default class Oficina extends Component {
     var fecha = new Date(usuario.inicio+tiempo);
     fecha = ""+fecha;
 
-    var migracion = await tronUSDT.contract().at(cons.SC2_1); 
+    var contractMigracion = await window.tronWeb.contract().at(cons.SC2_1);
 
+    var investor =  await contractMigracion.investors(window.tronWeb.defaultAddress.base58).call();
+    investor.invested = parseInt(investor.invested._hex)/10**8;
+    investor.withdrawn = parseInt(investor.withdrawn._hex)/10**8;
+    investor.almacen = parseInt(investor.almacen._hex)/10**8;
+
+    var contractUSDT = await window.tronWeb.contract().at(direccioncontract);
+    var decimales = await contractUSDT.decimals().call();
+
+    var available2 = await contractMigracion.withdrawable(direccion).call();
+
+    if(available2.amount){
+      available2 = parseInt(available2.amount._hex)/10**decimales;
+    }else{
+      available2 = parseInt(available2._hex)/10**decimales;
+    }
+
+    available2 += investor.almacen;
+
+    var available = (usuario.balanceRef/10**decimales+usuario.withdrawable/10**decimales+usuario.almacen/10**decimales);
 
     this.setState({
       direccion: direccion,
@@ -179,7 +201,10 @@ export default class Oficina extends Component {
       valorPlan: valorPlan/10**decimales,
       fecha: fecha,
       directos: usuario.directos,
-      available: 0,
+      available: available,
+      available2: available2,
+      investdSITE: investor.invested,
+      withdrawn2: investor.withdrawn,
     });
 
   };
@@ -244,37 +269,48 @@ export default class Oficina extends Component {
   async withdraw(){
     const { balanceRef, my, almacen, directos, valorPlan, bonusBinario } = this.state;
 
-    if (await window.confirm("Acepte la siguiente transacción para continuar recibiendo sus pagos en token SITE")){
+      var contractMigracion = await window.tronWeb.contract().at(cons.SC2_1);
 
-    }
-    var available = (balanceRef+my+almacen);
-    if(directos >= 2 && available < valorPlan){
-      available += bonusBinario;
-    }
-    available = available.toFixed(8);
-    available = parseFloat(available);
+      var investor =  await contractMigracion.investors(window.tronWeb.defaultAddress.base58).call();
+      investor.almacen = parseInt(investor.almacen._hex)/10**8;
 
-    var direccioncontract = await Utils.contract.tokenPricipal().call();
-    var contractUSDT = await window.tronWeb.contract().at(direccioncontract);
+    if (investor.registered){
 
-    var decimales = await contractUSDT.decimals().call();
+      var direccioncontract = await contractMigracion.tokenPricipal().call();
+      console.log(direccioncontract);
+      var contractUSDT = await window.tronWeb.contract().at(direccioncontract);
+      var decimales = await contractUSDT.decimals().call();
 
-    var MIN_RETIRO = await Utils.contract.MIN_RETIRO().call();
-    MIN_RETIRO = parseInt(MIN_RETIRO._hex)/10**decimales;
+      var available = await contractMigracion.withdrawable(window.tronWeb.defaultAddress.base58).call();
 
-    var balanceTRX = await window.tronWeb.trx.getBalance();
-    balanceTRX = balanceTRX/10**6;
+      if(available.amount){
+        available = parseInt(available.amount._hex)/10**decimales;
+      }else{
+        available = parseInt(available._hex)/10**decimales;
+      }
 
-    if ( available > MIN_RETIRO && balanceTRX >= 150){
-      await Utils.contract.withdraw().send();
+      available += investor.almacen;
+
+      var MIN_RETIRO = await contractMigracion.MIN_RETIRO().call();
+      MIN_RETIRO = parseInt(MIN_RETIRO._hex)/10**decimales;
+
+      var balanceTRX = await window.tronWeb.trx.getBalance();
+      balanceTRX = balanceTRX/10**6;
+
+      if ( available > MIN_RETIRO && balanceTRX >= 150){
+        await contractMigracion.withdraw().send();
+      }else{
+        if (available <= MIN_RETIRO) {
+          window.alert("El minimo para retirar son: "+(MIN_RETIRO)+" SITE");
+        }
+
+        if (balanceTRX < 150) {
+          window.alert("Debes tener almenos 150 TRX disponible para realizar satisfactoriamente esta transacción");
+        }
+      }
     }else{
-      if (available <= MIN_RETIRO) {
-        window.alert("El minimo para retirar son: "+(MIN_RETIRO)+" USDT");
-      }
-
-      if (balanceTRX < 150) {
-        window.alert("Debes tener almenos 150 TRX disponible para realizar satisfactoriamente esta transacción");
-      }
+      await window.alert("Acepte la siguiente transacción para continuar recibiendo sus pagos en token SITE");
+      await contractMigracion.migrar().send();
     }
   };
 
@@ -298,6 +334,12 @@ export default class Oficina extends Component {
 
     my = my.toFixed(2);
     my = parseFloat(my);
+
+    if(this.state.available2 <= 0){
+      var estado = <h4 className="title"><a href="#services">Disponible {(this.state.available).toFixed(2)} USDT</a></h4>;
+    }else{
+      estado = <h4 className="title"><a href="#services">Disponible {(this.state.available2).toFixed(2)} SITE</a></h4>;
+    }
 
     return (
 
@@ -390,14 +432,14 @@ export default class Oficina extends Component {
             <div className="box">
               <div className="icon"><i className="ion-ios-speedometer-outline" style={{color: '#ff689b'}}></i></div>
               
-              <h4 className="title"><a href="#services">Disponible {available} SITE</a></h4>
+              {estado}
                 
-              <button type="button" className="btn btn-info d-block text-center mx-auto mt-1" onClick={() => this.withdraw()}>Retirar ~ {(available).toFixed(2)} SITE</button>
+              <button type="button" className="btn btn-info d-block text-center mx-auto mt-1" onClick={() => this.withdraw()}>Retirar ~ {this.state.available2} SITE</button>
               
               <hr></hr>
 
-              <p className="description">Retirado <b>{(this.state.withdrawn).toFixed(2)} SITE</b> </p>
-              <p className="description">Total invertido <b>{invested} USDT {'->'} {invested} SITE</b> </p>
+              <p className="description">Retirado <b>{(this.state.withdrawn).toFixed(2)} USDT // {(this.state.withdrawn2).toFixed(2)} SITE</b> </p>
+              <p className="description">Total invertido <b>{invested} USDT {'->'} {this.state.investdSITE} SITE</b> </p>
 
             </div>
           </div>

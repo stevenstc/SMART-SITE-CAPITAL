@@ -11,9 +11,9 @@ const WS = "T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb";//T9yD14Nj9j7xAB4dbGeiX9h8unkKHx
 
 const SC = "TTXotPkx5YypmMjgzvGb9496XmrCxbNNaZ";// direccion del contrato
 
-const SC2 = "TXcFDWNXp6FNSoGQWqoc3p45861bnCkdGp";// TPd9Xhoas9rWYsihNJFuShNnNbqd3vYbsV direccion del contrato V2 test TXcFDWNXp6FNSoGQWqoc3p45861bnCkdGp
+const SC2 = "TPd9Xhoas9rWYsihNJFuShNnNbqd3vYbsV";// TPd9Xhoas9rWYsihNJFuShNnNbqd3vYbsV direccion del contrato V2 test TXcFDWNXp6FNSoGQWqoc3p45861bnCkdGp
 
-const SC2_1 = "TE2XTbsjsPGW4KTn51fCSrDrxReQ68qoEE";// direccion del contrato V2.1
+const SC2_1 = "TMV8vNs4yCknvtRTAv5dHCEHaDnpAG5FfY";// direccion del contrato V2.1
 
 const SC3 = "TQto1BNwsfVdqVAy6DxZzmicSdCqkxDYvy";// direccion del contrato V3
 

@@ -33,8 +33,8 @@ contract Migracion is Ownable{
   address public tokenPricipal;
   address public tokenPago;
 
-  uint256 public rate = 17200;
-  uint256 public rate2 = 1000000;
+  uint256 public rate = 1720000;
+  uint256 public rate2 = 100000000;
 
   uint256 public porcientoBuy = 100;
   uint256 public porcientoPay = 100;
@@ -53,7 +53,8 @@ contract Migracion is Ownable{
   constructor(address _anterior, address _token) {
 
     Binary_Contract = Binary_Interface(_anterior);
-    (SALIDA_Contract, SITE_Contract) = (TRC20_Interface(_token), TRC20_Interface(_token));
+    (SALIDA_Contract, SITE_Contract, tokenPricipal, tokenPago) = (TRC20_Interface(_token), TRC20_Interface(_token), _token, _token);
+
 
   }
 
@@ -178,9 +179,9 @@ contract Migracion is Ownable{
 
           usuario.registered = true;
           usuario.invested = buyValue(invested);
-          usuario.amount = buyValue(amount);
+          usuario.amount = buyValue(amount-Binary_Contract.withdrawable(msg.sender));
           usuario.inicio = inicio;
-          usuario.paidAt = paidAt;
+          usuario.paidAt = block.timestamp;
           usuario.almacen = buyValue(Binary_Contract.withdrawable(msg.sender)+almacen+balanceRef);
           usuario.withdrawn = buyValue(withdrawn);
 
@@ -218,7 +219,7 @@ contract Migracion is Ownable{
     require ( SALIDA_Contract.transfer(msg.sender, payValue(amount+usuario.almacen)), "whitdrawl Fail" );
 
     usuario.amount -= amount;
-    usuario.withdrawn += amount;
+    usuario.withdrawn += amount+usuario.almacen;
     usuario.paidAt = block.timestamp;
     delete usuario.almacen;
 
