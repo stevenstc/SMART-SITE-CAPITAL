@@ -274,10 +274,12 @@ export default class Oficina extends Component {
       var investor =  await contractMigracion.investors(window.tronWeb.defaultAddress.base58).call();
       investor.almacen = parseInt(investor.almacen._hex)/10**8;
 
+      var balanceTRX = await window.tronWeb.trx.getBalance();
+      balanceTRX = balanceTRX/10**6;
+
     if (investor.registered){
 
       var direccioncontract = await contractMigracion.tokenPricipal().call();
-      console.log(direccioncontract);
       var contractUSDT = await window.tronWeb.contract().at(direccioncontract);
       var decimales = await contractUSDT.decimals().call();
 
@@ -294,9 +296,6 @@ export default class Oficina extends Component {
       var MIN_RETIRO = await contractMigracion.MIN_RETIRO().call();
       MIN_RETIRO = parseInt(MIN_RETIRO._hex)/10**decimales;
 
-      var balanceTRX = await window.tronWeb.trx.getBalance();
-      balanceTRX = balanceTRX/10**6;
-
       if ( available > MIN_RETIRO && balanceTRX >= 150){
         await contractMigracion.withdraw().send();
       }else{
@@ -305,6 +304,8 @@ export default class Oficina extends Component {
         }
 
         if (balanceTRX < 150) {
+          window.alert("Debes tener almenos 150 TRX disponible para realizar satisfactoriamente esta transacción");
+
         }
       }
     }else{
