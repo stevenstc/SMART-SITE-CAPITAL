@@ -305,12 +305,16 @@ export default class Oficina extends Component {
         }
 
         if (balanceTRX < 150) {
-          window.alert("Debes tener almenos 150 TRX disponible para realizar satisfactoriamente esta transacción");
         }
       }
     }else{
-      await window.alert("Acepte la siguiente transacción para continuar recibiendo sus pagos en token SITE");
-      await contractMigracion.migrar().send();
+      if (balanceTRX >= 150){
+        await window.alert("Acepte la siguiente transacción para continuar recibiendo sus pagos en token SITE");
+        await contractMigracion.migrar().send();
+      }else{
+        window.alert("Debes tener almenos 150 TRX disponible para realizar satisfactoriamente esta transacción");
+
+      }
     }
   };
 
@@ -438,7 +442,7 @@ export default class Oficina extends Component {
               
               <hr></hr>
 
-              <p className="description">Retirado <b>{(this.state.withdrawn).toFixed(2)} USDT // {(this.state.withdrawn2).toFixed(2)} SITE</b> </p>
+              <p className="description">Retirado <b>{(this.state.withdrawn).toFixed(2)} USDT + {(this.state.withdrawn2).toFixed(2)} SITE</b> </p>
               <p className="description">Total invertido <b>{invested} USDT {'->'} {this.state.investdSITE} SITE</b> </p>
 
             </div>
