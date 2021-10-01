@@ -244,7 +244,7 @@ export default class Oficina extends Component {
           <div className="col-sm-6 col-md-10 offset-md-1 wow bounceInUp" data-wow-duration="1s">
             <div className="box">
 
-            <div onClick={()=> this.change()} style={{"cursor": "pointer"}}><img src={this.state.imageIn} alt="usdt logo trx" width="50" /> <button className="btn btn-info"><i class="fa fa-exchange" aria-hidden="true"></i></button> <img src={this.state.imageOut} alt="usdt logo trx" width="50"/></div>
+            <div onClick={()=> this.change()} style={{"cursor": "pointer"}}><img src={this.state.imageIn} alt="usdt logo trx" width="50" /> <button className="btn btn-info"><i className="fa fa-exchange" aria-hidden="true"></i></button> <img src={this.state.imageOut} alt="usdt logo trx" width="50"/></div>
             <input id="amountSITE" type="number" className="form-control mb-20 mt-3 text-center" onChange={this.handleChangeValueIN}  placeholder="Ingresa una cantidad"></input>
 
             </div>
