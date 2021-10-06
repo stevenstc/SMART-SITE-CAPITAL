@@ -228,8 +228,8 @@
 
     function consulta(){
         var proxyUrl = 'https://proxy-sites.herokuapp.com/';
-        //var apiUrl = 'https://precio-site.herokuapp.com/api/v1/servicio/precio/SITE';// precio justswap
-        var apiUrl = 'https://precio-site.herokuapp.com/api/v1/servicio/precio/v5/SITE';// precio crex24
+        var apiUrl = 'https://precio-site.herokuapp.com/api/v1/servicio/precio/SITE';// precio justswap
+        //var apiUrl = 'https://precio-site.herokuapp.com/api/v1/servicio/precio/v5/SITE';// precio crex24
         fetch(proxyUrl+apiUrl).then(response => {
         return response.json();
         }).then(data => {
