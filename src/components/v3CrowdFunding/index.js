@@ -306,7 +306,7 @@ export default class CrowdFunding extends Component {
       aprovado = parseInt(aprovado._hex);
     }
 
-    if (aprovado <= 0 && balanceTRX >= 50){
+    if (aprovado <= 0 && balanceTRX >= 150){
       await contractUSDT.approve(contractAddress, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send();
       window.alert("Aprovacion de saldo para intercambio: exitoso");
       return;
@@ -318,7 +318,7 @@ export default class CrowdFunding extends Component {
 
     if ( aprovado > 0 && 
       balanceSite >= amount && 
-      balanceTRX >= 50 
+      balanceTRX >= 150 
       ){
 
         var loc = document.location.href;
@@ -437,7 +437,7 @@ export default class CrowdFunding extends Component {
         window.alert("No tienes suficiente saldo, necesitas: "+amount+" SITE y en tu wallet tienes: "+balanceSite);
       }
 
-      if (balanceTRX < 50) {
+      if (balanceTRX < 150) {
         window.alert("Su cuenta debe tener almenos 150 TRX para ejecutar las transacciones correctamente");
   
       }
