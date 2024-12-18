@@ -3,23 +3,17 @@ pragma solidity ^0.5.15;
 import "./SafeMath.sol";
 
 contract TRC20_Interface {
-
-    function allowance(address _owner, address _spender) public view returns (uint remaining);
-
-    function transferFrom(address _from, address _to, uint _value) public returns (bool);
-
-    function transfer(address direccion, uint cantidad) public returns (bool);
-
-    function balanceOf(address who) public view returns (uint256);
-
-    function decimals() public view returns(uint);
+  function allowance(address _owner, address _spender) public view returns (uint remaining);
+  function transferFrom(address _from, address _to, uint _value) public returns (bool);
+  function transfer(address direccion, uint cantidad) public returns (bool);
+  function balanceOf(address who) public view returns (uint256);
+  function decimals() public view returns(uint);
 }
 
 contract SITECapital {
   using SafeMath for uint;
 
   TRC20_Interface USDT_Contract;
-
   TRC20_Interface OTRO_Contract;
 
   struct Deposit {
@@ -168,10 +162,7 @@ contract SITECapital {
   function setTiempo(uint _dias) public returns(uint){
 
     require( msg.sender == owner );
-
-    
     dias = _dias;
-    
     
     return (_dias);
 
@@ -180,10 +171,7 @@ contract SITECapital {
   function setBase(uint _100) public returns(uint){
 
     require( msg.sender == owner );
-
-    
     basePorcientos = _100;
-    
     
     return (_100);
 
@@ -192,10 +180,7 @@ contract SITECapital {
   function controlReferidos(bool _true_false) public returns(bool){
 
     require( msg.sender == owner );
-
-    
     sisReferidos = _true_false;
-    
     
     return (_true_false);
 
@@ -204,7 +189,6 @@ contract SITECapital {
   function setRetorno(uint _porcentaje) public returns(uint){
 
     require( msg.sender == owner );
-
     porcent = _porcentaje;
 
     return (porcent);
@@ -214,7 +198,6 @@ contract SITECapital {
   function setvelocidad(uint _velocidad) public returns(uint){
 
     require( msg.sender == owner );
-
     velocidad = _velocidad;
 
     return (velocidad);

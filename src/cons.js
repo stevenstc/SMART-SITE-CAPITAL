@@ -1,4 +1,4 @@
-const proxy = "https://proxy-sites.herokuapp.com/";
+const proxy = "";
 const PRU = "shasta.";// red 
 
 const PRE = "https://precio-site.herokuapp.com/api/v1/servicio/precio/SITE";

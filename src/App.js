@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import TronWeb from "tronweb";
 
-import Utils from "../../utils";
-import Home from "../v1Home";
-import V2Home from "../v2Home";
-import V3Home from "../v3Home";
-import Calculadora from "../Calculadora";
-import TronLinkGuide from "../TronLinkGuide";
+import Utils from "./utils";
+import Home from "./pages/Home";
+import Calculadora from "./components/Calculadora";
+import TronLinkGuide from "./components/TronLinkGuide";
 
 
 const FOUNDATION_ADDRESS = "TWiWt5SEDzaEqS6kE5gandWMNfxR2B5xzg";
@@ -102,6 +100,10 @@ class App extends Component {
     Utils.setTronWeb(window.tronWeb);
   }
 
+  async conectar(){
+    
+  }
+
   render() {
     var getString = "/";
     var loc = document.location.href;
@@ -133,23 +135,6 @@ class App extends Component {
       );
 
     switch (getString) {
-      case "v2.1": 
-      case "V2.1": 
-      case "staking2.1": 
-      case "stakingv2.1":
-      case "stakingV2.1":
-      case "v2": 
-      case "V2": 
-      case "staking": 
-      case "stakingv2":
-      case "stakingV2": return(<><V2Home url={interrogant+getString}/><Calculadora /></>);
-
-      case "v3": 
-      case "V3": 
-      case "sub": 
-      case "stakingSITE": 
-      case "stakingv3": 
-      case "stakingV3": return(<><V3Home url={interrogant+getString}/><Calculadora /></>);
     
       default:  return(<><Home /><Calculadora /></>);
     }
