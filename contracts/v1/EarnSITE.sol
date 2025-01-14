@@ -1,4 +1,4 @@
-pragma solidity >=0.8.0;
+pragma solidity >=0.8.20;
 // SPDX-License-Identifier: Apache-2.0
 
 library SafeMath {
@@ -74,8 +74,8 @@ contract SITECapital {
     }
 
     address public TOKEN;
-    uint256 public MIN_DEPOSIT = 100 * 10 ** 8;
-    uint256 public MAX_DEPOSIT = 11000 * 10 ** 8;
+    uint256 public MIN_DEPOSIT = 1 * 10 ** 8;
+    uint256 public MAX_DEPOSIT = 1000000 * 10 ** 8;
 
     uint256 public MIN_RETIRO = 70 * 10 ** 8;
     uint256 public MAX_RETIRO = 500000 * 10 ** 8;

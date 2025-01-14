@@ -1,95 +1,61 @@
 import React, { Component } from "react";
-import TronWeb from "tronweb";
 
-import Utils from "./utils";
 import Home from "./pages/Home";
 import Calculadora from "./components/Calculadora";
 import TronLinkGuide from "./components/TronLinkGuide";
+import utils from "./utils";
 
 
-const FOUNDATION_ADDRESS = "TWiWt5SEDzaEqS6kE5gandWMNfxR2B5xzg";
+let intervalId = null;
+let nextUpdate = 0;
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      tronWeb: {
+      contract: false,
+      wallet: "",
+      tronWeb: false,
+      tronlik: {
         installed: false,
         loggedIn: false
       }
     };
+
+    this.conectar = this.conectar.bind(this);
+
   }
 
   async componentDidMount() {
-    await new Promise(resolve => {
-      const tronWebState = {
-        installed: !!window.tronWeb,
-        loggedIn: window.tronWeb && window.tronWeb.ready
-      };
 
-      if (tronWebState.installed) {
-        this.setState({
-          tronWeb: tronWebState
-        });
+    intervalId = setInterval(() => {
 
-        return resolve();
+      if (Date.now() >= nextUpdate) {
+
+        if (this.state.tronWeb.installed && !this.state.tronWeb.loggedIn) {
+          nextUpdate = Date.now() + 3 * 1000;
+        } else {
+          nextUpdate = Date.now() + 60 * 1000;
+        }
+        this.conectar();
       }
 
-      let tries = 0;
+    }, 3 * 1000);
 
-      const timer = setInterval(() => {
-        if (tries >= 10) {
 
-          const TRONGRID_API = "https://api.trongrid.io";
 
-          window.tronWeb = new TronWeb(
-            TRONGRID_API,
-            TRONGRID_API,
-            TRONGRID_API
-          );
 
-          this.setState({
-            tronWeb: {
-              installed: false,
-              loggedIn: false
-            }
-          });
-          clearInterval(timer);
-          return resolve();
-        }
-
-        tronWebState.installed = !!window.tronWeb;
-        tronWebState.loggedIn = window.tronWeb && window.tronWeb.ready;
-
-        if (!tronWebState.installed) {
-          return tries++;
-        }
-
-        this.setState({
-          tronWeb: tronWebState
-        });
-
-        resolve();
-      }, 1*1000);
-    });
-
-    if (!this.state.tronWeb.loggedIn) {
-      // Set default address (foundation address) used for contract calls
-      // Directly overwrites the address object if TronLink disabled the
-      // function call
-      window.tronWeb.defaultAddress = {
-        hex: window.tronWeb.address.toHex(FOUNDATION_ADDRESS),
-        base58: FOUNDATION_ADDRESS
-      };
+    if (!this.state.tronlik.loggedIn) {
 
       window.tronWeb.on("addressChange", () => {
-        if (this.state.tronWeb.loggedIn) {
+        if (this.state.tronlik.loggedIn) {
           return;
         }
 
         this.setState({
-          tronWeb: {
+          tronWeb: true,
+          tronlik: {
             installed: true,
             loggedIn: true
           }
@@ -97,48 +63,90 @@ class App extends Component {
       });
     }
 
-    Utils.setTronWeb(window.tronWeb);
   }
 
-  async conectar(){
-    
+  componentWillUnmount() {
+    clearInterval(intervalId);
+  }
+
+  async conectar() {
+
+    let { tronlik, wallet } = this.state;
+
+    if (window.tronWeb) {
+      tronlik.installed = true
+
+      if (window.tronWeb.ready) {
+        tronlik.loggedIn = true
+
+        wallet = window.tronWeb.defaultAddress.base58
+
+        this.setState({
+          wallet,
+          contract: utils.getContract(wallet),
+          tronWeb: utils.getTronweb(wallet)
+        })
+
+      } else {
+        tronlik.loggedIn = false
+
+      }
+
+
+    } else {
+      tronlik.installed = false
+      tronlik.loggedIn = false
+
+    }
+
+    this.setState({
+      tronlik,
+    });
+
   }
 
   render() {
-    var getString = "/";
-    var loc = document.location.href;
-    var interrogant = "";
+    let retorno;
+    let getString = "/";
+    let loc = document.location.href;
+    let interrogant = "";
     //console.log(loc);
-    if(loc.indexOf('?')>0){
-              
+    if (loc.indexOf('?') > 0) {
       getString = loc.split('?')[1];
       getString = getString.split('#')[0];
       interrogant = "?";
     }
 
-    if (!this.state.tronWeb.installed) return (
-      <>
-        <div className="container mb-5">
-          <TronLinkGuide />
-        </div>
-        <Calculadora />
-      </>
+    if (!this.state.tronlik.installed) {
+      retorno = (
+        <>
+          <div className="container mb-5">
+            <TronLinkGuide />
+          </div>
+        </>
       );
-
-    if (!this.state.tronWeb.loggedIn) return (
-      <>
-        <div className="container mb-5">
-          <TronLinkGuide installed url={interrogant+getString}/>
-        </div>
-        <Calculadora />
-      </>
-      );
-
-    switch (getString) {
-    
-      default:  return(<><Home /><Calculadora /></>);
     }
 
+    if (!this.state.tronlik.loggedIn) {
+      retorno = (
+        <>
+          <div className="container mb-5">
+            <TronLinkGuide installed url={interrogant + getString} />
+          </div>
+        </>
+      );
+    } else {
+
+
+      switch (getString) {
+
+        default: retorno = <Home tronlik={this.state.tronlik} tronWeb={this.state.tronWeb} wallet={this.state.wallet} contract={this.state.contract} />;
+      }
+
+    }
+
+
+    return (<>{retorno}<Calculadora /></>)
 
   }
 }
