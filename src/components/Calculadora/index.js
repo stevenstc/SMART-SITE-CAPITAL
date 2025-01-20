@@ -27,15 +27,15 @@ export default class Oficina extends Component {
       imageIn: imageSITE,
       imageOut: imageUSDT,
       listaIn: <>
-      <option value="SITE">SITE</option>
-      <option value="USDT">USDT</option>
-      <option value="COPT">COPT</option>
-      <option value="BOB">BOB</option></>,
+        <option value="SITE">SITE</option>
+        <option value="USDT">USDT</option>
+        <option value="COPT">COPT</option>
+        <option value="BOB">BOB</option></>,
       listaOut: <>
-      <option value="USDT">USDT</option>
-      <option value="SITE">SITE</option>
-      <option value="COPT">COPT</option>
-      <option value="BOB">BOB</option></>,
+        <option value="USDT">USDT</option>
+        <option value="SITE">SITE</option>
+        <option value="COPT">COPT</option>
+        <option value="BOB">BOB</option></>,
 
     };
 
@@ -65,48 +65,48 @@ export default class Oficina extends Component {
       imageOut: imagen
     });
   }
-  
+
   async calculo() {
-    var par = this.state.monedaIn+"_"+this.state.monedaOut;
+    var par = this.state.monedaIn + "_" + this.state.monedaOut;
     var precio = 0;
     switch (par) {
-      
+
       case "SITE_USDT":
-        precio = this.state.valueIn*this.state.SiteUsdt;
+        precio = this.state.valueIn * this.state.SiteUsdt;
         break;
 
       case "USDT_SITE":
-        precio = this.state.valueIn/this.state.SiteUsdt;
+        precio = this.state.valueIn / this.state.SiteUsdt;
         break;
 
       case "SITE_COPT":
-        precio = this.state.valueIn*this.state.SiteUsdt;
-        precio = precio/this.state.CoptUsdt;
+        precio = this.state.valueIn * this.state.SiteUsdt;
+        precio = precio / this.state.CoptUsdt;
         break;
 
       case "COPT_SITE":
-        precio = this.state.valueIn*this.state.CoptUsdt;
-        precio = precio/this.state.SiteUsdt;
+        precio = this.state.valueIn * this.state.CoptUsdt;
+        precio = precio / this.state.SiteUsdt;
         break;
 
       case "SITE_BOB":
-        precio = this.state.valueIn*this.state.SiteUsdt;
-        precio = precio/this.state.BobUsdt;
+        precio = this.state.valueIn * this.state.SiteUsdt;
+        precio = precio / this.state.BobUsdt;
         break;
 
       case "BOB_SITE":
-        precio = this.state.valueIn*this.state.BobUsdt;
-        precio = precio/this.state.SiteUsdt;
+        precio = this.state.valueIn * this.state.BobUsdt;
+        precio = precio / this.state.SiteUsdt;
         break;
 
       case "COPT_USDT":
-        precio = this.state.valueIn*this.state.CoptUsdt;
+        precio = this.state.valueIn * this.state.CoptUsdt;
         break;
 
       case "USDT_COPT":
-        precio = this.state.valueIn/this.state.CoptUsdt;
+        precio = this.state.valueIn / this.state.CoptUsdt;
         break;
-    
+
       default:
         break;
     }
@@ -121,7 +121,7 @@ export default class Oficina extends Component {
     var image2 = imageUSDT;
     var moneda2 = "USDT";
     switch (event.target.value) {
-      
+
       case "COPT":
         image = imageCOPT;
         image2 = imageSITE;
@@ -139,7 +139,7 @@ export default class Oficina extends Component {
         image2 = imageSITE;
         moneda2 = "SITE";
         break;
-    
+
       default:
         image = imageSITE;
         image2 = imageUSDT;
@@ -161,7 +161,7 @@ export default class Oficina extends Component {
     var image2 = imageSITE;
     var moneda2 = "SITE";
     switch (event.target.value) {
-      
+
       case "COPT":
         image = imageCOPT;
         image2 = imageSITE;
@@ -179,7 +179,7 @@ export default class Oficina extends Component {
         image2 = imageUSDT;
         moneda2 = "USDT";
         break;
-    
+
       default:
         image = imageUSDT;
         image2 = imageSITE;
@@ -197,17 +197,14 @@ export default class Oficina extends Component {
   }
 
   async componentDidMount() {
-    setInterval(async() => await this.calculo() ,1*1000);
-    await this.rateSITE();
-    setInterval(async() => await this.rateSITE() ,15*1000);
   };
 
-  async rateSITE(){
+  async rateSITE() {
     var proxyUrl = cons.proxy;
     var response;
 
     try {
-      response = await fetch(proxyUrl+apiUrl);
+      response = await fetch(proxyUrl + apiUrl);
     } catch (err) {
       console.log(err);
     }
@@ -218,12 +215,12 @@ export default class Oficina extends Component {
     });
 
     try {
-      response = await fetch(proxyUrl+apiUrl2);
+      response = await fetch(proxyUrl + apiUrl2);
     } catch (err) {
       console.log(err);
     }
     json = await response.json();
-    
+
     this.setState({
       CoptUsdt: json.Data.precio,
     });
@@ -237,64 +234,64 @@ export default class Oficina extends Component {
 
       <section id="calculator" className="section-bg pt-5 pb-5">
 
-      <div className="container">
+        <div className="container">
 
-        <div className="row text-center">
+          <div className="row text-center">
 
-          <div className="col-sm-6 col-md-10 offset-md-1 wow bounceInUp" data-wow-duration="1s">
-            <div className="box">
+            <div className="col-sm-6 col-md-10 offset-md-1 wow bounceInUp" data-wow-duration="1s">
+              <div className="box">
 
-            <div onClick={()=> this.change()} style={{"cursor": "pointer"}}><img src={this.state.imageIn} alt="usdt logo trx" width="50" /> <button className="btn btn-info"><i className="fa fa-exchange" aria-hidden="true"></i></button> <img src={this.state.imageOut} alt="usdt logo trx" width="50"/></div>
-            <input id="amountSITE" type="number" className="form-control mb-20 mt-3 text-center" onChange={this.handleChangeValueIN}  placeholder="Ingresa una cantidad"></input>
+                <div onClick={() => this.change()} style={{ "cursor": "pointer" }}><img src={this.state.imageIn} alt="usdt logo trx" width="50" /> <button className="btn btn-info"><i className="fa fa-exchange" aria-hidden="true"></i></button> <img src={this.state.imageOut} alt="usdt logo trx" width="50" /></div>
+                <input id="amountSITE" type="number" className="form-control mb-20 mt-3 text-center" onChange={this.handleChangeValueIN} placeholder="Ingresa una cantidad"></input>
 
-            </div>
-          </div>
-
-        </div>
-        
-        <div className="row text-center mt-4">
-
-          <div className="col-sm-6 col-md-5  offset-md-1 wow bounceInUp" data-wow-duration="1s">
-          <div className="box">  
-                        
-            <img src={this.state.imageIn} alt="usdt logo trx" width="50" />
-            
-              <div className="input-group-append">
-                <select id="selIN" className="form-control mb-20 text-center" onChange={this.handleChangeIN} style={{"cursor": "pointer"}}>
-                  {this.state.listaIn}
-                </select>
-                
               </div>
-              
-
             </div>
+
           </div>
 
-          <div className="col-sm-6 col-md-5  wow bounceInUp" data-wow-duration="1s">
-            <div className="box">
-              <div width="50" heigth="50"><img src={this.state.imageOut} alt="usdt logo trx" width="50" /></div>
-              <select id="selOUT" className="form-control mb-20 text-center" onChange={this.handleChangeOUT} style={{"cursor": "pointer"}}>
-                {this.state.listaOut}
-              </select>
-              
+          <div className="row text-center mt-4">
+
+            <div className="col-sm-6 col-md-5  offset-md-1 wow bounceInUp" data-wow-duration="1s">
+              <div className="box">
+
+                <img src={this.state.imageIn} alt="usdt logo trx" width="50" />
+
+                <div className="input-group-append">
+                  <select id="selIN" className="form-control mb-20 text-center" onChange={this.handleChangeIN} style={{ "cursor": "pointer" }}>
+                    {this.state.listaIn}
+                  </select>
+
+                </div>
+
+
+              </div>
             </div>
+
+            <div className="col-sm-6 col-md-5  wow bounceInUp" data-wow-duration="1s">
+              <div className="box">
+                <div width="50" heigth="50"><img src={this.state.imageOut} alt="usdt logo trx" width="50" /></div>
+                <select id="selOUT" className="form-control mb-20 text-center" onChange={this.handleChangeOUT} style={{ "cursor": "pointer" }}>
+                  {this.state.listaOut}
+                </select>
+
+              </div>
+            </div>
+
+          </div>
+
+          <div className="row text-center">
+            <div className="col-sm-6 col-md-10  offset-md-1 wow bounceInUp" data-wow-duration="1s">
+              <div className="box">
+
+                <h4 className="title">
+                  <br />{(this.state.valueIn * 1).toFixed(6)} <b>{this.state.monedaIn}</b> = {(this.state.precioOut).toFixed(6)} <b>{this.state.monedaOut}</b>
+                </h4>
+              </div>
+            </div>
+
           </div>
 
         </div>
-
-        <div className="row text-center">
-          <div className="col-sm-6 col-md-10  offset-md-1 wow bounceInUp" data-wow-duration="1s">
-            <div className="box">  
-                          
-              <h4 className="title"> 
-                  <br />{(this.state.valueIn*1).toFixed(6)} <b>{this.state.monedaIn}</b> = {(this.state.precioOut).toFixed(6)} <b>{this.state.monedaOut}</b>
-              </h4> 
-            </div>
-          </div>
-
-        </div>
-        
-      </div>
       </section>
 
     );

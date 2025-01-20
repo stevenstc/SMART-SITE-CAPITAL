@@ -1,0 +1,53 @@
+name: Sync docs to web
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "docs/**"
+  workflow_dispatch:
+
+permissions:
+  deployments: write
+  contents: write
+  statuses: write
+  actions: write
+  checks: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v3
+
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # git remote set-url origin https://stevenstc:${{ secrets.FINE_GRAINED_PAT }}@github.com/brutustoken/BRUTUS-TOKEN.git
+
+      - name: Create or update web branch
+        run: |
+
+          git checkout main
+          # Check out the web branch or create it if it doesn't exist
+          git fetch origin web || echo "web branch does not exist"
+          git checkout web || git checkout --orphan web
+
+          # Clear the branch and copy the docs folder content to root
+          git rm -rf . || true
+
+          git checkout main -- docs
+          if [ -d "docs" ] && [ "$(ls -A docs)" ]; then
+            mv docs/* ./  # Mueve los archivos al directorio raíz
+            rm -rf docs   # Elimina la carpeta vacía
+            git add .
+            git commit -m "Sync docs folder to web branch"
+            git push origin web --force
+          else
+            echo "No docs folder content to copy"
+            exit 1
+          fi
