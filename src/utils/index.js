@@ -1,5 +1,8 @@
 import TronWeb from "tronweb";
 import site from "./SITECapital.json"
+import token from "./TOKEN.json"
+
+
 const CryptoJS = require("crypto-js");
 
 const env = process.env
@@ -14,6 +17,7 @@ const utils = {
   tronWeb: false,
   contract: false,
   numberRed: 0,
+  abi_token: token.abi,
 
   getRed(test = false) {
     let url = "https://api.nileex.io"
@@ -45,9 +49,9 @@ const utils = {
 
   },
 
-  getContract(wallet = wallet0x) {
+  getContract(wallet = wallet0x, _contractAddress = contractAddress) {
     this.getTronweb(wallet)
-    this.contract = this.tronWeb.contract(site.abi, contractAddress);
+    this.contract = this.tronWeb.contract(site.abi, _contractAddress);
     return this.contract
   },
 

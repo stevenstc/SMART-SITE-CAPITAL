@@ -6,6 +6,7 @@ import TronLinkGuide from "./components/TronLinkGuide";
 import utils from "./utils";
 
 
+
 let intervalId = null;
 let nextUpdate = 0;
 
@@ -80,11 +81,15 @@ class App extends Component {
         tronlik.loggedIn = true
 
         wallet = window.tronWeb.defaultAddress.base58
+        let tronWeb = utils.getTronweb(wallet)
+        let contract = utils.getContract(wallet)
+        let token = tronWeb.contract(utils.abi_token, await contract.TOKEN().call())
 
         this.setState({
           wallet,
-          contract: utils.getContract(wallet),
-          tronWeb: utils.getTronweb(wallet)
+          contract,
+          token,
+          tronWeb
         })
 
       } else {
@@ -140,7 +145,7 @@ class App extends Component {
 
       switch (getString) {
 
-        default: retorno = <Home tronlik={this.state.tronlik} tronWeb={this.state.tronWeb} wallet={this.state.wallet} contract={this.state.contract} />;
+        default: retorno = <Home {...this.state} />;
       }
 
     }

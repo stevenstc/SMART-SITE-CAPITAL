@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 
-import utils from "../utils";
 import cons from "../cons";
-import { abi } from "../utils/ITRC20.json"
 import CopyToClipboard from "react-copy-to-clipboard";
+
+const BigNumber = require('bignumber.js');
 
 let intervalId = null;
 let nextUpdate = 0;
@@ -56,7 +56,6 @@ export default class Home extends Component {
     this.Link = this.Link.bind(this);
     this.withdraw = this.withdraw.bind(this);
 
-    this.totalInvestors = this.totalInvestors.bind(this);
 
   }
 
@@ -86,8 +85,9 @@ export default class Home extends Component {
 
   async estado() {
 
-    let { contract, tronWeb } = this.state;
-    var accountAddress = this.state.wallet;
+    const {contract, token }= this.props
+    let { tronWeb, wallet } = this.state;
+    var accountAddress = wallet;
 
     var inicio = accountAddress.substr(0, 4);
     var fin = accountAddress.substr(-4);
@@ -100,18 +100,17 @@ export default class Home extends Component {
     document.getElementById("login").href = `https://tronscan.io/#/address/${accountAddress}`;
     document.getElementById("login-my-wallet").innerHTML = texto;
 
-    let TOKEN = await contract.TOKEN().call()
+    const contractSITE = token;
 
-    let contractSITE = await tronWeb.contract(abi, TOKEN);
+    let aprovado = await contractSITE.allowance(accountAddress, contract.address).call();
 
-    var aprovado = await contractSITE.allowance(accountAddress, contract.address).call();
+    console.log(aprovado);
 
     if (aprovado.remainig) {
       aprovado = parseInt(aprovado.remainig._hex);
     } else {
       aprovado = parseInt(aprovado._hex);
     }
-
 
     if (aprovado > 0) {
       aprovado = "Depositar";
@@ -120,19 +119,19 @@ export default class Home extends Component {
       aprovado = "Registrar";
     }
 
-    var decimales = await contractSITE.decimals().call();
-    var balance = await contractSITE.balanceOf(accountAddress).call();
-    balance = parseInt(balance._hex) / 10 ** decimales;
+    let decimales = await contractSITE.decimals().call();
+    let balance = await contractSITE.balanceOf(accountAddress).call();
+    balance = new BigNumber(parseInt(balance._hex)).shiftedBy(-decimales);
 
-    var MIN_DEPOSIT = await contract.MIN_DEPOSIT().call();
-    MIN_DEPOSIT = parseInt(MIN_DEPOSIT._hex) / 10 ** decimales;
+    let MIN_DEPOSIT = await contract.MIN_DEPOSIT().call();
+    MIN_DEPOSIT = new BigNumber(parseInt(MIN_DEPOSIT._hex)).shiftedBy(-decimales);
 
-    var MAX_DEPOSIT = await contract.MAX_DEPOSIT().call();
-    MAX_DEPOSIT = parseInt(MAX_DEPOSIT._hex) / 10 ** decimales;
+    let MAX_DEPOSIT = await contract.MAX_DEPOSIT().call();
+    MAX_DEPOSIT = new BigNumber(parseInt(MAX_DEPOSIT._hex)).shiftedBy(-decimales);
 
-    var partner = cons.WS;
+    let partner = cons.WS;
 
-    var inversors = await contract.investors(accountAddress).call();
+    let inversors = await contract.investors(accountAddress).call();
 
 
     if (inversors.registered) {
@@ -174,56 +173,46 @@ export default class Home extends Component {
     let porcentaje = await contract.porcent().call();
     porcentaje = parseInt(porcentaje._hex)
 
-    var balancesite = await contractSITE.balanceOf(accountAddress).call();
-    balancesite = parseInt(balancesite._hex);
+    let balancesite = await contractSITE.balanceOf(accountAddress).call();
+    balancesite = new BigNumber(parseInt(balancesite._hex)).shiftedBy(-decimales);
 
     var balanceTRX = await tronWeb.trx.getBalance();
-    balanceTRX = balanceTRX / 10 ** 6;
+    balanceTRX = new BigNumber(balanceTRX ).shiftedBy(-6);
 
-    var contractUSDT = {}//await tronWeb.contract().at("TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t");
-
-    var balanceUSDT = 0//await contractUSDT.balanceOf(accountAddress).call();
-
-    balanceUSDT = parseInt(balanceUSDT) / 10 ** 6;
 
     this.setState({
       deposito: aprovado,
-      balance: balance,
+      balance: balance.toNumber(),
       decimales: decimales,
       accountAddress: accountAddress,
       porcentaje: porcentaje,
       dias: dias,
-      min: MIN_DEPOSIT,
-      max: MAX_DEPOSIT,
+      min: MIN_DEPOSIT.toNumber(),
+      max: MAX_DEPOSIT.toNumber(),
       partner: partner,
-      balanceSite: balancesite,
+      balanceSite: balancesite.toNumber(),
       balanceTRX: balanceTRX,
-      balanceUSDT: balanceUSDT,
-      maxAlcanzado: parseInt(inversors.invested) / 10 ** decimales <= MAX_DEPOSIT,
       maxButton: "Max"
     });
-  }
 
-  async totalInvestors() {
-
-    const { contract } = this.state;
 
     let esto = await contract.setstate().call();
 
-    var tronUSDT = await window.tronWeb;
-    var contractUSDT = await tronUSDT.contract().at(cons.USDT);
-    var decimales = await contractUSDT.decimals().call();
-    //console.log(esto);
     this.setState({
-      totalInvestors: parseInt(esto.Investors._hex) + 31,
+      totalInvestors: parseInt(esto.Investors._hex),
       totalInvested: parseInt(esto.Invested._hex) / 10 ** decimales,
       totalRefRewards: parseInt(esto.RefRewards._hex) / 10 ** decimales
 
     });
 
-  };
+
+
+    this.Link();
+    this.Investors()
+  }
 
   async Link() {
+    const {wallet }= this.props;
     const { registered } = this.state;
     if (registered) {
 
@@ -231,8 +220,8 @@ export default class Home extends Component {
       if (loc.indexOf('?') > 0) {
         loc = loc.split('?')[0]
       }
-      let mydireccion = await window.tronWeb.trx.getAccount();
-      mydireccion = window.tronWeb.address.fromHex(mydireccion.address)
+      
+      let mydireccion = wallet
       mydireccion = loc + '?ref=' + mydireccion;
       this.setState({
         link: mydireccion,
@@ -247,21 +236,14 @@ export default class Home extends Component {
 
   async Investors() {
 
-    const { contract } = this.state;
+    const { contract, wallet } = this.props;
+    const { decimales } = this.state;
 
-
-    let direccion = await window.tronWeb.trx.getAccount();
-    let esto = await contract.investors(direccion.address).call();
-    let My = await contract.MYwithdrawable().call();
-
-    var tronUSDT = await window.tronWeb;
-    var contractUSDT = await tronUSDT.contract().at(cons.USDT);
-    var decimales = await contractUSDT.decimals().call();
-
-    var precioSITE = await this.rateSITE();
+    let esto = await contract.investors(wallet).call();
+    let My = await contract.withdrawable(wallet).call();
 
     this.setState({
-      direccion: window.tronWeb.address.fromHex(direccion.address),
+      direccion: window.tronWeb.address.fromHex(wallet),
       registered: esto.registered,
       balanceRef: parseInt(esto.balanceRef._hex) / 10 ** decimales,
       totalRef: parseInt(esto.totalRef._hex) / 10 ** decimales,
@@ -269,22 +251,21 @@ export default class Home extends Component {
       paidAt: parseInt(esto.paidAt._hex) / 10 ** decimales,
       my: parseInt(My.amount._hex) / 10 ** decimales,
       withdrawn: parseInt(esto.withdrawn._hex) / 10 ** decimales,
-      precioSITE: precioSITE
+      precioSITE: 1
     });
 
   };
 
   async withdraw() {
-    const { contract, balanceRef, my } = this.state;
+
+    const { tronWeb, token, contract, wallet } = this.props
+    const { balanceRef, my } = this.state;
 
     var available = (balanceRef + my);
     available = available.toFixed(8);
     available = parseFloat(available);
 
-    var tronUSDT = await window.tronWeb;
-    var contractUSDT = await tronUSDT.contract().at(cons.USDT);
-
-    var decimales = await contractUSDT.decimals().call();
+    var decimales = await token.decimals().call();
 
     var MIN_RETIRO = await contract.MIN_RETIRO().call();
     MIN_RETIRO = parseInt(MIN_RETIRO._hex) / 10 ** decimales;
@@ -295,6 +276,29 @@ export default class Home extends Component {
 
     if (available < MAX_RETIRO && available > MIN_RETIRO) {
       await contract.withdraw().send();
+
+      let inputs = [
+        //{type: 'uint256', value: amount},
+        //{type: 'address', value: this.props.tronWeb.address.toHex(sponsor)}
+      ]
+
+      let funcion = "send()"
+      let trigger = await tronWeb.transactionBuilder.triggerSmartContract(tronWeb.address.toHex(contract.address), funcion, {}, inputs, tronWeb.address.toHex(wallet))
+      let transaction = await tronWeb.transactionBuilder.extendExpiration(trigger.transaction, 180);
+      transaction = await window.tronLink.tronWeb.trx.sign(transaction)
+        .catch((e) => {
+            alert(e.toString())
+        
+        })
+      console.log(transaction)
+      transaction = await this.props.tronWeb.trx.sendRawTransaction(transaction)
+        .then(() => {
+          alert("Transacción exitosa")
+        })
+        .catch((e) => {
+          alert(e.toString())
+        })
+
     } else {
       if (available > MAX_RETIRO) {
         window.alert("Por favor contacta con el soporte técnico de SITE");
@@ -327,11 +331,10 @@ export default class Home extends Component {
   };
 
 
-
-
   async deposit() {
 
-    const { contract, deposito, decimales, balanceSite, balanceTRX, maxAlcanzado, tronWeb } = this.state;
+    const { contract, tronWeb, token, wallet } = this.props;
+    const { deposito, decimales, balanceSite, balanceTRX, maxAlcanzado } = this.state;
 
     let { min, max } = this.state
 
@@ -343,32 +346,48 @@ export default class Home extends Component {
     amount = parseFloat(amount);
     amount = parseInt(amount * 10 ** decimales);
 
-    //console.log(amount);
+    let accountAddress = wallet
 
-    //console.log(isNaN(amount));
+    let aprovado = await token.allowance(accountAddress, contract.address).call();
+    aprovado = parseInt(aprovado._hex);
 
-    var accountAddress = await tronWeb.trx.getAccount();
+    console.log(aprovado);
+    if (aprovado <= 0 ) {
+      
+  
+      let inputs = [
+        {type: 'address', value: this.props.tronWeb.address.toHex(contract.address)},
+        {type: 'uint256', value: "115792089237316195423570985008687907853269984665640564039457584007913129639935"}
+      ]
 
-    accountAddress = tronWeb.address.fromHex(accountAddress.address);
+      let funcion = "approve(address,uint256)"
+      let trigger = await tronWeb.transactionBuilder.triggerSmartContract(tronWeb.address.toHex(token.address), funcion, {}, inputs, tronWeb.address.toHex(accountAddress))
+      let transaction = await tronWeb.transactionBuilder.extendExpiration(trigger.transaction, 180);
+      transaction = await window.tronLink.tronWeb.trx.sign(transaction)
+        .catch((e) => {
+            alert(e.toString())
+        
+        })
+      console.log(transaction)
+      transaction = await this.props.tronWeb.trx.sendRawTransaction(transaction)
+        .then(() => {
+          alert("Transacción exitosa: "+transaction.txID)
+        })
+        .catch((e) => {
+          alert(e.toString())
+        })
+    } 
 
-    var contractUSDT = await tronWeb.contract(abi, await contract.TOKEN().call());
-
-    if (deposito === "Registrar" && balanceTRX >= 50) {
-      document.getElementById("amount").value = "";
-      await contractUSDT.approve(contract.address, "115792089237316195423570985008687907853269984665640564039457584007913129639935").send();
-    } else {
-      var aprovado = await contractUSDT.allowance(accountAddress, contract.address).call();
-      aprovado = parseInt(aprovado._hex);
-    }
+    aprovado = await token.allowance(accountAddress, contract.address).call();
+    aprovado = parseInt(aprovado._hex);
+    
 
     if (aprovado >= amount &&
       aprovado > 0 &&
       balanceSite >= amount &&
       amount >= min &&
       amount <= max &&
-      balanceTRX >= 50 &&
-      deposito !== "Registrar" &&
-      maxAlcanzado
+      balanceTRX >= 1
     ) {
 
 
@@ -413,11 +432,30 @@ export default class Home extends Component {
 
       if (amount >= min) {
 
-        await contract.deposit(amount, sponsor).send();
+
+        let inputs = [
+          {type: 'uint256', value: amount},
+          {type: 'address', value: this.props.tronWeb.address.toHex(sponsor)}
+        ]
+  
+        let funcion = "deposit(uint256,address)"
+        let trigger = await tronWeb.transactionBuilder.triggerSmartContract(tronWeb.address.toHex(contract.address), funcion, {}, inputs, tronWeb.address.toHex(accountAddress))
+        let transaction = await tronWeb.transactionBuilder.extendExpiration(trigger.transaction, 180);
+        transaction = await window.tronLink.tronWeb.trx.sign(transaction)
+          .catch((e) => {
+              alert(e.toString())
+          
+          })
+        console.log(transaction)
+        transaction = await this.props.tronWeb.trx.sendRawTransaction(transaction)
+          .then(() => {
+            alert("Felicidades inversión exitosa: "+transaction.txID);
+          })
+          .catch((e) => {
+            alert(e.toString())
+          })
 
         document.getElementById("amount").value = "";
-
-        window.alert("Felicidades inversión exitosa");
 
         document.getElementById("services").scrollIntoView({ block: "end", behavior: "smooth" });;
 
@@ -442,13 +480,9 @@ export default class Home extends Component {
         window.alert("No tienes suficiente SITE");
       }
 
-      if (!maxAlcanzado) {
-        document.getElementById("amount").value = "";
-        window.alert("Limite de deposito máximo alcanzado");
-      }
-
-      if (balanceTRX < 50) {
-        window.alert("Su cuenta debe tener almenos 150 TRX para ejecutar las transacciones correctamente");
+    
+      if (balanceTRX < 10) {
+        window.alert("Su cuenta debe tener almenos 10 TRX para ejecutar las transacciones correctamente");
 
       }
 
