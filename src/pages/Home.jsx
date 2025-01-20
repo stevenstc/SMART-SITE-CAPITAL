@@ -95,8 +95,6 @@ export default class Home extends Component {
     var texto = inicio + "..." + fin;
 
     document.getElementById("contract").innerHTML = '<a href="https://tronscan.org/#/contract/' + contract.address + '/code">Contrato V 1.0</a>';
-
-    //document.getElementById("login").innerHTML = '<a href="https://tronscan.io/#/address/'+accountAddress+'" class="logibtn gradient-btn">'+texto+'</a>';
     document.getElementById("login").href = `https://tronscan.io/#/address/${accountAddress}`;
     document.getElementById("login-my-wallet").innerHTML = texto;
 
@@ -132,7 +130,6 @@ export default class Home extends Component {
     let partner = cons.WS;
 
     let inversors = await contract.investors(accountAddress).call();
-
 
     if (inversors.registered) {
       partner = window.tronWeb.address.fromHex(inversors.sponsor);
