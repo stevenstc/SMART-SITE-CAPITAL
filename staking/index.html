@@ -1,0 +1,16 @@
+<html>
+    <body>
+        <script type="text/javascript">
+        var loc = document.location.href;
+        var pagina = document.location.host;
+        console.log(pagina);
+        
+        if(loc.indexOf('?')>0){
+          var getString = loc.split('?')[1];
+            window.location = "http://"+pagina+"/?staking?"+getString;
+        }else{
+            window.location = "http://"+pagina+"/?staking";
+        }
+        </script>
+    </body>
+</html>
