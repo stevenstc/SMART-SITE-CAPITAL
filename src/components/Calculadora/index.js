@@ -3,14 +3,12 @@ import React, { Component } from "react";
 import cons from "../../cons.js";
 
 var apiUrl = cons.PRE;
-const imageSITE = "https://coin.top/production/upload/logo/TDDkSxfkN5DbqXK3tHSZFXRMcT9aS6m9qz.png";
-
 var apiUrl2 = "https://precio-site.herokuapp.com/api/v1/servicio/precio/v1/COPT";
-const imageUSDT = "https://coin.top/production/logo/usdtlogo.png";
 
-const imageCOPT = "https://nile.tronscan.org/upload/logo/TEukpkVusQQWnKzyfyUy8Yz9B9Khei6MCm.png";
+const imageSITE = "./img/logo-site.png";
+const imageUSDT = "./img/logo-usdt.png";
+const imageCOPT = "./img/logo-copt.png";
 
-const imageBOB = "img/bob.png";
 
 export default class Oficina extends Component {
   constructor(props) {
@@ -30,12 +28,12 @@ export default class Oficina extends Component {
         <option value="SITE">SITE</option>
         <option value="USDT">USDT</option>
         <option value="COPT">COPT</option>
-        <option value="BOB">BOB</option></>,
+      </>,
       listaOut: <>
         <option value="USDT">USDT</option>
         <option value="SITE">SITE</option>
         <option value="COPT">COPT</option>
-        <option value="BOB">BOB</option></>,
+      </>,
 
     };
 
@@ -134,12 +132,6 @@ export default class Oficina extends Component {
         moneda2 = "SITE";
         break;
 
-      case "BOB":
-        image = imageBOB;
-        image2 = imageSITE;
-        moneda2 = "SITE";
-        break;
-
       default:
         image = imageSITE;
         image2 = imageUSDT;
@@ -164,12 +156,6 @@ export default class Oficina extends Component {
 
       case "COPT":
         image = imageCOPT;
-        image2 = imageSITE;
-        moneda2 = "SITE";
-        break;
-
-      case "BOB":
-        image = imageBOB;
         image2 = imageSITE;
         moneda2 = "SITE";
         break;
