@@ -10,7 +10,7 @@ const imageUSDT = "./img/logo-usdt.png";
 const imageCOPT = "./img/logo-copt.png";
 
 
-export default class Oficina extends Component {
+export default class Calculadora extends Component {
   constructor(props) {
     super(props);
 
