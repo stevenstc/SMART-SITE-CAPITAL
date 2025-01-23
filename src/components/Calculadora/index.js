@@ -1,9 +1,5 @@
 import React, { Component } from "react";
 
-import cons from "../../cons.js";
-
-var apiUrl = cons.PRE;
-var apiUrl2 = "https://precio-site.herokuapp.com/api/v1/servicio/precio/v1/COPT";
 
 const imageSITE = "./img/logo-site.png";
 const imageUSDT = "./img/logo-usdt.png";
@@ -186,30 +182,14 @@ export default class Calculadora extends Component {
   };
 
   async rateSITE() {
-    var proxyUrl = cons.proxy;
-    var response;
 
-    try {
-      response = await fetch(proxyUrl + apiUrl);
-    } catch (err) {
-      console.log(err);
-    }
-    var json = await response.json();
+    let value = 1
 
     this.setState({
-      SiteUsdt: json.Data.precio
+      CoptUsdt: value,
     });
 
-    try {
-      response = await fetch(proxyUrl + apiUrl2);
-    } catch (err) {
-      console.log(err);
-    }
-    json = await response.json();
-
-    this.setState({
-      CoptUsdt: json.Data.precio,
-    });
+    return value
 
   };
 
