@@ -67,10 +67,7 @@ contract SITECapital {
         bool registered;
         address sponsor;
         uint256 balanceRef;
-        uint256 totalRef;
-        uint256 invested;
         uint256 paidAt;
-        uint256 withdrawn;
     }
 
     address public TOKEN;
@@ -80,29 +77,46 @@ contract SITECapital {
     address public owner;
 
     uint256[] public primervez = [30, 10];
-
     uint256[] public porcientos = [5, 3];
 
     uint256 public basePorcientos = 1000;
-    bool public sisReferidos = false;
+    bool public sisReferidos = true;
 
-    uint256 public dias = 180;
-    uint256 public porcent = 130;
+    uint256 public dias = 90;
+    uint256 public porcent = 115;
 
-    uint256 public totalInvestors;
-    uint256 public totalInvested;
-    uint256 public totalRefRewards;
+    uint256 public totalUsers;
 
     mapping(address => Investor) public investors;
     mapping(address => Deposit[]) public deposits;
 
+    event Registro(
+        address indexed user,
+        address indexed sponsor,
+        uint256 indexed time
+    );
+    event Deposito(
+        address indexed user,
+        uint256 indexed amount,
+        uint256 indexed time
+    );
+    event Extra(
+        address indexed user,
+        uint256 indexed amount,
+        uint256 indexed time
+    );
+    event Retiro(
+        address indexed user,
+        uint256 indexed amount,
+        uint256 indexed time
+    );
+
     constructor(address _tokenTRC20) {
+        totalUsers++;
         TOKEN = _tokenTRC20;
         owner = msg.sender;
         investors[msg.sender].registered = true;
         investors[msg.sender].sponsor = address(0);
-
-        totalInvestors++;
     }
 
     function ChangeTokenUSDT(address _tokenTRC20) public returns (bool) {
@@ -110,14 +124,6 @@ contract SITECapital {
         TOKEN = _tokenTRC20;
 
         return true;
-    }
-
-    function setstate()
-        public
-        view
-        returns (uint256 Investors, uint256 Invested, uint256 RefRewards)
-    {
-        return (totalInvestors, totalInvested, totalRefRewards);
     }
 
     function InContractSITE() public view returns (uint) {
@@ -141,7 +147,7 @@ contract SITECapital {
         porcientos = _values;
     }
 
-    function setPrimeravezPorcientos(uint256[] calldata _values) public {
+    function setPorcientosPrimeravez(uint256[] calldata _values) public {
         require(msg.sender == owner);
         primervez = _values;
     }
@@ -207,20 +213,20 @@ contract SITECapital {
     ) internal {
         Investor memory usuario;
         address[] memory referi = column(from, array.length);
-        uint256 a;
+        uint256[] memory a;
 
         for (uint256 i = 0; i < array.length; i++) {
             usuario = investors[referi[i]];
-            if (
-                usuario.registered &&
-                porcientos[i] != 0 &&
-                referi[i] != address(0)
-            ) {
-                a = amount.mul(porcientos[i]).div(basePorcientos);
+            if (usuario.registered && porcientos[i] != 0) {
+                if (referi[i] != address(0)) {
+                    a[i] = amount.mul(porcientos[i]).div(basePorcientos);
 
-                usuario.balanceRef += a;
-                usuario.totalRef += a;
-                totalRefRewards += a;
+                    investors[referi[i]].balanceRef += a[i];
+
+                    emit Extra(referi[i], a[i], block.timestamp);
+                } else {
+                    break;
+                }
             } else {
                 break;
             }
@@ -235,12 +241,13 @@ contract SITECapital {
 
         if (!usuario.registered) {
             usuario.registered = true;
+            usuario.sponsor = _sponsor;
             if (_sponsor != address(0) && sisReferidos) {
-                usuario.sponsor = _sponsor;
                 rewardReferers(msg.sender, _value, primervez);
             }
 
-            totalInvestors++;
+            totalUsers++;
+            emit Registro(msg.sender, _sponsor, block.timestamp);
         } else {
             if (usuario.sponsor != address(0) && sisReferidos) {
                 rewardReferers(msg.sender, _value, porcientos);
@@ -251,8 +258,7 @@ contract SITECapital {
             Deposit(porcent, tiempo(), _value, block.timestamp)
         );
 
-        usuario.invested += _value;
-        totalInvested += _value;
+        emit Deposito(msg.sender, _value, block.timestamp);
     }
 
     function withdrawable(address _user) public view returns (uint256 amount) {
@@ -284,9 +290,10 @@ contract SITECapital {
 
         ITRC20(TOKEN).transfer(_user, amount);
 
-        delete investors[_user].balanceRef;
+        investors[_user].balanceRef = 0;
         investors[_user].paidAt = block.timestamp;
-        investors[_user].withdrawn += amount;
+
+        emit Retiro(_user, amount, block.timestamp);
     }
 
     function redimSITE01() public {

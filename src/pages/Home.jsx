@@ -67,7 +67,7 @@ export default class Home extends Component {
         if (!this.props.tronlik.installed || !this.props.tronlik.loggedIn) {
           nextUpdate = Date.now() + 3 * 1000;
         } else {
-          nextUpdate = Date.now() + 60 * 1000;
+          nextUpdate = Date.now() + 10 * 1000;
         }
 
         if (this.props.tronlik.loggedIn) {
@@ -105,7 +105,7 @@ export default class Home extends Component {
       aprovado = "Depositar";
     } else {
       document.getElementById("amount").value = "";
-      aprovado = "Registrar";
+      aprovado = "Primer Deposito";
     }
 
     let decimales = parseInt(await token.decimals().call());
@@ -290,6 +290,8 @@ export default class Home extends Component {
         window.alert("Contacta con el soporte técnico de SITE");
       }
     }
+
+    this.estado();
   };
 
   async rateSITE() {
@@ -483,17 +485,18 @@ export default class Home extends Component {
 
                   <table className="table borderless">
                     <tbody>
+
+                      <tr>
+                        <td><i className="fa fa-check-circle-o text-success"></i>TOTAL ROI</td><td>{this.state.porcentaje}%</td>
+                      </tr>
+                      <tr>
+                        <td><i className="fa fa-check-circle-o text-success"></i>TIEMPO EN DIAS</td><td>{this.state.dias}</td>
+                      </tr>
                       <tr>
                         <td><i className="fa fa-check-circle-o text-success"></i>TASA E.A</td><td>{((((this.state.porcentaje) - 100) * 365) / (this.state.dias)).toFixed(2)}%</td>
                       </tr>
                       <tr>
-                        <td><i className="fa fa-check-circle-o text-success"></i>RETORNO TOTAL</td><td>{this.state.porcentaje}%</td>
-                      </tr>
-                      <tr>
                         <td><i className="fa fa-check-circle-o text-success"></i>RECOMPENSA</td><td>{(this.state.porcentaje) - 100}%</td>
-                      </tr>
-                      <tr>
-                        <td><i className="fa fa-check-circle-o text-success"></i>Tiempo en días</td><td>{this.state.dias}</td>
                       </tr>
                     </tbody>
                   </table>
