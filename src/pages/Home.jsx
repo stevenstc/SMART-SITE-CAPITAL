@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 
-import cons from "../cons";
 import CopyToClipboard from "react-copy-to-clipboard";
 
 const BigNumber = require('bignumber.js');
@@ -27,8 +26,7 @@ export default class Home extends Component {
       dias: "Cargando...",
       partner: "Cargando...",
       balanceTRX: "Cargando...",
-      balanceUSDT: "Cargando...",
-      maxButton: "Cargando...",
+      balanceUSDT: new BigNumber(0),
       precioSITE: 0,
 
       direccion: "",
@@ -85,7 +83,7 @@ export default class Home extends Component {
 
   async estado() {
 
-    const { contract, token, wallet, tronWeb } = this.props
+    const { contract, token, tokenUSDT, wallet, tronWeb } = this.props
 
     let texto = wallet;
     texto = texto.substr(0, 4) + "..." + texto.substr(-4);
@@ -119,13 +117,12 @@ export default class Home extends Component {
     let MAX_DEPOSIT = await contract.MAX_DEPOSIT().call();
     MAX_DEPOSIT = new BigNumber(parseInt(MAX_DEPOSIT._hex)).shiftedBy(-decimales);
 
-    let partner = cons.WS;
 
     let inversors = await contract.investors(wallet).call();
+    let partner = tronWeb.address.fromHex(inversors.sponsor);
 
-    if (inversors.registered) {
-      partner = window.tronWeb.address.fromHex(inversors.sponsor);
-    } else {
+
+    if (!inversors.registered) {
 
       var loc = document.location.href;
       if (loc.indexOf('?') > 0) {
@@ -181,9 +178,15 @@ export default class Home extends Component {
       partner: partner,
       balanceSite: balancesite.toNumber(),
       balanceTRX: balanceTRX,
-      maxButton: "Max"
     });
 
+
+    let decimalsUSDT = await tokenUSDT.decimals().call()
+
+    let balanceUSDT = await tokenUSDT.balanceOf(wallet).call()
+    balanceUSDT = new BigNumber(balanceUSDT).shiftedBy(-decimalsUSDT);
+
+    this.setState({ balanceUSDT })
 
     let esto = await contract.setstate().call();
 
@@ -295,23 +298,9 @@ export default class Home extends Component {
   };
 
   async rateSITE() {
-    var proxyUrl = cons.proxy;
-    var apiUrl = cons.PRE;
-    var response;
-    try {
-      response = await fetch(proxyUrl + apiUrl);
-    } catch (err) {
-      console.log(err);
-      return this.state.precioSITE;
-    }
 
-    const json = await response.json();
 
-    this.setState({
-      precioSITE: json.Data.precio
-    })
-
-    return json.Data.precio;
+    return 1;
 
   };
 
@@ -374,16 +363,15 @@ export default class Home extends Component {
       return;
     }
 
-    var loc = document.location.href;
-    var sponsor = cons.WS;
 
-    var investors = await contract.investors(wallet).call();
+    let investors = await contract.investors(wallet).call();
+    let sponsor = tronWeb.address.fromHex(investors.sponsor);
 
-    if (investors.registered) {
 
-      sponsor = investors.sponsor;
+    if (!investors.registered) {
 
-    } else {
+      let loc = document.location.href;
+
 
       if (loc.indexOf('?') > 0) {
 
@@ -509,13 +497,13 @@ export default class Home extends Component {
 
                       SITE: <strong>{this.state.balance}</strong> (${(this.state.balance * this.state.precioSITE).toFixed(2)})<br />
                       TRX: <strong>{(this.state.balanceTRX * 1).toFixed(6)}</strong><br />
-                      USDT: <strong>{(this.state.balanceUSDT * 1).toFixed(6)}</strong><br />
+                      USDT: <strong>{this.state.balanceUSDT.toString(10)}</strong><br />
                     </p>
 
                     <div className="input-group mb-3">
                       <input id="amount" type="number" className="form-control mb-20 text-center" placeholder={min}></input>
                       <div className="input-group-append">
-                        <button className="btn btn-outline-secondary" type="button" onClick={this.getMax}>{this.state.maxButton}</button>
+                        <button className="btn btn-outline-secondary" type="button" onClick={this.getMax}>MAX</button>
                       </div>
                     </div>
 

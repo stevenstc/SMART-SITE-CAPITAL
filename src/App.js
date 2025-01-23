@@ -30,39 +30,20 @@ class App extends Component {
 
   async componentDidMount() {
 
-    intervalId = setInterval(() => {
+    intervalId = setInterval(async () => {
 
       if (Date.now() >= nextUpdate) {
 
-        if (this.state.tronWeb.installed && !this.state.tronWeb.loggedIn) {
+        await this.conectar();
+
+        if (!this.state.tronWeb.loggedIn) {
           nextUpdate = Date.now() + 3 * 1000;
         } else {
           nextUpdate = Date.now() + 60 * 1000;
         }
-        this.conectar();
       }
 
     }, 3 * 1000);
-
-
-
-
-    if (!this.state.tronlik.loggedIn) {
-
-      window.tronWeb.on("addressChange", () => {
-        if (this.state.tronlik.loggedIn) {
-          return;
-        }
-
-        this.setState({
-          tronWeb: true,
-          tronlik: {
-            installed: true,
-            loggedIn: true
-          }
-        });
-      });
-    }
 
   }
 
@@ -84,11 +65,14 @@ class App extends Component {
         let tronWeb = utils.getTronweb(wallet)
         let contract = utils.getContract(wallet)
         let token = tronWeb.contract(utils.abi_token, await contract.TOKEN().call())
+        let tokenUSDT = tronWeb.contract(utils.abi_token, "TAbFWFW1imCuB4J8vSNGWUye6y8FRtfkdX")
+
 
         this.setState({
           wallet,
           contract,
           token,
+          tokenUSDT,
           tronWeb
         })
 
