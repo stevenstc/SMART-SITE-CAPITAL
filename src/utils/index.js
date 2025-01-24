@@ -8,7 +8,7 @@ const CryptoJS = require("crypto-js");
 const env = process.env
 
 const testnet = true;
-const contractAddress = "TThuG24a51VFM4pJF3ZJihpjbGNsBxi62B"
+const contractAddress = "TZ6S6a7RTPQZwG1HFrkesBPakBzSLeMzzc"
 
 const wallet0x = "T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb"
 
