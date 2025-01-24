@@ -12,16 +12,16 @@ y está integrada con [TronLink](https://github.com/TronWatch/TronLink).
 
 ## Instalar la aplicación
 
-`npm install`
+`yarn`
 
 ## Iniciar servidor local
 
 Para hacer pruebas en **localhost:3000**
 
-`npm run start`
+`yarn start`
 
 ## Crear Build Final
 
 Para colocarlo en un servidor web, recuerda cambiar el **homepage** en **package.json**
 
-`npm run build`
+`yarn build`

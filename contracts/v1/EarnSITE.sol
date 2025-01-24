@@ -79,11 +79,10 @@ contract SITECapital {
 
     address public owner;
 
-    uint256[] public primervez = [30, 10];
+    uint256[] public primervez = [10];
+    uint256[] public porcientos = [3];
 
-    uint256[] public porcientos = [5, 3];
-
-    uint256 public basePorcientos = 1000;
+    uint256 public basePorcientos = 100;
     bool public sisReferidos = false;
 
     uint256 public dias = 180;
@@ -192,7 +191,9 @@ contract SITECapital {
         address _from,
         uint256 _lengt
     ) public view returns (address[] memory res) {
+        res = new address[](_lengt);
         for (uint256 index = 0; index < _lengt; index++) {
+            if (investors[_from].sponsor == address(0)) break;
             res[index] = investors[_from].sponsor;
             _from = investors[_from].sponsor;
         }
@@ -205,21 +206,15 @@ contract SITECapital {
         uint256 amount,
         uint256[] memory array
     ) internal {
-        Investor memory usuario;
         address[] memory referi = column(from, array.length);
         uint256 a;
 
-        for (uint256 i = 0; i < array.length; i++) {
-            usuario = investors[referi[i]];
-            if (
-                usuario.registered &&
-                porcientos[i] != 0 &&
-                referi[i] != address(0)
-            ) {
+        for (uint256 i = 0; i < referi.length; i++) {
+            if (porcientos[i] != 0) {
                 a = amount.mul(porcientos[i]).div(basePorcientos);
 
-                usuario.balanceRef += a;
-                usuario.totalRef += a;
+                investors[referi[i]].balanceRef += a;
+                investors[referi[i]].totalRef += a;
                 totalRefRewards += a;
             } else {
                 break;

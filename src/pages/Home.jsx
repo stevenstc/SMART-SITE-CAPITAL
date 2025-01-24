@@ -18,7 +18,7 @@ export default class Home extends Component {
       totalInvested: 0,
       totalRefRewards: 0,
 
-      min: 100,
+      min: 30,
       deposito: "Cargando...",
       balance: "Cargando...",
       wallet: "Cargando...",
@@ -114,12 +114,12 @@ export default class Home extends Component {
     let MIN_DEPOSIT = await contract.MIN_DEPOSIT().call();
     MIN_DEPOSIT = new BigNumber(parseInt(MIN_DEPOSIT._hex)).shiftedBy(-decimales);
 
-    let MAX_DEPOSIT = await contract.MAX_DEPOSIT().call();
-    MAX_DEPOSIT = new BigNumber(parseInt(MAX_DEPOSIT._hex)).shiftedBy(-decimales);
-
-
     let inversors = await contract.investors(wallet).call();
     let partner = tronWeb.address.fromHex(inversors.sponsor);
+
+
+    let column = await contract.column(wallet, "2").call();
+    console.log(column)
 
 
     if (!inversors.registered) {
@@ -174,7 +174,6 @@ export default class Home extends Component {
       porcentaje: porcentaje,
       dias: dias,
       min: MIN_DEPOSIT.toNumber(),
-      max: MAX_DEPOSIT.toNumber(),
       partner: partner,
       balanceSite: balancesite.toNumber(),
       balanceTRX: balanceTRX,
@@ -251,48 +250,40 @@ export default class Home extends Component {
   async withdraw() {
 
     const { tronWeb, contract, wallet } = this.props
-    const { balanceRef, my, decimales } = this.state;
+    const { balanceRef, my, min, } = this.state;
 
     var available = (balanceRef + my);
     available = available.toFixed(8);
     available = parseFloat(available);
 
-    var MIN_RETIRO = await contract.MIN_RETIRO().call();
-    MIN_RETIRO = parseInt(MIN_RETIRO._hex) / 10 ** decimales;
-
-    var MAX_RETIRO = await contract.MAX_RETIRO().call();
-    MAX_RETIRO = parseInt(MAX_RETIRO._hex) / 10 ** decimales;
-
-    if (available < MAX_RETIRO && available > MIN_RETIRO) {
-
-      let inputs = [
-        //{type: 'uint256', value: amount},
-        { type: 'address', value: this.props.tronWeb.address.toHex(wallet) }
-      ]
-
-      let funcion = "withdraw(address)"
-      let trigger = await tronWeb.transactionBuilder.triggerSmartContract(tronWeb.address.toHex(contract.address), funcion, {}, inputs, tronWeb.address.toHex(wallet))
-      let transaction = await tronWeb.transactionBuilder.extendExpiration(trigger.transaction, 180);
-      transaction = await window.tronLink.tronWeb.trx.sign(transaction)
-        .catch((e) => {
-          alert(e.toString())
-
-        })
-      transaction = await this.props.tronWeb.trx.sendRawTransaction(transaction)
-        .then(() => {
-          alert("Transacción exitosa: " + transaction.txID)
-        })
-        .catch((e) => {
-          alert(e.toString())
-        })
-
-    } else {
-      if (available < MIN_RETIRO) {
-        window.alert("El minimo para retirar son: " + (MIN_RETIRO) + " SITE");
-      } else {
-        window.alert("Contacta con el soporte técnico de SITE");
-      }
+    if (available < min) {
+      window.alert("El minimo para retirar son: " + min + " SITE");
+      return;
     }
+
+
+    let inputs = [
+      //{type: 'uint256', value: amount},
+      { type: 'address', value: this.props.tronWeb.address.toHex(wallet) }
+    ]
+
+    let funcion = "withdraw(address)"
+    let trigger = await tronWeb.transactionBuilder.triggerSmartContract(tronWeb.address.toHex(contract.address), funcion, {}, inputs, tronWeb.address.toHex(wallet))
+    let transaction = await tronWeb.transactionBuilder.extendExpiration(trigger.transaction, 180);
+    transaction = await window.tronLink.tronWeb.trx.sign(transaction)
+      .catch((e) => {
+        alert(e.toString())
+
+      })
+    transaction = await this.props.tronWeb.trx.sendRawTransaction(transaction)
+      .then(() => {
+        alert("Transacción exitosa: " + transaction.txID)
+      })
+      .catch((e) => {
+        alert(e.toString())
+      })
+
+
 
     this.estado();
   };
@@ -353,13 +344,13 @@ export default class Home extends Component {
     }
 
     if (balanceTRX < 10) {
-      window.alert("Su cuenta debe tener almenos 10 TRX para ejecutar las transacciones correctamente");
+      alert("Su cuenta debe tener almenos 10 TRX para ejecutar las transacciones correctamente");
       return;
     }
 
-    if (amount.toNumber() < min) {
-      document.getElementById("amount").value = min / 10 ** decimales;
-      window.alert("coloca una cantidad mayor que " + (min / 10 ** decimales) + " SITE");
+    if (amount.toNumber() < min || isNaN(amount.toNumber())) {
+      document.getElementById("amount").value = min;
+      alert("coloca una cantidad mayor que " + min + " SITE");
       return;
     }
 
@@ -367,11 +358,9 @@ export default class Home extends Component {
     let investors = await contract.investors(wallet).call();
     let sponsor = tronWeb.address.fromHex(investors.sponsor);
 
-
     if (!investors.registered) {
 
       let loc = document.location.href;
-
 
       if (loc.indexOf('?') > 0) {
 
@@ -456,9 +445,6 @@ export default class Home extends Component {
     my = my.toFixed(8);
     my = parseFloat(my);
 
-
-    min = "Minimo. " + min + " SITE";
-
     return (
       <>
         <section id="why-us" className="wow fadeIn mt-5">
@@ -481,7 +467,7 @@ export default class Home extends Component {
                         <td><i className="fa fa-check-circle-o text-success"></i>TIEMPO EN DIAS</td><td>{this.state.dias}</td>
                       </tr>
                       <tr>
-                        <td><i className="fa fa-check-circle-o text-success"></i>TASA E.A</td><td>{((((this.state.porcentaje) - 100) * 365) / (this.state.dias)).toFixed(2)}%</td>
+                        <td><i className="fa fa-check-circle-o text-success"></i>TASA E.A</td><td>{((((this.state.porcentaje) - 100) * 360) / (this.state.dias)).toFixed(2)}%</td>
                       </tr>
                       <tr>
                         <td><i className="fa fa-check-circle-o text-success"></i>RECOMPENSA</td><td>{(this.state.porcentaje) - 100}%</td>
@@ -501,9 +487,9 @@ export default class Home extends Component {
                     </p>
 
                     <div className="input-group mb-3">
-                      <input id="amount" type="number" className="form-control mb-20 text-center" placeholder={min}></input>
+                      <input id="amount" type="number" className="form-control mb-20 text-center" placeholder={"Minimo. " + min + " SITE"} step={1} min={min}></input>
                       <div className="input-group-append">
-                        <button className="btn btn-outline-secondary" type="button" onClick={this.getMax}>MAX</button>
+                        <button className="btn btn-outline-secondary" type="button" onClick={() => this.getMax()}>MAX</button>
                       </div>
                     </div>
 
