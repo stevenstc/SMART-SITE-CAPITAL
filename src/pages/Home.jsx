@@ -99,11 +99,20 @@ export default class Home extends Component {
       aprovado = parseInt(aprovado._hex);
     }
 
+    let inversors = await contract.investors(wallet).call();
+    let partner = tronWeb.address.fromHex(inversors.sponsor);
+
     if (aprovado > 0) {
-      aprovado = "Depositar";
+      if (inversors.registered) {
+        aprovado = "Depositar";
+
+      } else {
+        aprovado = "Primer Depósito";
+
+      }
+
     } else {
-      document.getElementById("amount").value = "";
-      aprovado = "Primer Deposito";
+      aprovado = "Aprobar Gasto de Token";
     }
 
     let decimales = parseInt(await token.decimals().call());
@@ -113,14 +122,6 @@ export default class Home extends Component {
 
     let MIN_DEPOSIT = await contract.MIN_DEPOSIT().call();
     MIN_DEPOSIT = new BigNumber(parseInt(MIN_DEPOSIT._hex)).shiftedBy(-decimales);
-
-    let inversors = await contract.investors(wallet).call();
-    let partner = tronWeb.address.fromHex(inversors.sponsor);
-
-
-    let column = await contract.column(wallet, "2").call();
-    console.log(column)
-
 
     if (!inversors.registered) {
 
@@ -325,11 +326,12 @@ export default class Home extends Component {
       console.log(transaction)
       transaction = await this.props.tronWeb.trx.sendRawTransaction(transaction)
         .then(() => {
-          alert("Transacción exitosa: " + transaction.txID)
+          alert("Aprobación exitosa: " + transaction.txID)
         })
         .catch((e) => {
           alert(e.toString())
         })
+      return;
 
 
     }
@@ -350,7 +352,7 @@ export default class Home extends Component {
 
     if (amount.toNumber() < min || isNaN(amount.toNumber())) {
       document.getElementById("amount").value = min;
-      alert("coloca una cantidad mayor que " + min + " SITE");
+      alert("Coloca una cantidad mayor que " + min + " SITE");
       return;
     }
 
