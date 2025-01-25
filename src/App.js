@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 
 import Home from "./pages/Home";
-import Calculadora from "./components/Calculadora";
 import TronLinkGuide from "./components/TronLinkGuide";
 import utils from "./utils";
-
-
 
 let intervalId = null;
 let nextUpdate = 0;
@@ -108,21 +105,21 @@ class App extends Component {
 
     if (!this.state.tronlik.installed) {
       retorno = (
-        <>
-          <div className="container mb-5">
-            <TronLinkGuide />
-          </div>
-        </>
+
+        <div className="container mb-5">
+          <TronLinkGuide />
+        </div>
+
       );
     }
 
     if (!this.state.tronlik.loggedIn) {
       retorno = (
-        <>
-          <div className="container mb-5">
-            <TronLinkGuide installed url={interrogant + getString} />
-          </div>
-        </>
+
+        <div className="container mb-5">
+          <TronLinkGuide installed url={interrogant + getString} />
+        </div>
+
       );
     } else {
 
@@ -135,10 +132,9 @@ class App extends Component {
     }
 
 
-    return (<>{retorno}<Calculadora /></>)
+    return (<>{retorno}</>)
 
   }
 }
 export default App;
 
-// {tWeb()}
