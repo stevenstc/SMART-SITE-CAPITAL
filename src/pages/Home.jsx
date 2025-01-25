@@ -7,6 +7,260 @@ const BigNumber = require('bignumber.js');
 let intervalId = null;
 let nextUpdate = 0;
 
+const imageSITE = "./img/logo-site.png";
+const imageUSDT = "./img/logo-usdt.png";
+const imageCOPT = "./img/logo-copt.png";
+
+
+class Calculadora extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      CoptUsdt: 0.000260630465095065,
+      monedaIn: "SITE",
+      monedaOut: "USDT",
+      valueIn: "1",
+      precioOut: 0,
+      imageIn: imageSITE,
+      imageOut: imageUSDT,
+      listaIn: <>
+        <option value="SITE">SITE</option>
+        <option value="USDT">USDT</option>
+        <option value="COPT">COPT</option>
+      </>,
+      listaOut: <>
+        <option value="USDT">USDT</option>
+        <option value="SITE">SITE</option>
+        <option value="COPT">COPT</option>
+      </>,
+
+    };
+
+    this.handleChangeIN = this.handleChangeIN.bind(this);
+    this.handleChangeOUT = this.handleChangeOUT.bind(this);
+    this.calculo = this.calculo.bind(this);
+    this.handleChangeValueIN = this.handleChangeValueIN.bind(this);
+    this.change = this.change.bind(this);
+  }
+
+  handleChangeValueIN(event) {
+    this.setState({
+      valueIn: event.target.value
+    });
+  }
+
+  handleChangeIN(event) {
+    var image = imageSITE;
+    var image2 = imageUSDT;
+    var moneda2 = "USDT";
+    switch (event.target.value) {
+
+      case "COPT":
+        image = imageCOPT;
+        image2 = imageSITE;
+        moneda2 = "SITE";
+        break;
+
+      case "USDT":
+        image = imageUSDT;
+        image2 = imageSITE;
+        moneda2 = "SITE";
+        break;
+
+      default:
+        image = imageSITE;
+        image2 = imageUSDT;
+        moneda2 = "USDT";
+        break;
+    }
+    document.getElementById("selIN").value = event.target.value;
+    document.getElementById("selOUT").value = moneda2;
+    this.setState({
+      monedaIn: event.target.value,
+      imageIn: image,
+      monedaOut: moneda2,
+      imageOut: image2
+    });
+  }
+
+  handleChangeOUT(event) {
+    var image = imageUSDT;
+    var image2 = imageSITE;
+    var moneda2 = "SITE";
+    switch (event.target.value) {
+
+      case "COPT":
+        image = imageCOPT;
+        image2 = imageSITE;
+        moneda2 = "SITE";
+        break;
+
+      case "SITE":
+        image = imageSITE;
+        image2 = imageUSDT;
+        moneda2 = "USDT";
+        break;
+
+      default:
+        image = imageUSDT;
+        image2 = imageSITE;
+        moneda2 = "SITE";
+        break;
+    }
+    document.getElementById("selIN").value = moneda2;
+    document.getElementById("selOUT").value = event.target.value;
+    this.setState({
+      monedaOut: event.target.value,
+      imageOut: image,
+      monedaIn: moneda2,
+      imageIn: image2
+    });
+  }
+
+  change() {
+    var moneda = this.state.monedaIn;
+    var imagen = this.state.imageIn;
+    document.getElementById("selIN").value = this.state.monedaOut;
+    document.getElementById("selOUT").value = moneda;
+    this.setState({
+      monedaIn: this.state.monedaOut,
+      imageIn: this.state.imageOut,
+      monedaOut: moneda,
+      imageOut: imagen
+    });
+  }
+
+  async calculo() {
+    const { precioSITE } = this.props
+    let { valueIn } = this.state
+    valueIn = parseFloat(valueIn.replace(/,/g, "."))
+    if (isNaN(valueIn) || valueIn < 0) valueIn = 1
+
+    let par = this.state.monedaIn + "_" + this.state.monedaOut;
+
+    let precio = 0;
+    switch (par) {
+
+      case "SITE_USDT":
+        precio = valueIn * precioSITE;
+        console.log(precio)
+        break;
+
+      case "USDT_SITE":
+        precio = valueIn / precioSITE;
+        break;
+
+      case "SITE_COPT":
+        precio = valueIn * precioSITE;
+        precio = precio / this.state.CoptUsdt;
+        break;
+
+      case "COPT_SITE":
+        precio = valueIn * this.state.CoptUsdt;
+        precio = precio / precioSITE;
+        break;
+
+      case "COPT_USDT":
+        precio = valueIn * this.state.CoptUsdt;
+        break;
+
+      case "USDT_COPT":
+        precio = valueIn / this.state.CoptUsdt;
+        break;
+
+      default:
+        break;
+    }
+
+    this.setState({
+      valueIn: this.state.valueIn,
+      precioOut: precio
+    });
+  }
+
+  async componentDidMount() {
+
+    this.calculo()
+
+    setInterval(() => {
+      this.calculo()
+
+    }, 120 * 1000)
+
+  };
+
+  render() {
+
+    return (
+
+      <section id="calculator" className="section-bg pt-5 pb-5">
+
+        <div className="container">
+
+          <div className="row text-center">
+
+            <div className="col-sm-6 col-md-10 offset-md-1 wow bounceInUp" data-wow-duration="1s">
+              <div className="box">
+
+                <div onClick={() => this.change()} style={{ "cursor": "pointer" }}><img src={this.state.imageIn} alt="usdt logo trx" width="50" /> <button className="btn btn-info"><i className="fa fa-exchange" aria-hidden="true"></i></button> <img src={this.state.imageOut} alt="usdt logo trx" width="50" /></div>
+                <input id="amountSITE" type="number" className="form-control mb-20 mt-3 text-center" onChange={this.handleChangeValueIN} onInput={() => this.calculo()} placeholder="Ingresa una cantidad"></input>
+
+              </div>
+            </div>
+
+          </div>
+
+          <div className="row text-center mt-4">
+
+            <div className="col-sm-6 col-md-5  offset-md-1 wow bounceInUp" data-wow-duration="1s">
+              <div className="box">
+
+                <img src={this.state.imageIn} alt="usdt logo trx" width="50" />
+
+                <div className="input-group-append">
+                  <select id="selIN" className="form-control mb-20 text-center" onChange={this.handleChangeIN} style={{ "cursor": "pointer" }}>
+                    {this.state.listaIn}
+                  </select>
+
+                </div>
+
+
+              </div>
+            </div>
+
+            <div className="col-sm-6 col-md-5  wow bounceInUp" data-wow-duration="1s">
+              <div className="box">
+                <div width="50" heigth="50"><img src={this.state.imageOut} alt="usdt logo trx" width="50" /></div>
+                <select id="selOUT" className="form-control mb-20 text-center" onChange={this.handleChangeOUT} style={{ "cursor": "pointer" }}>
+                  {this.state.listaOut}
+                </select>
+
+              </div>
+            </div>
+
+          </div>
+
+          <div className="row text-center">
+            <div className="col-sm-6 col-md-10  offset-md-1 wow bounceInUp" data-wow-duration="1s">
+              <div className="box">
+
+                <h4 className="title">
+                  <br />{(this.state.valueIn * 1).toFixed(6)} <b>{this.state.monedaIn}</b> = {(this.state.precioOut).toFixed(6)} <b>{this.state.monedaOut}</b>
+                </h4>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+    );
+  }
+}
+
+
 export default class Home extends Component {
 
   constructor(props) {
@@ -83,6 +337,14 @@ export default class Home extends Component {
   async estado() {
 
     const { contract, token, tokenUSDT, wallet, tronWeb } = this.props
+
+    let precioSITE = await this.rateSITE()
+
+    document.getElementById("p1").innerHTML = "$ " + precioSITE
+
+    this.setState({
+      precioSITE
+    })
 
     let texto = wallet;
     texto = texto.substr(0, 4) + "..." + texto.substr(-4);
@@ -197,7 +459,6 @@ export default class Home extends Component {
     });
 
 
-
     this.Link();
     this.Investors()
   }
@@ -287,8 +548,9 @@ export default class Home extends Component {
 
   async rateSITE() {
 
+    // calcular precio de SITE en USDT
 
-    return 1;
+    return 0.9939;
 
   };
 
@@ -300,11 +562,12 @@ export default class Home extends Component {
 
     let amount = document.getElementById("amount").value;
     amount = new BigNumber(parseFloat(amount.replace(/,/g, ".")));
+    if (isNaN(amount)) amount = 0;
 
     let aprovado = await token.allowance(wallet, contract.address).call();
     aprovado = parseInt(aprovado._hex);
 
-    if (amount > aprovado) {
+    if (amount > aprovado || aprovado === 0) {
 
       let inputs = [
         { type: 'address', value: this.props.tronWeb.address.toHex(contract.address) },
@@ -422,7 +685,7 @@ export default class Home extends Component {
 
   render() {
 
-    let { min, balanceRef, totalRef, invested, withdrawn, my, wallet, link, totalInvestors, totalInvested, totalRefRewards } = this.state;
+    let { min, balanceRef, totalRef, invested, withdrawn, my, wallet, link, totalInvestors, totalInvested, totalRefRewards, precioSITE } = this.state;
 
     let available = (balanceRef + my);
     available = available.toFixed(8);
@@ -479,7 +742,7 @@ export default class Home extends Component {
                     </p>
                     <p className="card-text ">
 
-                      SITE: <strong>{this.state.balance}</strong> (${(this.state.balance * this.state.precioSITE).toFixed(2)})<br />
+                      SITE: <strong>{this.state.balance}</strong> (${(this.state.balance * precioSITE).toFixed(2)})<br />
                       TRX: <strong>{(this.state.balanceTRX * 1).toFixed(6)}</strong><br />
                       USDT: <strong>{this.state.balanceUSDT.toString(10)}</strong><br />
                     </p>
@@ -547,14 +810,14 @@ export default class Home extends Component {
               <div className="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-duration="1s">
                 <div className="box">
                   <div className="icon"><i className="ion-ios-analytics-outline" style={{ color: '#ff689b' }}></i></div>
-                  <h4 className="title"><a href="#services">{invested} SITE</a></h4> (${(this.state.invested * this.state.precioSITE).toFixed(2)})
+                  <h4 className="title"><a href="#services">{invested} SITE</a></h4> (${(this.state.invested * precioSITE).toFixed(2)})
                   <p className="description">Total invertido</p>
                 </div>
               </div>
               <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-duration="1s">
                 <div className="box">
                   <div className="icon"><i className="ion-ios-bookmarks-outline" style={{ color: '#e9bf06' }}></i></div>
-                  <h4 className="title"><a href="#services">{totalRef} SITE</a></h4> (${(totalRef * this.state.precioSITE).toFixed(2)})
+                  <h4 className="title"><a href="#services">{totalRef} SITE</a></h4> (${(totalRef * precioSITE).toFixed(2)})
                   <p className="description">Total ganancias por referidos</p>
                 </div>
               </div>
@@ -563,7 +826,7 @@ export default class Home extends Component {
                 <div className="box">
                   <div className="icon"><i className="ion-ios-paper-outline" style={{ color: '#3fcdc7' }}></i></div>
                   <p className="description">Mi balance</p>
-                  <h4 className="title"><a href="#services">{my} SITE</a></h4> (${(this.state.my * this.state.precioSITE).toFixed(2)})
+                  <h4 className="title"><a href="#services">{my} SITE</a></h4> (${(this.state.my * precioSITE).toFixed(2)})
 
                 </div>
               </div>
@@ -571,7 +834,7 @@ export default class Home extends Component {
                 <div className="box">
                   <div className="icon"><i className="ion-ios-paper-outline" style={{ color: '#3fcdc7' }}></i></div>
                   <p className="description">Balance por referidos</p>
-                  <h4 className="title"><a href="#services"> {balanceRef} SITE</a></h4> (${(this.state.balanceRef * this.state.precioSITE).toFixed(2)})
+                  <h4 className="title"><a href="#services"> {balanceRef} SITE</a></h4> (${(this.state.balanceRef * precioSITE).toFixed(2)})
 
                 </div>
               </div>
@@ -580,7 +843,7 @@ export default class Home extends Component {
                 <div className="box">
                   <div className="icon"><i className="ion-ios-speedometer-outline" style={{ color: '#41cf2e' }}></i></div>
                   <h4 className="title"><a href="#services">Disponible</a></h4>
-                  <p className="description">{available} SITE</p> (${(available * this.state.precioSITE).toFixed(2)})
+                  <p className="description">{available} SITE</p> (${(available * precioSITE).toFixed(2)})
                   <button type="button" className="btn btn-info d-block text-center mx-auto mt-1" onClick={() => this.withdraw()}>Retirar</button>
                 </div>
               </div>
@@ -588,7 +851,7 @@ export default class Home extends Component {
                 <div className="box">
                   <div className="icon"><i className="ion-ios-clock-outline" style={{ color: '#4680ff' }}></i></div>
                   <h4 className="title"><a href="#services">Retirado</a></h4>
-                  <p className="description">{withdrawn} SITE</p> (${(this.state.withdrawn * this.state.precioSITE).toFixed(2)})
+                  <p className="description">{withdrawn} SITE</p> (${(this.state.withdrawn * precioSITE).toFixed(2)})
                 </div>
               </div>
 
@@ -596,6 +859,9 @@ export default class Home extends Component {
 
           </div>
         </section>
+
+        {precioSITE > 0 ? <Calculadora precioSITE={precioSITE}></Calculadora> : <></>}
+
 
       </>
     );
