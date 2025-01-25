@@ -209,16 +209,13 @@ contract SITECapital {
         address[] memory referi = column(from, array.length);
         uint256 a;
 
-        for (uint256 i = 0; i < referi.length; i++) {
-            if (porcientos[i] != 0) {
-                a = amount.mul(porcientos[i]).div(basePorcientos);
+        for (uint256 i = 0; i < array.length; i++) {
+            if (array[i] == 0 || referi[i] == address(0)) break;
+            a = amount.mul(array[i]).div(basePorcientos);
 
-                investors[referi[i]].balanceRef += a;
-                investors[referi[i]].totalRef += a;
-                totalRefRewards += a;
-            } else {
-                break;
-            }
+            investors[referi[i]].balanceRef += a;
+            investors[referi[i]].totalRef += a;
+            totalRefRewards += a;
         }
     }
 
