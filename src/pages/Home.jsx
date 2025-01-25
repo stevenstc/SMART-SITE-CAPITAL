@@ -29,7 +29,6 @@ export default class Home extends Component {
       balanceUSDT: new BigNumber(0),
       precioSITE: 0,
 
-      direccion: "",
       link: "Haz una inversión para obtener el LINK de referido",
       registered: false,
       balanceRef: 0,
@@ -232,18 +231,15 @@ export default class Home extends Component {
     const { decimales } = this.state;
 
     let esto = await contract.investors(wallet).call();
-    let My = await contract.withdrawable(wallet).call();
 
     this.setState({
-      direccion: window.tronWeb.address.fromHex(wallet),
       registered: esto.registered,
       balanceRef: parseInt(esto.balanceRef._hex) / 10 ** decimales,
       totalRef: parseInt(esto.totalRef._hex) / 10 ** decimales,
       invested: parseInt(esto.invested._hex) / 10 ** decimales,
       paidAt: parseInt(esto.paidAt._hex) / 10 ** decimales,
-      my: parseInt(My.amount._hex) / 10 ** decimales,
+      my: parseInt((await contract.withdrawable(wallet).call()).amount._hex) / 10 ** decimales,
       withdrawn: parseInt(esto.withdrawn._hex) / 10 ** decimales,
-      precioSITE: 1
     });
 
   };
@@ -426,7 +422,7 @@ export default class Home extends Component {
 
   render() {
 
-    let { min, balanceRef, totalRef, invested, withdrawn, my, direccion, link, totalInvestors, totalInvested, totalRefRewards } = this.state;
+    let { min, balanceRef, totalRef, invested, withdrawn, my, wallet, link, totalInvestors, totalInvested, totalRefRewards } = this.state;
 
     let available = (balanceRef + my);
     available = available.toFixed(8);
@@ -535,7 +531,7 @@ export default class Home extends Component {
             <header style={{ 'textAlign': 'center' }} className="section-header">
               <h3 className="white"><i className="fa fa-user mr-2" aria-hidden="true"></i><span style={{ 'fontWeight': 'bold' }}>
                 Mi Oficina:</span> <br></br>
-                <span style={{ 'fontSize': '11px' }}>{direccion}</span></h3><br></br>
+                <span style={{ 'fontSize': '11px' }}>{wallet}</span></h3><br></br>
               <h3 className="white" style={{ 'fontWeight': 'bold' }}><i className="fa fa-users mr-2" aria-hidden="true"></i>Link de referido:</h3>
               <h6 className="white" style={{ 'padding': '1.5em', 'fontSize': '11px' }}><a href={link}>{link}</a> <br /><br />
                 <CopyToClipboard text={link}>
@@ -558,7 +554,7 @@ export default class Home extends Component {
               <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-duration="1s">
                 <div className="box">
                   <div className="icon"><i className="ion-ios-bookmarks-outline" style={{ color: '#e9bf06' }}></i></div>
-                  <h4 className="title"><a href="#services">{totalRef} SITE</a></h4> (${(this.state.totalRef * this.state.precioSITE).toFixed(2)})
+                  <h4 className="title"><a href="#services">{totalRef} SITE</a></h4> (${(totalRef * this.state.precioSITE).toFixed(2)})
                   <p className="description">Total ganancias por referidos</p>
                 </div>
               </div>
