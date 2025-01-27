@@ -7,9 +7,10 @@ const CryptoJS = require("crypto-js");
 
 const env = process.env
 
-const testnet = true;
-const contractAddress = "TVRcxAjCr1aMDNeRU7JbKHLnVfrSnxNSMx"
+const testnet = false;
+const contractAddress = "TJizzNh8eMXPsbavgdDuhh8aMY3MgQG9rd" // MainNet  || "TJizzNh8eMXPsbavgdDuhh8aMY3MgQG9rd" // TestNet
 
+const contractTokenUSDT = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"// "TAbFWFW1imCuB4J8vSNGWUye6y8FRtfkdX" // Testnet
 const wallet0x = "T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb"
 
 
@@ -17,16 +18,17 @@ const utils = {
   tronWeb: false,
   contract: false,
   numberRed: 0,
+  contractTokenUSDT: contractTokenUSDT,
   abi_token: token.abi,
 
   getRed(test = false) {
     let url = "https://api.nileex.io"
     if (test) return url
 
-    let tokenList = env.REACT_APP_LIST_TRONQL;
+    let tokenList = env.REACT_APP_LIST_TRONQL || "";
     tokenList = tokenList.split(",")
 
-    if (this.numberRed > tokenList.length) this.numberRed = 0;
+    if (this.numberRed >= tokenList.length) this.numberRed = 0;
 
     url = "https://" + tokenList[this.numberRed] + ".mainnet.tron.tronql.com/"
     this.numberRed++;
