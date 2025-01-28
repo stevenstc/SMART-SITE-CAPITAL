@@ -40,15 +40,9 @@ class Calculadora extends Component {
     this.handleChangeIN = this.handleChangeIN.bind(this);
     this.handleChangeOUT = this.handleChangeOUT.bind(this);
     this.calculo = this.calculo.bind(this);
-    this.handleChangeValueIN = this.handleChangeValueIN.bind(this);
     this.change = this.change.bind(this);
   }
 
-  handleChangeValueIN(event) {
-    this.setState({
-      valueIn: event.target.value
-    });
-  }
 
   handleChangeIN(event) {
     var image = imageSITE;
@@ -132,10 +126,14 @@ class Calculadora extends Component {
   }
 
   async calculo() {
-    const { precioSITE } = this.props
+    const { precioSITE, CoptUsdt } = this.props
     let { valueIn } = this.state
+
+    valueIn = document.getElementById("amountSITE").value;
     valueIn = parseFloat(valueIn.replace(/,/g, "."))
     if (isNaN(valueIn) || valueIn < 0) valueIn = 1
+
+    this.setState({valueIn})
 
     let par = this.state.monedaIn + "_" + this.state.monedaOut;
 
@@ -144,7 +142,6 @@ class Calculadora extends Component {
 
       case "SITE_USDT":
         precio = valueIn * precioSITE;
-        console.log(precio)
         break;
 
       case "USDT_SITE":
@@ -153,20 +150,20 @@ class Calculadora extends Component {
 
       case "SITE_COPT":
         precio = valueIn * precioSITE;
-        precio = precio / this.state.CoptUsdt;
+        precio = precio / CoptUsdt;
         break;
 
       case "COPT_SITE":
-        precio = valueIn * this.state.CoptUsdt;
+        precio = valueIn * CoptUsdt;
         precio = precio / precioSITE;
         break;
 
       case "COPT_USDT":
-        precio = valueIn * this.state.CoptUsdt;
+        precio = valueIn * CoptUsdt;
         break;
 
       case "USDT_COPT":
-        precio = valueIn / this.state.CoptUsdt;
+        precio = valueIn / CoptUsdt;
         break;
 
       default:
@@ -174,7 +171,6 @@ class Calculadora extends Component {
     }
 
     this.setState({
-      valueIn: this.state.valueIn,
       precioOut: precio
     });
   }
@@ -204,7 +200,7 @@ class Calculadora extends Component {
               <div className="box">
 
                 <div onClick={() => this.change()} style={{ "cursor": "pointer" }}><img src={this.state.imageIn} alt="usdt logo trx" width="50" /> <button className="btn btn-info"><i className="fa fa-exchange" aria-hidden="true"></i></button> <img src={this.state.imageOut} alt="usdt logo trx" width="50" /></div>
-                <input id="amountSITE" type="number" className="form-control mb-20 mt-3 text-center" onChange={this.handleChangeValueIN} onInput={() => this.calculo()} placeholder="Ingresa una cantidad"></input>
+                <input id="amountSITE" type="number" className="form-control mb-20 mt-3 text-center" onInput={() => this.calculo()} placeholder="Ingresa una cantidad"></input>
 
               </div>
             </div>
@@ -219,7 +215,7 @@ class Calculadora extends Component {
                 <img src={this.state.imageIn} alt="usdt logo trx" width="50" />
 
                 <div className="input-group-append">
-                  <select id="selIN" className="form-control mb-20 text-center" onChange={this.handleChangeIN} style={{ "cursor": "pointer" }}>
+                  <select id="selIN" className="form-control mb-20 text-center" onInput={this.handleChangeIN} style={{ "cursor": "pointer" }}>
                     {this.state.listaIn}
                   </select>
 
@@ -340,7 +336,7 @@ export default class Home extends Component {
 
     let precioSITE = await this.rateSITE()
 
-    document.getElementById("p1").innerHTML = "$ " + precioSITE
+    document.getElementById("p1").innerHTML = "$ " + precioSITE.dp(2).toString(10);
 
     this.setState({
       precioSITE
@@ -548,9 +544,23 @@ export default class Home extends Component {
 
   async rateSITE() {
 
-    // calcular precio de SITE en USDT
+    const { token, tokenUSDT } = this.props;
 
-    return 0.9939;
+    let price = 1;
+
+    try {
+      // calcular precio de SITE en USDT
+      let reservaUSDT = await tokenUSDT.balanceOf("TRXgAN8VAZFmtUHbJfGXTchjGo2PtT3VVc").call()// USDT
+        reservaUSDT = new BigNumber(reservaUSDT).shiftedBy(-6)
+        let reserva = await token.balanceOf("TRXgAN8VAZFmtUHbJfGXTchjGo2PtT3VVc").call()// SITE
+        reserva = new BigNumber(reserva).shiftedBy(-8)
+
+        price = reservaUSDT.div(reserva)
+    } catch (error) {
+      console.log(error)
+    }
+
+    return price;
 
   };
 
