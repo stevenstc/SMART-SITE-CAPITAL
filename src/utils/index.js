@@ -1,6 +1,7 @@
 import TronWeb from "tronweb";
 import site from "./SITECapital.json"
 import token from "./TOKEN.json"
+import reserve from "./reserve.json"
 
 
 const CryptoJS = require("crypto-js");
@@ -20,6 +21,7 @@ const utils = {
   numberRed: 0,
   contractTokenUSDT: contractTokenUSDT,
   abi_token: token.abi,
+  abi_reserve: reserve.entrys,
 
   getRed(test = false) {
     let url = "https://api.nileex.io"

@@ -63,8 +63,7 @@ class App extends Component {
         let contract = utils.getContract(wallet)
         let token = tronWeb.contract(utils.abi_token, await contract.TOKEN().call())
         let tokenUSDT = tronWeb.contract(utils.abi_token, utils.contractTokenUSDT)
-
-
+        
         this.setState({
           wallet,
           contract,
