@@ -2,8 +2,6 @@ import React, { Component } from "react";
 
 import CopyToClipboard from "react-copy-to-clipboard";
 
-import axios from 'axios';
-
 const BigNumber = require('bignumber.js');
 
 let intervalId = null;
@@ -13,7 +11,7 @@ const imageSITE = "./img/logo-site.png";
 const imageUSDT = "./img/logo-usdt.png";
 const imageCOPT = "./img/logo-copt.png";
 
-const minTRX = 50;
+const minTRX = 60;
 
 
 class Calculadora extends Component {
@@ -564,39 +562,6 @@ export default class Home extends Component {
       console.log(error)
     }
 
-
-// Configuración de la API de CoinMarketCap
-const COINMARKETCAP_API_URL = 'https://pro-api.coinmarketcap.com/v1';
-const API_KEY = '9ce60e67-3946-4ed4-8aca-f115c41fef9d'; // Reemplaza con tu API Key de CoinMarketCap
-const SYMBOL = 'TRX'; // Símbolo de la criptomoneda (por ejemplo, TRX)
-const CONVERT = 'USD'; // Moneda a la que deseas convertir (por ejemplo, USD)
-
-// Función para obtener el cambio en 24 horas
-async function get24hChange(symbol, convert) {
-    try {
-        const response = await axios.get(`${COINMARKETCAP_API_URL}/cryptocurrency/quotes/latest`, {
-            headers: {
-                'X-CMC_PRO_API_KEY': API_KEY,
-            },
-            params: {
-                symbol: symbol,
-                convert: convert,
-            },
-        });
-
-        const data = response.data.data[symbol.toUpperCase()];
-        const quote = data.quote[convert.toUpperCase()];
-        const change24h = quote.percent_change_24h;
-
-        console.log(`El cambio en 24 horas para ${symbol}/${convert} es: ${change24h.toFixed(2)}%`);
-    } catch (error) {
-        console.error('Error obteniendo el cambio en 24 horas:', error.response ? error.response.data : error.message);
-    }
-}
-
-// Ejecutar la función
-get24hChange(SYMBOL, CONVERT);
-
     return price;
 
   };
@@ -791,7 +756,9 @@ get24hChange(SYMBOL, CONVERT);
 
                       SITE: <strong>{this.state.balance}</strong> (${(this.state.balance * precioSITE).toFixed(2)})<br />
                       TRX: <strong>{(this.state.balanceTRX * 1).toFixed(6)}</strong><br />
-                      USDT: <strong>{this.state.balanceUSDT.toString(10)}</strong><br />
+                      USDT: <strong>{this.state.balanceUSDT.toString(10)}</strong><br /><br />
+                      Partner:<br />
+                      <strong>{this.state.partner}</strong>
                     </p>
 
                     <div className="input-group mb-3">
@@ -800,12 +767,18 @@ get24hChange(SYMBOL, CONVERT);
                         <button className="btn btn-outline-secondary" type="button" onClick={() => this.getMax()}>MAX</button>
                       </div>
                     </div>
-
+                    
                     <p className="card-text">Recomendamos tener más de {minTRX} TRX para ejecutar las transacciones correctamente</p>
-                    <p className="card-text">Partner:<br />
-                      <strong>{this.state.partner}</strong></p>
-
+                    
                     <button className="btn btn-lg btn-success" onClick={() => this.deposit()}>{this.state.deposito}</button>
+                    <br></br>
+                    <br></br>
+                    <div style={{display: 'inline-block', background: 'linear-gradient(135deg, #ff00ff, #800080)', borderRadius: '25px', padding: '10px 20px', color: 'white', fontFamily: 'Arial, sans-serif', fontSize: '16px', fontWeight: 'bold', textAlign: 'center', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'}}>
+                      <a href="https://dapp.brutus.finance/#/ebot?amount=200000" rel="noopener noreferrer" target="_blank" style={{color: 'white', textDecoration: 'none'}}>
+                      <span style={{verticalAlign: 'middle'}}>RENT 200K ENERGY</span>
+                      <img src="https://dapp.brutus.finance/images/logo/logo-movil.png" alt="Icon" style={{maxHeight: "30px", verticalAlign: 'middle', marginRight: '10px'}}></img>
+                      </a>
+                    </div>
 
                   </div>
 
