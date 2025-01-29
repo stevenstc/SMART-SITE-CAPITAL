@@ -11,6 +11,8 @@ const imageSITE = "./img/logo-site.png";
 const imageUSDT = "./img/logo-usdt.png";
 const imageCOPT = "./img/logo-copt.png";
 
+const minTRX = 60;
+
 
 class Calculadora extends Component {
   constructor(props) {
@@ -311,10 +313,10 @@ export default class Home extends Component {
 
       if (Date.now() >= nextUpdate) {
 
-        if (!this.props.tronlik.installed || !this.props.tronlik.loggedIn) {
+        if (!this.props.tronlik.loggedIn) {
           nextUpdate = Date.now() + 3 * 1000;
         } else {
-          nextUpdate = Date.now() + 10 * 1000;
+          nextUpdate = Date.now() + 20 * 1000;
         }
 
         if (this.props.tronlik.loggedIn) {
@@ -551,11 +553,11 @@ export default class Home extends Component {
     try {
       // calcular precio de SITE en USDT
       let reservaUSDT = await tokenUSDT.balanceOf("TRXgAN8VAZFmtUHbJfGXTchjGo2PtT3VVc").call()// USDT
-        reservaUSDT = new BigNumber(reservaUSDT).shiftedBy(-6)
-        let reserva = await token.balanceOf("TRXgAN8VAZFmtUHbJfGXTchjGo2PtT3VVc").call()// SITE
-        reserva = new BigNumber(reserva).shiftedBy(-8)
+      reservaUSDT = new BigNumber(reservaUSDT).shiftedBy(-6)
+      let reserva = await token.balanceOf("TRXgAN8VAZFmtUHbJfGXTchjGo2PtT3VVc").call()// SITE
+      reserva = new BigNumber(reserva).shiftedBy(-8)
 
-        price = reservaUSDT.div(reserva)
+      price = reservaUSDT.div(reserva)
     } catch (error) {
       console.log(error)
     }
@@ -614,8 +616,8 @@ export default class Home extends Component {
       return;
     }
 
-    if (balanceTRX < 10) {
-      alert("Su cuenta debe tener almenos 10 TRX para ejecutar las transacciones correctamente");
+    if (balanceTRX < minTRX) {
+      alert("Su cuenta debe tener almenos "+minTRX+" TRX para ejecutar las transacciones correctamente");
       return;
     }
 
@@ -754,7 +756,9 @@ export default class Home extends Component {
 
                       SITE: <strong>{this.state.balance}</strong> (${(this.state.balance * precioSITE).toFixed(2)})<br />
                       TRX: <strong>{(this.state.balanceTRX * 1).toFixed(6)}</strong><br />
-                      USDT: <strong>{this.state.balanceUSDT.toString(10)}</strong><br />
+                      USDT: <strong>{this.state.balanceUSDT.toString(10)}</strong><br /><br />
+                      Partner:<br />
+                      <strong>{this.state.partner}</strong>
                     </p>
 
                     <div className="input-group mb-3">
@@ -763,12 +767,18 @@ export default class Home extends Component {
                         <button className="btn btn-outline-secondary" type="button" onClick={() => this.getMax()}>MAX</button>
                       </div>
                     </div>
-
-                    <p className="card-text">Recomendamos tener más de 10 TRX para ejecutar las transacciones correctamente</p>
-                    <p className="card-text">Partner:<br />
-                      <strong>{this.state.partner}</strong></p>
-
+                    
+                    <p className="card-text">Recomendamos tener más de {minTRX} TRX para ejecutar las transacciones correctamente</p>
+                    
                     <button className="btn btn-lg btn-success" onClick={() => this.deposit()}>{this.state.deposito}</button>
+                    <br></br>
+                    <br></br>
+                    <div style={{display: 'inline-block', background: 'linear-gradient(135deg, #ff00ff, #800080)', borderRadius: '25px', padding: '10px 20px', color: 'white', fontFamily: 'Arial, sans-serif', fontSize: '16px', fontWeight: 'bold', textAlign: 'center', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'}}>
+                      <a href="https://dapp.brutus.finance/#/ebot?amount=200000" rel="noopener noreferrer" target="_blank" style={{color: 'white', textDecoration: 'none'}}>
+                      <span style={{verticalAlign: 'middle'}}>RENT 200K ENERGY</span>
+                      <img src="https://dapp.brutus.finance/images/logo/logo-movil.png" alt="Icon" style={{maxHeight: "30px", verticalAlign: 'middle', marginRight: '10px'}}></img>
+                      </a>
+                    </div>
 
                   </div>
 
