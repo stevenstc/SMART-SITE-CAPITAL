@@ -2,6 +2,8 @@ import React, { Component } from "react";
 
 import CopyToClipboard from "react-copy-to-clipboard";
 
+import axios from 'axios';
+
 const BigNumber = require('bignumber.js');
 
 let intervalId = null;
@@ -10,6 +12,8 @@ let nextUpdate = 0;
 const imageSITE = "./img/logo-site.png";
 const imageUSDT = "./img/logo-usdt.png";
 const imageCOPT = "./img/logo-copt.png";
+
+const minTRX = 50;
 
 
 class Calculadora extends Component {
@@ -311,10 +315,10 @@ export default class Home extends Component {
 
       if (Date.now() >= nextUpdate) {
 
-        if (!this.props.tronlik.installed || !this.props.tronlik.loggedIn) {
+        if (!this.props.tronlik.loggedIn) {
           nextUpdate = Date.now() + 3 * 1000;
         } else {
-          nextUpdate = Date.now() + 10 * 1000;
+          nextUpdate = Date.now() + 20 * 1000;
         }
 
         if (this.props.tronlik.loggedIn) {
@@ -551,14 +555,47 @@ export default class Home extends Component {
     try {
       // calcular precio de SITE en USDT
       let reservaUSDT = await tokenUSDT.balanceOf("TRXgAN8VAZFmtUHbJfGXTchjGo2PtT3VVc").call()// USDT
-        reservaUSDT = new BigNumber(reservaUSDT).shiftedBy(-6)
-        let reserva = await token.balanceOf("TRXgAN8VAZFmtUHbJfGXTchjGo2PtT3VVc").call()// SITE
-        reserva = new BigNumber(reserva).shiftedBy(-8)
+      reservaUSDT = new BigNumber(reservaUSDT).shiftedBy(-6)
+      let reserva = await token.balanceOf("TRXgAN8VAZFmtUHbJfGXTchjGo2PtT3VVc").call()// SITE
+      reserva = new BigNumber(reserva).shiftedBy(-8)
 
-        price = reservaUSDT.div(reserva)
+      price = reservaUSDT.div(reserva)
     } catch (error) {
       console.log(error)
     }
+
+
+// Configuración de la API de CoinMarketCap
+const COINMARKETCAP_API_URL = 'https://pro-api.coinmarketcap.com/v1';
+const API_KEY = '9ce60e67-3946-4ed4-8aca-f115c41fef9d'; // Reemplaza con tu API Key de CoinMarketCap
+const SYMBOL = 'TRX'; // Símbolo de la criptomoneda (por ejemplo, TRX)
+const CONVERT = 'USD'; // Moneda a la que deseas convertir (por ejemplo, USD)
+
+// Función para obtener el cambio en 24 horas
+async function get24hChange(symbol, convert) {
+    try {
+        const response = await axios.get(`${COINMARKETCAP_API_URL}/cryptocurrency/quotes/latest`, {
+            headers: {
+                'X-CMC_PRO_API_KEY': API_KEY,
+            },
+            params: {
+                symbol: symbol,
+                convert: convert,
+            },
+        });
+
+        const data = response.data.data[symbol.toUpperCase()];
+        const quote = data.quote[convert.toUpperCase()];
+        const change24h = quote.percent_change_24h;
+
+        console.log(`El cambio en 24 horas para ${symbol}/${convert} es: ${change24h.toFixed(2)}%`);
+    } catch (error) {
+        console.error('Error obteniendo el cambio en 24 horas:', error.response ? error.response.data : error.message);
+    }
+}
+
+// Ejecutar la función
+get24hChange(SYMBOL, CONVERT);
 
     return price;
 
@@ -614,8 +651,8 @@ export default class Home extends Component {
       return;
     }
 
-    if (balanceTRX < 10) {
-      alert("Su cuenta debe tener almenos 10 TRX para ejecutar las transacciones correctamente");
+    if (balanceTRX < minTRX) {
+      alert("Su cuenta debe tener almenos "+minTRX+" TRX para ejecutar las transacciones correctamente");
       return;
     }
 
@@ -764,7 +801,7 @@ export default class Home extends Component {
                       </div>
                     </div>
 
-                    <p className="card-text">Recomendamos tener más de 10 TRX para ejecutar las transacciones correctamente</p>
+                    <p className="card-text">Recomendamos tener más de {minTRX} TRX para ejecutar las transacciones correctamente</p>
                     <p className="card-text">Partner:<br />
                       <strong>{this.state.partner}</strong></p>
 
