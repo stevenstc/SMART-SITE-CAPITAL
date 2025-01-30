@@ -18,7 +18,8 @@ class App extends Component {
       tronlik: {
         installed: false,
         loggedIn: false
-      }
+      },
+      ruta: ""
     };
 
     this.conectar = this.conectar.bind(this);
@@ -52,6 +53,25 @@ class App extends Component {
 
     let { tronlik, wallet } = this.state;
 
+    let url = window.location.href;
+    if (url.indexOf("/?") >= 0) {
+      url = (url.split("/?"))[1];
+      if (url.indexOf("#") >= 0) url = (url.split("#"))[0];
+      if (url.indexOf("&") >= 0) url = (url.split("&"))[0];
+      if (url.indexOf("=") >= 0) url = (url.split("="))[0];
+      if (url === window.location.origin + "/" || url === "utum_source") url = ""
+      url = `/#/${url}`
+      window.location.replace(url);
+    }
+
+    if (url.indexOf("/#/") >= 0) url = (url.split("/#/"))[1];
+    if (url.indexOf("?") >= 0) url = (url.split("?"))[0];
+    if (url.indexOf("&") >= 0) url = (url.split("&"))[0];
+    if (url.indexOf("=") >= 0) url = (url.split("="))[0];
+    if (url === window.location.origin + "/" || url === "utum_source") url = ""
+
+    this.setState({ ruta: url })
+
     if (window.tronWeb) {
       tronlik.installed = true
 
@@ -60,15 +80,24 @@ class App extends Component {
 
         wallet = window.tronWeb.defaultAddress.base58
         let tronWeb = utils.getTronweb(wallet)
-        let contract = utils.getContract(wallet)
-        let token = tronWeb.contract(utils.abi_token, await contract.TOKEN().call())
-        let tokenUSDT = tronWeb.contract(utils.abi_token, utils.contractTokenUSDT)
+        let contract = tronWeb.contract(utils.abi_base, utils.contractAddress)
+        let token= tronWeb.contract(utils.abi_token, await contract.TOKEN().call())
+        let tokenUSDT= tronWeb.contract(utils.abi_token, utils.contractTokenUSDT)
+
+        if(url === "v2") {
+          contract = tronWeb.contract(utils.abi_base, utils.contractAddressV2)
+          console.log(url)
+        }
+
+        let ready = true
+
         
         this.setState({
           wallet,
           contract,
           token,
           tokenUSDT,
+          ready,
           tronWeb
         })
 

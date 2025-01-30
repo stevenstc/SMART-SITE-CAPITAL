@@ -347,7 +347,6 @@ export default class Home extends Component {
     let texto = wallet;
     texto = texto.substr(0, 4) + "..." + texto.substr(-4);
 
-    document.getElementById("contract").innerHTML = '<a href="https://tronscan.org/#/contract/' + contract.address + '/code">Contrato V 1.0</a>';
     document.getElementById("login").href = `https://tronscan.io/#/address/${wallet}`;
     document.getElementById("login-my-wallet").innerHTML = texto;
 
@@ -696,7 +695,7 @@ export default class Home extends Component {
   }
 
   render() {
-
+    let {ruta, contract} = this.props;
     let { min, balanceRef, totalRef, invested, withdrawn, my, wallet, link, totalInvestors, totalInvested, totalRefRewards, precioSITE } = this.state;
 
     let available = (balanceRef + my);
@@ -718,6 +717,8 @@ export default class Home extends Component {
     my = my.toFixed(8);
     my = parseFloat(my);
 
+    if(ruta === "") ruta = "V1"
+
     return (
       <>
         <section id="why-us" className="wow fadeIn mt-5">
@@ -728,7 +729,7 @@ export default class Home extends Component {
             <div className="row row-eq-height justify-content-center">
               <div className="card wow bounceInUp text-center">
                 <div className="card-body">
-                  <h5 className="card-title" id="contract" >Contrato V 1.0</h5>
+                  <h5 className="card-title" > <a href={"https://tronscan.org/#/contract/" + contract.address + "/code"} rel="noopener noreferrer" target="_blank" >Contrato {ruta}</a></h5>
 
                   <table className="table borderless">
                     <tbody>
@@ -773,7 +774,7 @@ export default class Home extends Component {
                     <button className="btn btn-lg btn-success" onClick={() => this.deposit()}>{this.state.deposito}</button>
                     <br></br>
                     <br></br>
-                    <div style={{display: 'inline-block', background: 'linear-gradient(135deg, #ff00ff, #800080)', borderRadius: '25px', padding: '10px 20px', color: 'white', fontFamily: 'Arial, sans-serif', fontSize: '16px', fontWeight: 'bold', textAlign: 'center', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'}}>
+                    <div style={{display: 'inline-block', background: 'linear-gradient(135deg, #800080, #ff00ff)', borderRadius: '25px', padding: '10px 20px', color: 'white', fontFamily: 'Arial, sans-serif', fontSize: '16px', fontWeight: 'bold', textAlign: 'center', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'}}>
                       <a href="https://dapp.brutus.finance/#/ebot?amount=200000" rel="noopener noreferrer" target="_blank" style={{color: 'white', textDecoration: 'none'}}>
                       <span style={{verticalAlign: 'middle'}}>RENT 200K ENERGY</span>
                       <img src="https://dapp.brutus.finance/images/logo/logo-movil.png" alt="Icon" style={{maxHeight: "30px", verticalAlign: 'middle', marginRight: '10px'}}></img>

@@ -9,7 +9,9 @@ const CryptoJS = require("crypto-js");
 const env = process.env
 
 const testnet = false;
-const contractAddress = "TJizzNh8eMXPsbavgdDuhh8aMY3MgQG9rd" // MainNet  || "TJizzNh8eMXPsbavgdDuhh8aMY3MgQG9rd" // TestNet
+const contractAddress = "TGXE17sGWaWZPMck9XGMAxYJ1z4DwGjZki" // MainNet  || "TJizzNh8eMXPsbavgdDuhh8aMY3MgQG9rd" // TestNet
+const contractAddressV2 = "TJizzNh8eMXPsbavgdDuhh8aMY3MgQG9rd" // MainNet  || "TJizzNh8eMXPsbavgdDuhh8aMY3MgQG9rd" // TestNet
+
 
 const contractTokenUSDT = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"// "TAbFWFW1imCuB4J8vSNGWUye6y8FRtfkdX" // Testnet
 const wallet0x = "T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb"
@@ -19,7 +21,10 @@ const utils = {
   tronWeb: false,
   contract: false,
   numberRed: 0,
+  contractAddress: contractAddress,
+  contractAddressV2: contractAddressV2,
   contractTokenUSDT: contractTokenUSDT,
+  abi_base: site.abi,
   abi_token: token.abi,
   abi_reserve: reserve.entrys,
 
