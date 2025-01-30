@@ -54,15 +54,6 @@ class App extends Component {
     let { tronlik, wallet } = this.state;
 
     let url = window.location.href;
-    if (url.indexOf("/?") >= 0) {
-      url = (url.split("/?"))[1];
-      if (url.indexOf("#") >= 0) url = (url.split("#"))[0];
-      if (url.indexOf("&") >= 0) url = (url.split("&"))[0];
-      if (url.indexOf("=") >= 0) url = (url.split("="))[0];
-      if (url === window.location.origin + "/" || url === "utum_source") url = ""
-      url = `/#/${url}`
-      window.location.replace(url);
-    }
 
     if (url.indexOf("/#/") >= 0) url = (url.split("/#/"))[1];
     if (url.indexOf("?") >= 0) url = (url.split("?"))[0];
