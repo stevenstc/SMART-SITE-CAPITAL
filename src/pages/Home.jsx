@@ -748,6 +748,16 @@ export default class Home extends Component {
                     </tbody>
                   </table>
 
+                  <div className="mb-3"> 
+                    <a className="btn btn-lg btn-info mr-3" style={{textDecoration:"none"}} href="/">30 Dias</a>
+                    <a className="btn btn-lg btn-info mr-3" style={{textDecoration:"none"}} href="/">60 Dias</a>
+                    <a className="btn btn-lg btn-info mr-3" style={{textDecoration:"none"}} href="/">90 Dias</a>
+                    <a className="btn btn-lg btn-info mr-3" style={{textDecoration:"none"}} href="/">120 Dias</a>
+                    <a className="btn btn-lg btn-info" style={{textDecoration:"none"}} href="#/v2">180 Dias</a>
+                    
+                  </div>
+
+
                   <div className="form-group">Wallet
                     <p className="card-text">
                       <strong>{this.state.wallet}</strong><br />
