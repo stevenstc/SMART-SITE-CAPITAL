@@ -241,6 +241,7 @@ contract SITECapitalVMulti {
         deposits[msg.sender].push(
             Deposit(calcPercent(_option), tiempo(dias[_option]), _value, block.timestamp)
         );
+        usuario.invested += _value;
         totalInvested += _value;
     }
 

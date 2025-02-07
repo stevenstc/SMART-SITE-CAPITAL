@@ -363,10 +363,11 @@ export default class Home extends Component {
     }
 
     let inversors = await contract.investors(wallet).call();
+    let registered = await contract.registered(wallet).call();
     let partner = tronWeb.address.fromHex(inversors.sponsor);
 
     if (aprovado > 0) {
-      if (inversors.registered) {
+      if (registered) {
         aprovado = "Depositar";
 
       } else {
@@ -386,7 +387,7 @@ export default class Home extends Component {
     let MIN_DEPOSIT = await contract.MIN_DEPOSIT().call();
     MIN_DEPOSIT = new BigNumber(parseInt(MIN_DEPOSIT._hex)).shiftedBy(-decimales);
 
-    if (!inversors.registered) {
+    if (!registered) {
 
       var loc = document.location.href;
       if (loc.indexOf('?') > 0) {
@@ -401,9 +402,9 @@ export default class Home extends Component {
         if (get['ref']) {
           tmp = get['ref'].split('#');
 
-          inversors = await contract.investors(tmp[0]).call();
+          let inversor = await contract.registered(tmp[0]).call();
 
-          if (inversors.registered) {
+          if (inversor) {
             partner = tmp[0];
           } else {
             partner = tronWeb.address.fromHex(await contract.owner().call());
@@ -432,7 +433,7 @@ export default class Home extends Component {
 
 
     this.setState({
-      registered: inversors.registered,
+      registered,
       deposito: aprovado,
       balance: balance.toNumber(),
       decimales,
@@ -574,7 +575,7 @@ export default class Home extends Component {
   async deposit() {
 
     const { contract, tronWeb, token, wallet } = this.props;
-    const { decimales, balanceSite, balanceTRX, min, opcion } = this.state;
+    const { decimales, balanceSite, balanceTRX, min, opcion, registered } = this.state;
 
     let amount = document.getElementById("amount").value;
     amount = new BigNumber(parseFloat(amount.replace(/,/g, ".")));
@@ -588,17 +589,15 @@ export default class Home extends Component {
       let inputs = [
         { type: 'address', value: this.props.tronWeb.address.toHex(contract.address) },
         { type: 'uint256', value: "115792089237316195423570985008687907853269984665640564039457584007913129639935" },
-        { type: 'uint256', value: opcion.toString(10) }
 
       ]
 
-      let funcion = "approve(uint256,uint256,address)"
+      let funcion = "approve(address,uint256)"
       let trigger = await tronWeb.transactionBuilder.triggerSmartContract(tronWeb.address.toHex(token.address), funcion, {}, inputs, tronWeb.address.toHex(wallet))
       let transaction = await tronWeb.transactionBuilder.extendExpiration(trigger.transaction, 180);
       transaction = await window.tronLink.tronWeb.trx.sign(transaction)
         .catch((e) => {
           alert(e.toString())
-
         })
       console.log(transaction)
       transaction = await this.props.tronWeb.trx.sendRawTransaction(transaction)
@@ -638,7 +637,7 @@ export default class Home extends Component {
     let investors = await contract.investors(wallet).call();
     let sponsor = tronWeb.address.fromHex(investors.sponsor);
 
-    if (!investors.registered) {
+    if (!registered) {
 
       let loc = document.location.href;
 
@@ -655,11 +654,9 @@ export default class Home extends Component {
         if (get['ref']) {
           tmp = get['ref'].split('#');
 
-          var inversors = await contract.investors(tmp[0]).call();
+          let inversors = await contract.registered(tmp[0]).call();
 
-          console.log(inversors);
-
-          if (inversors.registered) {
+          if (inversors) {
             sponsor = tmp[0];
           }
         }
