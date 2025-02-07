@@ -1,5 +1,5 @@
 import TronWeb from "tronweb";
-import site from "./SITECapital.json"
+import siteV2 from "./SITECapitalVMulti.json"
 import token from "./TOKEN.json"
 import reserve from "./reserve.json"
 
@@ -8,23 +8,19 @@ const CryptoJS = require("crypto-js");
 
 const env = process.env
 
-const testnet = false;
-const contractAddress = "TGXE17sGWaWZPMck9XGMAxYJ1z4DwGjZki" // MainNet  || "TJizzNh8eMXPsbavgdDuhh8aMY3MgQG9rd" // TestNet
-const contractAddressV2 = "TJizzNh8eMXPsbavgdDuhh8aMY3MgQG9rd" // MainNet  || "TJizzNh8eMXPsbavgdDuhh8aMY3MgQG9rd" // TestNet
+const testnet = true;
 
-
-const contractTokenUSDT = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"// "TAbFWFW1imCuB4J8vSNGWUye6y8FRtfkdX" // Testnet
+const contractAddress = testnet ? "TE7EpNkL5K4ZWtxEEdFtTuxDcz6TQLPqCY" : "TCviVMZxZn6wGUvr3PhSWX7zELK94AGeEm" 
+const contractTokenUSDT = testnet ? "TAbFWFW1imCuB4J8vSNGWUye6y8FRtfkdX" : "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t" 
 const wallet0x = "T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb"
-
 
 const utils = {
   tronWeb: false,
   contract: false,
   numberRed: 0,
   contractAddress: contractAddress,
-  contractAddressV2: contractAddressV2,
   contractTokenUSDT: contractTokenUSDT,
-  abi_base: site.abi,
+  abi_base: siteV2.abi,
   abi_token: token.abi,
   abi_reserve: reserve.entrys,
 
@@ -56,12 +52,6 @@ const utils = {
 
     return tronWeb
 
-  },
-
-  getContract(wallet = wallet0x, _contractAddress = contractAddress) {
-    this.getTronweb(wallet)
-    this.contract = this.tronWeb.contract(site.abi, _contractAddress);
-    return this.contract
   },
 
   async rentResource(wallet_orden, recurso, cantidad, periodo, temporalidad, precio, signedTransaction) {
