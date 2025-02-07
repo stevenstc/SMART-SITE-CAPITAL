@@ -419,6 +419,8 @@ export default class Home extends Component {
     }
 
     let opcion = document.getElementById("days").value;
+    this.setState({opcion})
+    
     let dias = await contract.dias(opcion).call();
     dias = parseInt(dias._hex)
 
@@ -466,6 +468,8 @@ export default class Home extends Component {
 
     this.Link();
     this.Investors();
+
+    console.log(await contract.getDeposits(wallet).call())
   }
 
   async Link() {

@@ -225,8 +225,8 @@ contract SITECapitalVMulti {
                 usuario.sponsor = _sponsor;
             }
             if (usuario.sponsor != address(0)) {
-                uint256 percent = deposits[usuario.sponsor].length == 0 ? porcientos1[_option] : porcientos2[_option];
-                uint256 a = _value.mul(percent).div(basePorcientos);
+                uint256 p = deposits[msg.sender].length == 0 ? porcientos1[_option] : porcientos2[_option];
+                uint256 a = _value.mul(p).div(basePorcientos);
 
                 investors[usuario.sponsor].balanceRef += a;
                 investors[usuario.sponsor].totalRef += a;
@@ -245,12 +245,20 @@ contract SITECapitalVMulti {
         totalInvested += _value;
     }
 
+    function depositsLength(address _user) public view returns (uint256) {
+        return deposits[_user].length;
+    }
+
     function getDeposits(address _user)
         public
         view
         returns (Deposit[] memory)
     {
-        return deposits[_user];
+        Deposit[] memory _deposits = new Deposit[](deposits[_user].length);
+        for (uint256 i = 0; i < deposits[_user].length; i++) {
+            _deposits[i] = deposits[_user][i];
+        }
+        return _deposits
     }
 
     function terminateDeposit(address _user, uint256 _index) public returns (Deposit[] memory)
