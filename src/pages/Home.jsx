@@ -292,6 +292,7 @@ export default class Home extends Component {
       withdrawn: 0,
       valueSITE: 0,
       valueUSDT: 0,
+      countDeposits: 0
 
 
     };
@@ -365,9 +366,11 @@ export default class Home extends Component {
     let inversors = await contract.investors(wallet).call();
     let registered = await contract.registered(wallet).call();
     let partner = tronWeb.address.fromHex(inversors.sponsor);
-
+    let countDeposits = await contract.depositsLength(wallet).call();
+    countDeposits = parseInt(countDeposits._hex)
+    this.setState({countDeposits})
     if (aprovado > 0) {
-      if (registered) {
+      if (countDeposits > 0) {
         aprovado = "Depositar";
 
       } else {
@@ -706,7 +709,7 @@ export default class Home extends Component {
 
   render() {
     let { ruta, contract } = this.props;
-    let { min, balanceRef, totalRef, invested, withdrawn, my, wallet, link, totalInvestors, totalInvested, totalRefRewards, precioSITE, partner } = this.state;
+    let { min, balanceRef, totalRef, invested, withdrawn, my, wallet, link, totalInvestors, totalInvested, totalRefRewards, precioSITE, partner, countDeposits } = this.state;
 
     let available = (balanceRef + my);
     available = available.toFixed(8);
@@ -861,7 +864,7 @@ export default class Home extends Component {
                 <div className="box">
                   <div className="icon"><i className="ion-ios-analytics-outline" style={{ color: '#ff689b' }}></i></div>
                   <h4 className="title"><a href="#services">{invested} SITE</a></h4> (${(this.state.invested * precioSITE).toFixed(2)})
-                  <p className="description">Total invertido</p>
+                  <p className="description">Total invertido ({countDeposits} Depositos)</p>
                 </div>
               </div>
               <div className="col-md-6 col-lg-5 wow bounceInUp" data-wow-duration="1s">

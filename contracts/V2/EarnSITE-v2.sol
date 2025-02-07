@@ -82,7 +82,7 @@ contract SITECapitalVMulti {
     uint256[] public dias = [30, 60, 90, 120, 180, 360];
     uint256[] public EA = [40, 45, 50, 55, 60, 76];
     uint256[] public porcientos1 = [50, 60, 70, 80, 90, 100];
-    uint256[] public porcientos2 = [5, 10, 15, 20, 25, 30];
+    uint256[] public porcientos2 = [30, 40, 50, 60, 70, 80];
 
     uint256 public basePorcientos = 1000;
     bool public sisReferidos = true;
@@ -252,13 +252,20 @@ contract SITECapitalVMulti {
     function getDeposits(address _user)
         public
         view
-        returns (Deposit[] memory)
+        returns (uint256[] memory porciento, uint256[] memory time, uint256[] memory amount, uint256[] memory at )
     {
-        Deposit[] memory _deposits = new Deposit[](deposits[_user].length);
+
+        porciento = new uint256[](deposits[_user].length);
+        time = new uint256[](deposits[_user].length);
+        amount = new uint256[](deposits[_user].length);
+        at = new uint256[](deposits[_user].length);
+
         for (uint256 i = 0; i < deposits[_user].length; i++) {
-            _deposits[i] = deposits[_user][i];
+            porciento[i] = deposits[_user][i].porciento;
+            time[i] = deposits[_user][i].tiempo;
+            amount[i] = deposits[_user][i].amount;
+            at[i] = deposits[_user][i].at;
         }
-        return _deposits;
     }
 
     function terminateDeposit(address _user, uint256 _index) public returns (Deposit[] memory)
