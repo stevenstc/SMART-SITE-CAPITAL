@@ -10,7 +10,7 @@ const env = process.env
 
 const testnet = true;
 
-const contractAddress = testnet ? "TDXywbm4AKFVwN2yTMRPaZuSzX9Xc4YpWR" : "TCviVMZxZn6wGUvr3PhSWX7zELK94AGeEm" 
+const contractAddress = testnet ? "TSTjemUJ5xruUEezbDhXi3Jzs5NHNJoK5U" : "TCviVMZxZn6wGUvr3PhSWX7zELK94AGeEm" 
 const contractTokenUSDT = testnet ? "TAbFWFW1imCuB4J8vSNGWUye6y8FRtfkdX" : "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t" 
 const wallet0x = "T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb"
 

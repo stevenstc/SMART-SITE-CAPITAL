@@ -258,7 +258,7 @@ contract SITECapitalVMulti {
         for (uint256 i = 0; i < deposits[_user].length; i++) {
             _deposits[i] = deposits[_user][i];
         }
-        return _deposits
+        return _deposits;
     }
 
     function terminateDeposit(address _user, uint256 _index) public returns (Deposit[] memory)
