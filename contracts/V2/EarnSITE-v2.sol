@@ -53,7 +53,7 @@ interface ITRC20 {
     function decimals() external view returns (uint);
 }
 
-contract SITECapitalV2 {
+contract SITECapitalVMulti {
     using SafeMath for uint256;
 
     struct Deposit {
@@ -64,11 +64,10 @@ contract SITECapitalV2 {
     }
 
     struct Investor {
-        bool registered;
         address sponsor;
+        uint256 invested;
         uint256 balanceRef;
         uint256 totalRef;
-        uint256 invested;
         uint256 paidAt;
         uint256 withdrawn;
     }
@@ -78,15 +77,15 @@ contract SITECapitalV2 {
     uint256 public MIN_RETIRO = 30 * 10 ** 8;
 
     address public owner;
+    address public api;
 
-    uint256[] public primervez = [5];
-    uint256[] public porcientos = [1];
+    uint256[] public dias = [30, 60, 90, 120, 180, 360];
+    uint256[] public EA = [40, 45, 50, 55, 60, 76];
+    uint256[] public porcientos1 = [50, 60, 70, 80, 90, 100];
+    uint256[] public porcientos2 = [30, 40, 50, 60, 70, 80];
 
-    uint256 public basePorcientos = 100;
+    uint256 public basePorcientos = 1000;
     bool public sisReferidos = true;
-
-    uint256 public dias = 30;
-    uint256 public porcent = 105;
 
     uint256 public totalInvestors;
     uint256 public totalInvested;
@@ -98,10 +97,13 @@ contract SITECapitalV2 {
     constructor(address _tokenTRC20) {
         TOKEN = _tokenTRC20;
         owner = msg.sender;
-        investors[msg.sender].registered = true;
         investors[msg.sender].sponsor = address(0);
 
         totalInvestors++;
+    }
+
+    function registered(address _user) public view returns (bool) {
+        return deposits[_user].length > 0 || _user == owner ? true : false;
     }
 
     function ChangeTokenUSDT(address _tokenTRC20) public returns (bool) {
@@ -119,30 +121,40 @@ contract SITECapitalV2 {
         return (totalInvestors, totalInvested, totalRefRewards);
     }
 
-    function InContractSITE() public view returns (uint) {
+    function InContractSITE() public view returns (uint256) {
         return ITRC20(TOKEN).balanceOf(address(this));
     }
 
-    function InContractOTRO(address _token) public view returns (uint) {
+    function InContractOTRO(address _token) public view returns (uint256) {
         return ITRC20(_token).balanceOf(address(this));
     }
 
-    function InContractTRX() public view returns (uint) {
+    function InContractTRX() public view returns (uint256) {
         return address(this).balance;
     }
 
-    function tiempo() public view returns (uint) {
-        return dias.mul(86400);
+    function calcPercent(uint256 _option)
+        public
+        view
+        returns (uint256 result)
+    {
+        result = (dias[_option].mul(10**10)).div(360);
+        result = result.mul(EA[_option]);
+        result = result.add(100 * 10**10);
     }
 
-    function setPorcientos(uint256[] calldata _values) public {
-        require(msg.sender == owner);
-        porcientos = _values;
+    function tiempo(uint256 _dias) public pure returns (uint256) {
+        return _dias.mul(86400);
     }
 
-    function setPrimeravezPorcientos(uint256[] calldata _values) public {
+    function setPorcientos1(uint256[] calldata _values) public {
         require(msg.sender == owner);
-        primervez = _values;
+        porcientos1 = _values;
+    }
+
+    function setPorcientos2(uint256[] calldata _values) public {
+        require(msg.sender == owner);
+        porcientos2 = _values;
     }
 
     function setMinimoMaximos(
@@ -159,14 +171,14 @@ contract SITECapitalV2 {
         }
     }
 
-    function setTiempo(uint256 _dias) public returns (uint) {
+    function setTiempo(uint256[] memory _dias) public returns (uint256[] memory) {
         require(msg.sender == owner);
         dias = _dias;
 
         return (_dias);
     }
 
-    function setBase(uint256 _100) public returns (uint) {
+    function setBase(uint256 _100) public returns (uint256) {
         require(msg.sender == owner);
         basePorcientos = _100;
 
@@ -180,11 +192,11 @@ contract SITECapitalV2 {
         return (_true_false);
     }
 
-    function setRetorno(uint256 _porcentaje) public returns (uint) {
+    function setRetornoEA(uint256[] memory _EA) public returns (uint256[] memory) {
         require(msg.sender == owner);
-        porcent = _porcentaje;
+        EA = _EA;
 
-        return (porcent);
+        return (EA);
     }
 
     function column(
@@ -201,50 +213,69 @@ contract SITECapitalV2 {
         return res;
     }
 
-    function rewardReferers(
-        address from,
-        uint256 amount,
-        uint256[] memory array
-    ) internal {
-        address[] memory referi = column(from, array.length);
-        uint256 a;
-
-        for (uint256 i = 0; i < array.length; i++) {
-            if (array[i] == 0 || referi[i] == address(0)) break;
-            a = amount.mul(array[i]).div(basePorcientos);
-
-            investors[referi[i]].balanceRef += a;
-            investors[referi[i]].totalRef += a;
-            totalRefRewards += a;
-        }
-    }
-
-    function deposit(uint256 _value, address _sponsor) public {
+    function deposit(uint256 _value, uint256 _option, address _sponsor) public {
         Investor storage usuario = investors[msg.sender];
+        require(_option < dias.length, "Fuera de rango");
         require(_value >= MIN_DEPOSIT, "Minimo de deposito alcanzado");
 
         ITRC20(TOKEN).transferFrom(msg.sender, address(this), _value);
 
-        if (!usuario.registered) {
-            usuario.registered = true;
-            if (_sponsor != address(0) && sisReferidos) {
+        if(sisReferidos){
+            if (usuario.sponsor == address(0) && _sponsor != address(0) ) {
                 usuario.sponsor = _sponsor;
-                rewardReferers(msg.sender, _value, primervez);
             }
+            if (usuario.sponsor != address(0)) {
+                uint256 p = deposits[msg.sender].length == 0 ? porcientos1[_option] : porcientos2[_option];
+                uint256 a = _value.mul(p).div(basePorcientos);
 
-            totalInvestors++;
-        } else {
-            if (usuario.sponsor != address(0) && sisReferidos) {
-                rewardReferers(msg.sender, _value, porcientos);
+                investors[usuario.sponsor].balanceRef += a;
+                investors[usuario.sponsor].totalRef += a;
+                totalRefRewards += a;
             }
         }
 
-        deposits[msg.sender].push(
-            Deposit(porcent, tiempo(), _value, block.timestamp)
-        );
+        if (registered(msg.sender) == false) {
+            totalInvestors++;
+        } 
 
+        deposits[msg.sender].push(
+            Deposit(calcPercent(_option), tiempo(dias[_option]), _value, block.timestamp)
+        );
         usuario.invested += _value;
         totalInvested += _value;
+    }
+
+    function depositsLength(address _user) public view returns (uint256) {
+        return deposits[_user].length;
+    }
+
+    function getDeposits(address _user)
+        public
+        view
+        returns (uint256[] memory porciento, uint256[] memory time, uint256[] memory amount, uint256[] memory at )
+    {
+
+        porciento = new uint256[](deposits[_user].length);
+        time = new uint256[](deposits[_user].length);
+        amount = new uint256[](deposits[_user].length);
+        at = new uint256[](deposits[_user].length);
+
+        for (uint256 i = 0; i < deposits[_user].length; i++) {
+            porciento[i] = deposits[_user][i].porciento;
+            time[i] = deposits[_user][i].tiempo;
+            amount[i] = deposits[_user][i].amount;
+            at[i] = deposits[_user][i].at;
+        }
+    }
+
+    function terminateDeposit(address _user, uint256 _index) public returns (Deposit[] memory)
+    {
+        require(msg.sender == _user || msg.sender == owner);
+        Deposit storage dep = deposits[_user][_index];
+        require(block.timestamp > dep.at + dep.tiempo);
+        deposits[_user][_index] = deposits[_user][deposits[_user].length - 1];
+        deposits[_user].pop();
+        return deposits[_user];
     }
 
     function withdrawable(address _user) public view returns (uint256 amount) {
@@ -252,6 +283,7 @@ contract SITECapitalV2 {
         Deposit memory dep;
         uint256 since;
         uint256 till;
+        uint256 elapsedTime; 
 
         for (uint256 i = 0; i < deposits[_user].length; i++) {
             dep = deposits[_user][i];
@@ -262,23 +294,24 @@ contract SITECapitalV2 {
                 : block.timestamp;
 
             if (since < till) {
-                amount +=
-                    (dep.amount * (till - since) * dep.porciento) /
-                    dep.tiempo /
-                    100;
+                elapsedTime = till - since;
+                if(elapsedTime > 0){
+                    amount += (dep.amount * elapsedTime * dep.porciento) / dep.tiempo / 10**12;
+                }
             }
         }
     }
 
     function withdraw(address _user) external {
+        require(registered(_user),"No registrado");
         uint256 amount = withdrawable(_user) + investors[_user].balanceRef;
         require(amount >= MIN_RETIRO, "The minimum withdrawal limit reached");
 
         ITRC20(TOKEN).transfer(_user, amount);
 
+        investors[_user].withdrawn += amount;
         delete investors[_user].balanceRef;
         investors[_user].paidAt = block.timestamp;
-        investors[_user].withdrawn += amount;
     }
 
     function redimSITE01() public {

@@ -18,8 +18,7 @@ class App extends Component {
       tronlik: {
         installed: false,
         loggedIn: false
-      },
-      ruta: ""
+      }
     };
 
     this.conectar = this.conectar.bind(this);
@@ -53,16 +52,6 @@ class App extends Component {
 
     let { tronlik, wallet } = this.state;
 
-    let url = window.location.href;
-
-    if (url.indexOf("/#/") >= 0) url = (url.split("/#/"))[1];
-    if (url.indexOf("?") >= 0) url = (url.split("?"))[0];
-    if (url.indexOf("&") >= 0) url = (url.split("&"))[0];
-    if (url.indexOf("=") >= 0) url = (url.split("="))[0];
-    if (url === window.location.origin + "/" || url === "utum_source") url = ""
-
-    this.setState({ ruta: url })
-
     if (window.tronWeb) {
       tronlik.installed = true
 
@@ -74,14 +63,7 @@ class App extends Component {
         let contract = tronWeb.contract(utils.abi_base, utils.contractAddress)
         let token= tronWeb.contract(utils.abi_token, await contract.TOKEN().call())
         let tokenUSDT= tronWeb.contract(utils.abi_token, utils.contractTokenUSDT)
-
-        if(url === "v2") {
-          contract = tronWeb.contract(utils.abi_base, utils.contractAddressV2)
-          console.log(url)
-        }
-
         let ready = true
-
         
         this.setState({
           wallet,
@@ -115,7 +97,7 @@ class App extends Component {
     let getString = "/";
     let loc = document.location.href;
     let interrogant = "";
-    //console.log(loc);
+
     if (loc.indexOf('?') > 0) {
       getString = loc.split('?')[1];
       getString = getString.split('#')[0];
