@@ -3,14 +3,13 @@ import siteV2 from "./SITECapitalVMulti.json"
 import token from "./TOKEN.json"
 import reserve from "./reserve.json"
 
-
 const CryptoJS = require("crypto-js");
 
 const env = process.env
 
-const testnet = true;
+const testnet = false;
 
-const contractAddress = testnet ? "THa1WvayxecVndKQFZ7vXxG31UaJjdDB4i" : "TCviVMZxZn6wGUvr3PhSWX7zELK94AGeEm" 
+const contractAddress = testnet ? "THa1WvayxecVndKQFZ7vXxG31UaJjdDB4i" : "TMcaF2E9pxydc4Fj72ZH54oey1hNNHdHq6" 
 const contractTokenUSDT = testnet ? "TAbFWFW1imCuB4J8vSNGWUye6y8FRtfkdX" : "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t" 
 const wallet0x = "T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb"
 
