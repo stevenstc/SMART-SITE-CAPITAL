@@ -292,13 +292,13 @@ export default class Home extends Component {
       withdrawn: 0,
       valueSITE: 0,
       valueUSDT: 0,
-      countDeposits: 0
-
+      countDeposits: 0,
+      listDeposits: [],
 
     };
+    this.estado = this.estado.bind(this);
 
     this.deposit = this.deposit.bind(this);
-    this.estado = this.estado.bind(this);
     this.getMax = this.getMax.bind(this);
 
     this.rateSITE = this.rateSITE.bind(this);
@@ -306,6 +306,8 @@ export default class Home extends Component {
     this.Investors = this.Investors.bind(this);
     this.Link = this.Link.bind(this);
     this.withdraw = this.withdraw.bind(this);
+
+    this.depositos = this.depositos.bind(this);
 
   }
 
@@ -368,7 +370,7 @@ export default class Home extends Component {
     let partner = tronWeb.address.fromHex(inversors.sponsor);
     let countDeposits = await contract.depositsLength(wallet).call();
     countDeposits = parseInt(countDeposits._hex)
-    this.setState({countDeposits})
+    this.setState({ countDeposits })
     if (aprovado > 0) {
       if (countDeposits > 0) {
         aprovado = "Depositar";
@@ -383,6 +385,7 @@ export default class Home extends Component {
     }
 
     let decimales = parseInt(await token.decimals().call());
+    this.setState({ decimales })
 
     let balance = await token.balanceOf(wallet).call();
     balance = new BigNumber(parseInt(balance._hex)).shiftedBy(-decimales);
@@ -422,8 +425,8 @@ export default class Home extends Component {
     }
 
     let opcion = document.getElementById("days").value;
-    this.setState({opcion})
-    
+    this.setState({ opcion })
+
     let dias = await contract.dias(opcion).call();
     dias = parseInt(dias._hex)
 
@@ -441,7 +444,6 @@ export default class Home extends Component {
       registered,
       deposito: aprovado,
       balance: balance.toNumber(),
-      decimales,
       wallet,
       porcentaje: porcentaje,
       dias: dias,
@@ -471,8 +473,37 @@ export default class Home extends Component {
 
     this.Link();
     this.Investors();
+    this.depositos();
 
-    console.log(await contract.getDeposits(wallet).call())
+  }
+
+  async depositos() {
+    const { contract, wallet, } = this.props
+    const { decimales, precioSITE } = this.state
+
+    let listDeposits = [];
+    let getDeposits = await contract.getDeposits(wallet).call()
+
+    for (let index = 0; index < getDeposits.amount.length; index++) {
+      let amount = new BigNumber(parseInt(getDeposits.amount[index]._hex)).shiftedBy(-decimales)
+      let tiempo = parseInt(getDeposits.time[index]._hex) / 86400
+      let porcentaje = new BigNumber(parseInt(getDeposits.porciento[index]._hex)).div(10 ** 10).dp(2)
+      let fin = new Date((parseInt(getDeposits.at[index]._hex) + parseInt(getDeposits.time[index]._hex)) * 1000)
+
+      listDeposits.push(<div key={"deposito-" + index} className="col-md-12 col-lg-12 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1s">
+        <div className="box">
+          <h4 className="title"><a href="#services">{tiempo} dias | Depósito | {porcentaje.toString(10)}%</a></h4>
+          <p className="description">
+            Termina en: {fin.toLocaleDateString()}<br></br>
+            {amount.dp(3).toString(10)} SITE (${amount.times(precioSITE).dp(2).toString(10)})
+          </p>
+        </div>
+      </div>)
+
+    }
+
+    this.setState({ listDeposits })
+
   }
 
   async Link() {
@@ -514,46 +545,7 @@ export default class Home extends Component {
 
   };
 
-  async withdraw() {
 
-    const { tronWeb, contract, wallet } = this.props
-    const { balanceRef, my, min, } = this.state;
-
-    var available = (balanceRef + my);
-    available = available.toFixed(8);
-    available = parseFloat(available);
-
-    if (available < min) {
-      window.alert("El minimo para retirar son: " + min + " SITE");
-      return;
-    }
-
-
-    let inputs = [
-      //{type: 'uint256', value: amount},
-      { type: 'address', value: this.props.tronWeb.address.toHex(wallet) }
-    ]
-
-    let funcion = "withdraw(address)"
-    let trigger = await tronWeb.transactionBuilder.triggerSmartContract(tronWeb.address.toHex(contract.address), funcion, {}, inputs, tronWeb.address.toHex(wallet))
-    let transaction = await tronWeb.transactionBuilder.extendExpiration(trigger.transaction, 180);
-    transaction = await window.tronLink.tronWeb.trx.sign(transaction)
-      .catch((e) => {
-        alert(e.toString())
-
-      })
-    transaction = await this.props.tronWeb.trx.sendRawTransaction(transaction)
-      .then(() => {
-        alert("Transacción exitosa: " + transaction.txID)
-      })
-      .catch((e) => {
-        alert(e.toString())
-      })
-
-
-
-    this.estado();
-  };
 
   async rateSITE() {
 
@@ -703,13 +695,54 @@ export default class Home extends Component {
 
   };
 
+  async withdraw() {
+
+    const { tronWeb, contract, wallet } = this.props
+    const { balanceRef, my, min, } = this.state;
+
+    var available = (balanceRef + my);
+    available = available.toFixed(8);
+    available = parseFloat(available);
+
+    if (available < min) {
+      window.alert("El minimo para retirar son: " + min + " SITE");
+      return;
+    }
+
+
+    let inputs = [
+      //{type: 'uint256', value: amount},
+      { type: 'address', value: this.props.tronWeb.address.toHex(wallet) }
+    ]
+
+    let funcion = "withdraw(address)"
+    let trigger = await tronWeb.transactionBuilder.triggerSmartContract(tronWeb.address.toHex(contract.address), funcion, {}, inputs, tronWeb.address.toHex(wallet))
+    let transaction = await tronWeb.transactionBuilder.extendExpiration(trigger.transaction, 180);
+    transaction = await window.tronLink.tronWeb.trx.sign(transaction)
+      .catch((e) => {
+        alert(e.toString())
+
+      })
+    transaction = await this.props.tronWeb.trx.sendRawTransaction(transaction)
+      .then(() => {
+        alert("Transacción exitosa: " + transaction.txID)
+      })
+      .catch((e) => {
+        alert(e.toString())
+      })
+
+
+
+    this.estado();
+  };
+
   getMax() {
     document.getElementById("amount").value = this.state.balance;
   }
 
   render() {
     let { ruta, contract } = this.props;
-    let { min, balanceRef, totalRef, invested, withdrawn, my, wallet, link, totalInvestors, totalInvested, totalRefRewards, precioSITE, partner, countDeposits } = this.state;
+    let { min, balanceRef, totalRef, invested, withdrawn, my, wallet, link, totalInvestors, totalInvested, totalRefRewards, precioSITE, partner, countDeposits, listDeposits } = this.state;
 
     let available = (balanceRef + my);
     available = available.toFixed(8);
@@ -764,16 +797,16 @@ export default class Home extends Component {
 
                   <div className="mb-3">
                     <b>{">>> "}Select Term: {" "}
-                    <select id="days" onInput={()=>this.estado()} name="days">
-                      <option value="0">30</option>
-                      <option value="1">60</option>
-                      <option value="2">90</option>
-                      <option value="3">120</option>
-                      <option value="4">180</option>
-                      <option value="5">360</option>
+                      <select id="days" onInput={() => this.estado()} name="days">
+                        <option value="0">30</option>
+                        <option value="1">60</option>
+                        <option value="2">90</option>
+                        <option value="3">120</option>
+                        <option value="4">180</option>
+                        <option value="5">360</option>
 
-                    </select> Days{" <<<"}</b>
-            
+                      </select> Days{" <<<"}</b>
+
 
 
                   </div>
@@ -907,6 +940,8 @@ export default class Home extends Component {
                   <p className="description">{withdrawn} SITE</p> (${(withdrawn * precioSITE).toFixed(2)})
                 </div>
               </div>
+
+              {listDeposits}
 
             </div>
 
