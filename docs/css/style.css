@@ -243,11 +243,6 @@ h6 {
 
 /* Desktop Navigation */
 
-.main-nav {
-  /* Drop Down */
-  /* Deep Drop Down */
-}
-
 .main-nav,
 .main-nav * {
   margin: 0;
@@ -1458,4 +1453,22 @@ main#main {
 
 span#login-my-wallet {
   padding-left: 0.3rem;
+}
+
+progress {
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+progress::-webkit-progress-bar {
+  background-color: #ddd; /* Color de fondo */
+  border-radius: 10px;
+}
+
+progress::-webkit-progress-value {
+  background-color: #4caf50; /* Color de la barra */
+  border-radius: 10px;
 }

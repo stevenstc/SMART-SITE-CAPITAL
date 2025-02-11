@@ -11,7 +11,7 @@ const imageSITE = "./img/logo-site.png";
 const imageUSDT = "./img/logo-usdt.png";
 const imageCOPT = "./img/logo-copt.png";
 
-const minTRX = 60;
+const minTRX = 20;
 
 
 class Calculadora extends Component {
@@ -295,6 +295,8 @@ export default class Home extends Component {
       countDeposits: 0,
       listDeposits: [],
 
+      verDepositos: false,
+
     };
     this.estado = this.estado.bind(this);
 
@@ -346,7 +348,7 @@ export default class Home extends Component {
 
     let precioSITE = await this.rateSITE()
 
-    document.getElementById("p1").innerHTML = "$ " + precioSITE.dp(2).toString(10);
+    document.getElementById("p1").innerHTML = "$ " + precioSITE.dp(4).toString(10);
 
     this.setState({
       precioSITE
@@ -478,7 +480,7 @@ export default class Home extends Component {
   }
 
   async depositos() {
-    const { contract, wallet, } = this.props
+    const { contract, wallet, verDepositos} = this.props
     const { decimales, precioSITE } = this.state
 
     let listDeposits = [];
@@ -486,19 +488,27 @@ export default class Home extends Component {
 
     for (let index = 0; index < getDeposits.amount.length; index++) {
       let amount = new BigNumber(parseInt(getDeposits.amount[index]._hex)).shiftedBy(-decimales)
-      let tiempo = parseInt(getDeposits.time[index]._hex) / 86400
+      let tiempo = parseInt(getDeposits.time[index]._hex) * 1000
       let porcentaje = new BigNumber(parseInt(getDeposits.porciento[index]._hex)).div(10 ** 10).dp(2)
-      let fin = new Date((parseInt(getDeposits.at[index]._hex) + parseInt(getDeposits.time[index]._hex)) * 1000)
+      let inicio = parseInt(getDeposits.at[index]._hex) * 1000
+      let fin = inicio + tiempo
 
-      listDeposits.push(<div key={"deposito-" + index} className="col-md-12 col-lg-12 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1s">
-        <div className="box">
-          <h4 className="title"><a href="#services">{tiempo} dias | Depósito | {porcentaje.toString(10)}%</a></h4>
-          <p className="description">
-            Termina en: {fin.toLocaleDateString()}<br></br>
-            {amount.dp(3).toString(10)} SITE (${amount.times(precioSITE).dp(2).toString(10)})
-          </p>
-        </div>
-      </div>)
+      let avance = ((Date.now()-inicio)/(fin-inicio))*100
+
+      if( Date.now() < fin || verDepositos){
+
+        listDeposits.unshift(<div key={"deposito-" + index} className="col-md-12 col-lg-12 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1s">
+          <div className="box">
+          <progress value={avance} max="100" className="progress"> {avance}% </progress>
+            <h4 className="title"><a href="#services">{tiempo / (86400*1000)} dias | Depósito | {porcentaje.toString(10)}%</a></h4>
+            <p className="description">
+              Termina en: {new Date(fin).toLocaleDateString()}<br></br>
+              {amount.dp(3).toString(10)} SITE (${amount.times(precioSITE).dp(2).toString(10)})
+            </p>
+          </div>
+        </div>)
+
+      }
 
     }
 
@@ -583,6 +593,42 @@ export default class Home extends Component {
     let aprovado = await token.allowance(wallet, contract.address).call();
     aprovado = parseInt(aprovado._hex);
 
+
+
+    /*
+
+    // estimar Energia que consumira
+
+    let eenergy = {};
+
+    if (balance >= 1) {
+      let inputs = [
+        //{type: 'address', value: this.props.tronWeb.address.toHex("TTknL2PmKRSTgS8S3oKEayuNbznTobycvA")},
+        //{type: 'uint256', value: '1000000'}
+      ]
+
+      let funcion = "staking()"
+      const options = { callValue: '1000000' }
+      eenergy = await this.props.tronWeb.transactionBuilder.triggerConstantContract(this.props.tronWeb.address.toHex(this.props.contrato.BRST_TRX_Proxy.address), funcion, options, inputs, this.props.tronWeb.address.toHex(this.props.accountAddress))
+        .catch(() => { return {} })
+    }
+
+    if (eenergy.energy_used) {
+      eenergy = eenergy.energy_used
+    } else {
+      eenergy = 65000
+    }
+
+    let useTrx = parseInt(contractEnergy / eenergy)
+    if (useTrx >= 1) {
+      useTrx = 1
+    } else {
+      useTrx = "10"
+    }
+
+
+    */
+
     if (amount > aprovado || aprovado === 0) {
 
       let inputs = [
@@ -621,7 +667,7 @@ export default class Home extends Component {
       return;
     }
 
-    if (balanceTRX < minTRX) {
+    if (balanceTRX < minTRX-5) {
       alert("Su cuenta debe tener almenos " + minTRX + " TRX para ejecutar las transacciones correctamente");
       return;
     }
@@ -679,17 +725,18 @@ export default class Home extends Component {
         alert(e.toString())
 
       })
-    console.log(transaction)
+    //console.log(transaction)
     transaction = await this.props.tronWeb.trx.sendRawTransaction(transaction)
       .then(() => {
+        document.getElementById("amount").value = "";
+        document.getElementById("services").scrollIntoView({ block: "end", behavior: "smooth" });
         alert("Felicidades inversión exitosa: " + transaction.txID);
       })
       .catch((e) => {
         alert(e.toString())
       })
 
-    document.getElementById("amount").value = "";
-    document.getElementById("services").scrollIntoView({ block: "end", behavior: "smooth" });;
+    
 
     this.estado();
 
@@ -943,7 +990,16 @@ export default class Home extends Component {
 
               {listDeposits}
 
+              <div style={{textAlign: "center", width: "100%"}}>
+           
+              <button className="btn btn-outline-secondary" onClick={async()=>{await this.setState({verDepositos: this.verDepositos ? false : true}); this.estado()}}>Ver ({countDeposits-listDeposits.length}) depósitos termiados</button>
+          
+              </div>
+
+
+
             </div>
+
 
           </div>
         </section>
