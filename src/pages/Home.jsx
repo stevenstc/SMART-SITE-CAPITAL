@@ -310,7 +310,6 @@ export default class Home extends Component {
     this.rateSITE = this.rateSITE.bind(this);
 
     this.Investors = this.Investors.bind(this);
-    this.Link = this.Link.bind(this);
     this.withdraw = this.withdraw.bind(this);
 
     this.depositos = this.depositos.bind(this);
@@ -374,13 +373,13 @@ export default class Home extends Component {
 
     let balanceTRX = await tronWeb.trx.getBalance(wallet);
     balanceTRX = new BigNumber(balanceTRX).shiftedBy(-6);
-    this.setState({balanceTRX})
+    this.setState({ balanceTRX })
 
     let balanceUSDT = await tokenUSDT.balanceOf(wallet).call()
     balanceUSDT = new BigNumber(balanceUSDT).shiftedBy(-decimalsUSDT);
     this.setState({ balanceUSDT })
 
-    
+
     let aprovado = await token.allowance(wallet, contract.address).call();
     if (aprovado.remainig) {
       aprovado = parseInt(aprovado.remainig);
@@ -390,7 +389,7 @@ export default class Home extends Component {
 
     let inversors = await contract.investors(wallet).call();
     let registered = await contract.registered(wallet).call();
-    this.setState({registered})
+    this.setState({ registered })
     let partner = tronWeb.address.fromHex(inversors.sponsor);
     let countDeposits = await contract.depositsLength(wallet).call();
     countDeposits = parseInt(countDeposits)
@@ -410,30 +409,31 @@ export default class Home extends Component {
 
     let balance = await token.balanceOf(wallet).call(); // balance USDT
     balance = new BigNumber(parseInt(balance)).shiftedBy(-decimales);
-    this.setState({balance: balance.toNumber()})
+    this.setState({ balance: balance.toNumber() })
 
     let MIN_DEPOSIT = await contract.MIN_DEPOSIT().call();
     MIN_DEPOSIT = new BigNumber(parseInt(MIN_DEPOSIT)).shiftedBy(-decimales);
-    this.setState({min: MIN_DEPOSIT.toNumber()})
+    this.setState({ min: MIN_DEPOSIT.toNumber() })
+
+    let link = "Haz una inversión para obtener el LINK de referido"
 
     if (!registered) {
 
-      var loc = document.location.href;
+      let loc = document.location.href;
       if (loc.indexOf('?') > 0) {
-        var getString = loc.split('?')[1];
-        var GET = getString.split('&');
-        var get = {};
-        for (var i = 0, l = GET.length; i < l; i++) {
-          var tmp = GET[i].split('=');
+        let getString = loc.split('?')[1];
+        let GET = getString.split('&');
+        let get = {};
+        let tmp;
+        for (let i = 0, l = GET.length; i < l; i++) {
+          tmp = GET[i].split('=');
           get[tmp[0]] = unescape(decodeURI(tmp[1]));
         }
 
         if (get['ref']) {
           tmp = get['ref'].split('#');
 
-          let inversor = await contract.registered(tmp[0]).call();
-
-          if (inversor) {
+          if (await contract.registered(tmp[0]).call()) {
             partner = tmp[0];
           } else {
             partner = tronWeb.address.fromHex(await contract.owner().call());
@@ -441,9 +441,11 @@ export default class Home extends Component {
         }
       }
 
+    } else {
+      link = document.location.origin + '/?ref=' + wallet;
     }
-
     this.setState({
+      link,
       deposito: aprovado,
     });
 
@@ -453,25 +455,28 @@ export default class Home extends Component {
     let energyAmount = {}
 
 
-        let inputs = [
+    let inputs = [
       { type: 'uint256', value: MIN_DEPOSIT.shiftedBy(decimales).toString(10) },
       { type: 'uint256', value: opcion.toString(10) },
       { type: 'address', value: tronWeb.address.toHex(partner) }
     ]
 
-      let funcion = "deposit(uint256,uint256,address)"
-      energyAmount = await tronWeb.transactionBuilder.estimateEnergy(tronWeb.address.toHex(contract.address), funcion, {}, inputs, tronWeb.address.toHex(wallet))
-        .catch((e) => { console.log(e);return {} })
-  
+    let funcion = "deposit(uint256,uint256,address)"
+    energyAmount = await tronWeb.transactionBuilder.estimateEnergy(tronWeb.address.toHex(contract.address), funcion, {}, inputs, tronWeb.address.toHex(wallet))
+      .catch(() => {
+        //console.log(e);
+        return {};
+      })
+
     if (energyAmount.energy_required) {
       energyAmount = energyAmount.energy_required + 1000
-    } 
+    }
 
-    if(energyAmount < 200000){
+    if (energyAmount < 200000) {
       energyAmount = 200000;
     }
 
-    if(aprovado < MIN_DEPOSIT.shiftedBy(decimales).toNumber()){
+    if (aprovado < MIN_DEPOSIT.shiftedBy(decimales).toNumber()) {
       energyAmount += 25000;
     }
 
@@ -496,14 +501,13 @@ export default class Home extends Component {
     });
 
 
-    this.Link();
     this.Investors();
     this.depositos();
 
   }
 
   async depositos() {
-    const { contract, wallet, verDepositos} = this.props
+    const { contract, wallet, verDepositos } = this.props
     const { decimales, precioSITE } = this.state
 
     let listDeposits = [];
@@ -516,14 +520,14 @@ export default class Home extends Component {
       let inicio = parseInt(getDeposits.at[index]) * 1000
       let fin = inicio + tiempo
 
-      let avance = ((Date.now()-inicio)/(fin-inicio))*100
+      let avance = ((Date.now() - inicio) / (fin - inicio)) * 100
 
-      if( Date.now() < fin || verDepositos){
+      if (Date.now() < fin || verDepositos) {
 
         listDeposits.unshift(<div key={"deposito-" + index} className="col-md-12 col-lg-12 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1s">
           <div className="box">
-          <progress value={avance} max="100" className="progress"> {avance}% </progress>
-            <h4 className="title"><a href="#services">{tiempo / (86400*1000)} dias | Depósito | {porcentaje.toString(10)}%</a></h4>
+            <progress value={avance} max="100" className="progress"> {avance}% </progress>
+            <h4 className="title"><a href="#services">{tiempo / (86400 * 1000)} dias | Depósito | {porcentaje.toString(10)}%</a></h4>
             <p className="description">
               Termina en: {new Date(fin).toLocaleDateString()}<br></br>
               {amount.dp(3).toString(10)} SITE (${amount.times(precioSITE).dp(2).toString(10)})
@@ -537,25 +541,6 @@ export default class Home extends Component {
 
     this.setState({ listDeposits })
 
-  }
-
-  async Link() {
-    const { wallet } = this.props;
-    const { registered } = this.state;
-    if (registered) {
-
-      let loc = document.location.origin;
-
-      let mydireccion = wallet
-      mydireccion = loc + '/?ref=' + mydireccion;
-      this.setState({
-        link: mydireccion,
-      });
-    } else {
-      this.setState({
-        link: "Haz una inversión para obtener el LINK de referido",
-      });
-    }
   }
 
 
@@ -633,13 +618,13 @@ export default class Home extends Component {
 
       let funcion = "approve(address,uint256)"
       let trigger = await tronWeb.transactionBuilder.triggerSmartContract(tronWeb.address.toHex(token.address), funcion, {}, inputs, tronWeb.address.toHex(wallet))
-      let transaction = await tronWeb.transactionBuilder.extendExpiration(trigger.transaction, 180);
+      let transaction = await tronWeb.transactionBuilder.extendExpiration(trigger.transaction, 500);
       transaction = await window.tronLink.tronWeb.trx.sign(transaction)
         .catch((e) => {
           alert(e.toString())
           return false;
         })
-      if(!transaction) return;
+      if (!transaction) return;
       transaction = await this.props.tronWeb.trx.sendRawTransaction(transaction)
         .then(() => {
           alert("Aprobación exitosa: " + transaction.txID)
@@ -662,7 +647,7 @@ export default class Home extends Component {
       return;
     }
 
-    if (balanceTRX < minTRX-5) {
+    if (balanceTRX < minTRX - 5) {
       alert("Su cuenta debe tener almenos " + minTRX + " TRX para ejecutar las transacciones correctamente");
       return;
     }
@@ -694,9 +679,7 @@ export default class Home extends Component {
         if (get['ref']) {
           tmp = get['ref'].split('#');
 
-          let inversors = await contract.registered(tmp[0]).call();
-
-          if (inversors) {
+          if (await contract.registered(tmp[0]).call()) {
             sponsor = tmp[0];
           }
         }
@@ -714,13 +697,13 @@ export default class Home extends Component {
 
     let funcion = "deposit(uint256,uint256,address)"
     let trigger = await tronWeb.transactionBuilder.triggerSmartContract(tronWeb.address.toHex(contract.address), funcion, {}, inputs, tronWeb.address.toHex(wallet))
-    let transaction = await tronWeb.transactionBuilder.extendExpiration(trigger.transaction, 180);
+    let transaction = await tronWeb.transactionBuilder.extendExpiration(trigger.transaction, 500);
     transaction = await window.tronLink.tronWeb.trx.sign(transaction)
       .catch((e) => {
         alert(e.toString())
-
+        return false
       })
-    //console.log(transaction)
+    if (!transaction) return;
     transaction = await this.props.tronWeb.trx.sendRawTransaction(transaction)
       .then(() => {
         document.getElementById("amount").value = "";
@@ -730,8 +713,6 @@ export default class Home extends Component {
       .catch((e) => {
         alert(e.toString())
       })
-
-    
 
     this.estado();
 
@@ -765,7 +746,7 @@ export default class Home extends Component {
         alert(e.toString())
         return false
       })
-    if(!transaction) return;
+    if (!transaction) return;
     transaction = await this.props.tronWeb.trx.sendRawTransaction(transaction)
       .then(() => {
         alert("Transacción exitosa: " + transaction.txID)
@@ -782,8 +763,8 @@ export default class Home extends Component {
   }
 
   render() {
-    let { ruta, contract } = this.props;
-    let { min, balanceRef, totalRef, invested, withdrawn, my, wallet, link, totalInvestors, totalInvested, totalRefRewards, precioSITE, partner, countDeposits, listDeposits, energyAmount } = this.state;
+    let { ruta, contract, wallet } = this.props;
+    let { min, balanceRef, totalRef, invested, withdrawn, my, link, totalInvestors, totalInvested, totalRefRewards, precioSITE, partner, countDeposits, listDeposits, energyAmount } = this.state;
 
     let available = (balanceRef + my);
     available = available.toFixed(8);
@@ -878,8 +859,8 @@ export default class Home extends Component {
                     <br></br>
                     <br></br>
                     <div style={{ display: 'inline-block', background: 'linear-gradient(135deg, #800080, #ff00ff)', borderRadius: '25px', padding: '10px 20px', color: 'white', fontFamily: 'Arial, sans-serif', fontSize: '16px', fontWeight: 'bold', textAlign: 'center', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-                      <a href={"https://dapp.brutus.finance/#/ebot?amount="+energyAmount} rel="noopener noreferrer" target="_blank" style={{ color: 'white', textDecoration: 'none' }}>
-                        <span style={{ verticalAlign: 'middle' }}>RENT {(energyAmount/1000).toFixed(0)} K ENERGY</span>
+                      <a href={"https://dapp.brutus.finance/#/ebot?amount=" + energyAmount} rel="noopener noreferrer" target="_blank" style={{ color: 'white', textDecoration: 'none' }}>
+                        <span style={{ verticalAlign: 'middle' }}>RENT {(energyAmount / 1000).toFixed(0)} K ENERGY</span>
                         <img src='data:image/bmp;base64,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'
                           alt="Icon" style={{ maxHeight: "30px", verticalAlign: 'middle', marginRight: '10px' }}>
 
@@ -984,10 +965,10 @@ export default class Home extends Component {
 
               {listDeposits}
 
-              <div style={{textAlign: "center", width: "100%"}}>
-           
-              <button className="btn btn-outline-secondary" onClick={async()=>{await this.setState({verDepositos: this.verDepositos ? false : true}); this.estado()}}>Ver ({countDeposits-listDeposits.length}) depósitos termiados</button>
-          
+              <div style={{ textAlign: "center", width: "100%" }}>
+
+                <button className="btn btn-outline-secondary" onClick={async () => { await this.setState({ verDepositos: this.verDepositos ? false : true }); this.estado() }}>Ver ({countDeposits - listDeposits.length}) depósitos termiados</button>
+
               </div>
 
 
