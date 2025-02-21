@@ -1,4 +1,4 @@
-import TronWeb from "tronweb";
+import { TronWeb} from 'tronweb';
 import siteV2 from "./SITECapitalVMulti.json"
 import token from "./TOKEN.json"
 import reserve from "./reserve.json"
