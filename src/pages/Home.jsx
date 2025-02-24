@@ -201,7 +201,7 @@ class Calculadora extends Component {
             <div className="col-sm-6 col-md-10 offset-md-1 wow bounceInUp" data-wow-duration="1s">
               <div className="box">
 
-                <div onClick={() => this.change()} style={{ "cursor": "pointer" }}><img src={this.state.imageIn} alt="usdt logo trx" width="50" /> <button className="btn btn-info"><i className="fa fa-exchange" aria-hidden="true"></i></button> <img src={this.state.imageOut} alt="usdt logo trx" width="50" /></div>
+                <div onClick={() => this.change()} style={{ "cursor": "pointer" }}><img src={this.state.imageIn} alt="usdt logo trx" width="50" /> <button type="button" className="btn btn-info"><i className="fa fa-exchange" aria-hidden="true"></i></button> <img src={this.state.imageOut} alt="usdt logo trx" width="50" /></div>
                 <input id="amountSITE" type="number" className="form-control mb-20 mt-3 text-center" onInput={() => this.calculo()} placeholder="Ingresa una cantidad"></input>
 
               </div>
@@ -367,6 +367,9 @@ export default class Home extends Component {
     porcentaje = new BigNumber(parseInt(porcentaje.result)).shiftedBy(-10).dp(2).toNumber();
     this.setState({ porcentaje })
 
+    let registered = await contract.registered(wallet).call();
+    this.setState({ registered })
+
     let balanceSite = await token.balanceOf(wallet).call();
     balanceSite = new BigNumber(parseInt(balanceSite)).shiftedBy(-decimales);
     this.setState({ balanceSite: balanceSite.toNumber() })
@@ -388,8 +391,7 @@ export default class Home extends Component {
     }
 
     let inversors = await contract.investors(wallet).call();
-    let registered = await contract.registered(wallet).call();
-    this.setState({ registered })
+    
     let partner = tronWeb.address.fromHex(inversors.sponsor);
     let countDeposits = await contract.depositsLength(wallet).call();
     countDeposits = parseInt(countDeposits)
@@ -605,8 +607,7 @@ export default class Home extends Component {
     amount = new BigNumber(parseFloat(amount.replace(/,/g, ".")));
     if (isNaN(amount)) amount = 0;
 
-    let aprovado = await token.allowance(wallet, contract.address).call();
-    aprovado = parseInt(aprovado);
+    let aprovado = parseInt(await token.allowance(wallet, contract.address).call());
 
     if (amount > aprovado || aprovado === 0) {
 
@@ -638,12 +639,11 @@ export default class Home extends Component {
 
     }
 
-    aprovado = await token.allowance(wallet, contract.address).call();
-    aprovado = parseInt(aprovado);
+    aprovado = parseInt(await token.allowance(wallet, contract.address).call());
 
     if (balanceSite < amount) {
       document.getElementById("amount").value = "";
-      window.alert("No tienes suficiente SITE");
+      alert("No tienes suficiente SITE");
       return;
     }
 
@@ -728,7 +728,7 @@ export default class Home extends Component {
     available = parseFloat(available);
 
     if (available < min) {
-      window.alert("El minimo para retirar son: " + min + " SITE");
+      alert("El minimo para retirar son: " + min + " SITE");
       return;
     }
 
@@ -855,7 +855,9 @@ export default class Home extends Component {
 
                     <p className="card-text">Recomendamos tener más de {minTRX} TRX para ejecutar las transacciones correctamente</p>
 
-                    <button className="btn btn-lg btn-success" onClick={() => this.deposit()}>{this.state.deposito}</button>
+                    <div>
+                    <button className="btn btn-lg btn-success" type="button" style={{paddingLeft: "4rem", paddingRight: "4rem", borderRadius: '15px'}} onClick={() => this.deposit()}>{this.state.deposito}</button>
+                    </div>
                     <br></br>
                     <br></br>
                     <div style={{ display: 'inline-block', background: 'linear-gradient(135deg, #800080, #ff00ff)', borderRadius: '25px', padding: '10px 20px', color: 'white', fontFamily: 'Arial, sans-serif', fontSize: '16px', fontWeight: 'bold', textAlign: 'center', cursor: 'pointer', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
@@ -967,7 +969,7 @@ export default class Home extends Component {
 
               <div style={{ textAlign: "center", width: "100%" }}>
 
-                <button className="btn btn-outline-secondary" onClick={async () => { await this.setState({ verDepositos: this.verDepositos ? false : true }); this.estado() }}>Ver ({countDeposits - listDeposits.length}) depósitos termiados</button>
+                <button className="btn btn-outline-secondary" type="button" onClick={async () => { await this.setState({ verDepositos: this.verDepositos ? false : true }); this.estado() }}>Ver ({countDeposits - listDeposits.length}) depósitos termiados</button>
 
               </div>
 
