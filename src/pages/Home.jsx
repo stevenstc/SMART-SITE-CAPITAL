@@ -353,8 +353,12 @@ export default class Home extends Component {
     let texto = wallet;
     texto = texto.substr(0, 4) + "..." + texto.substr(-4);
 
-    document.getElementById("login").href = `https://tronscan.io/#/address/${wallet}`;
-    document.getElementById("login-my-wallet").innerHTML = texto;
+    document.getElementsByClassName("login")[0].href = `https://tronscan.io/#/address/${wallet}`;
+    document.getElementsByClassName("login")[1].href = `https://tronscan.io/#/address/${wallet}`;
+
+    document.getElementsByClassName("login-my-wallet")[0].innerHTML = texto;
+    document.getElementsByClassName("login-my-wallet")[1].innerHTML = texto;
+
 
     let opcion = document.getElementById("days").value;
     this.setState({ opcion })
