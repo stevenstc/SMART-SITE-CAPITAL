@@ -395,7 +395,7 @@ export default class Home extends Component {
     }
 
     let inversors = await contract.investors(wallet).call();
-    
+
     let partner = tronWeb.address.fromHex(inversors.sponsor);
     let countDeposits = await contract.depositsLength(wallet).call();
     countDeposits = parseInt(countDeposits)
@@ -608,12 +608,14 @@ export default class Home extends Component {
     const { decimales, balanceSite, balanceTRX, min, opcion, registered } = this.state;
 
     let amount = document.getElementById("amount").value;
-    amount = new BigNumber(parseFloat(amount.replace(/,/g, ".")));
+    amount = parseFloat(amount.replace(/,/g, "."));
     if (isNaN(amount)) amount = 0;
+
+    amount = new BigNumber(amount);
 
     let aprovado = parseInt(await token.allowance(wallet, contract.address).call());
 
-    if (amount > aprovado || aprovado === 0) {
+    if (amount.toNumber() > aprovado || aprovado === 0) {
 
       let inputs = [
         { type: 'address', value: this.props.tronWeb.address.toHex(contract.address) },
@@ -645,7 +647,7 @@ export default class Home extends Component {
 
     aprovado = parseInt(await token.allowance(wallet, contract.address).call());
 
-    if (balanceSite < amount) {
+    if (balanceSite < amount.toNumber()) {
       document.getElementById("amount").value = "";
       alert("No tienes suficiente SITE");
       return;
@@ -656,7 +658,7 @@ export default class Home extends Component {
       return;
     }
 
-    if (amount.toNumber() < min || isNaN(amount.toNumber())) {
+    if (amount.toNumber() < min) {
       document.getElementById("amount").value = min;
       alert("Coloca una cantidad mayor que " + min + " SITE");
       return;
@@ -860,7 +862,7 @@ export default class Home extends Component {
                     <p className="card-text">Recomendamos tener más de {minTRX} TRX para ejecutar las transacciones correctamente</p>
 
                     <div>
-                    <button className="btn btn-lg btn-success" type="button" style={{paddingLeft: "4rem", paddingRight: "4rem", borderRadius: '15px'}} onClick={() => this.deposit()}>{this.state.deposito}</button>
+                      <button className="btn btn-lg btn-success" type="button" style={{ paddingLeft: "4rem", paddingRight: "4rem", borderRadius: '15px' }} onClick={() => this.deposit()}>{this.state.deposito}</button>
                     </div>
                     <br></br>
                     <br></br>
