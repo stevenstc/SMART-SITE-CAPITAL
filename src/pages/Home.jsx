@@ -513,8 +513,8 @@ export default class Home extends Component {
   }
 
   async depositos() {
-    const { contract, wallet, verDepositos } = this.props
-    const { decimales, precioSITE } = this.state
+    const { contract, wallet } = this.props
+    const { decimales, precioSITE, verDepositos } = this.state
 
     let listDeposits = [];
     let getDeposits = await contract.getDeposits(wallet).call()
