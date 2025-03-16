@@ -532,11 +532,15 @@ export default class Home extends Component {
 
         listDeposits.unshift(<div key={"deposito-" + index} className="col-md-12 col-lg-12 wow bounceInUp" data-wow-delay="0.2s" data-wow-duration="1s">
           <div className="box">
-            <progress value={avance} max="100" className="progress"> {avance}% </progress>
-            <h4 className="title"><a href="#services">{tiempo / (86400 * 1000)} dias | Depósito | {porcentaje.toString(10)}%</a></h4>
+            <h4 className="title"><a href={"#dep-" + index}> Contrato #{index + 1} | Total ROI {porcentaje.toString(10)}%</a></h4>
+            <div className="progress">
+              <div className={"progress-bar progress-bar-striped " + (avance >= 100 ?"bg-danger":"bg-success progress-bar-animated")} role="progressbar" style={{ width: avance+"%" }} aria-valuenow={avance} aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <h4 className="title"><a href="#services">{tiempo / (86400 * 1000)} dias | {amount.times(porcentaje / 100).dp(3).toString(10)} SITE (${amount.times(porcentaje / 100).times(precioSITE).dp(2).toString(10)}) </a></h4>
             <p className="description">
-              Termina en: {new Date(fin).toLocaleDateString()}<br></br>
-              {amount.dp(3).toString(10)} SITE (${amount.times(precioSITE).dp(2).toString(10)})
+              Monto apertura: {amount.dp(3).toString(10)} SITE (${amount.times(precioSITE).dp(2).toString(10)})<br></br>
+              Fecha de término: {new Date(fin).toLocaleDateString()}
+
             </p>
           </div>
         </div>)
@@ -770,7 +774,7 @@ export default class Home extends Component {
 
   render() {
     let { ruta, contract, wallet } = this.props;
-    let { min, balanceRef, totalRef, invested, withdrawn, my, link, totalInvestors, totalInvested, totalRefRewards, precioSITE, partner, countDeposits, listDeposits, energyAmount } = this.state;
+    let { min, balanceRef, totalRef, invested, withdrawn, my, link, totalInvestors, totalInvested, totalRefRewards, precioSITE, partner, countDeposits, listDeposits, energyAmount, verDepositos } = this.state;
 
     let available = (balanceRef + my);
     available = available.toFixed(8);
@@ -975,7 +979,7 @@ export default class Home extends Component {
 
               <div style={{ textAlign: "center", width: "100%" }}>
 
-                <button className="btn btn-outline-secondary" type="button" onClick={async () => { await this.setState({ verDepositos: this.verDepositos ? false : true }); this.estado() }}>Ver ({countDeposits - listDeposits.length}) depósitos termiados</button>
+                <button className="btn btn-outline-secondary" type="button" onClick={async () => { verDepositos = !verDepositos; this.setState({ verDepositos }); this.estado() }}>{verDepositos ? "Ocultar" : "Mostrar"} ({countDeposits - listDeposits.length}) depósitos finalizados</button>
 
               </div>
 
