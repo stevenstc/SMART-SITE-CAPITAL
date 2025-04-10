@@ -25,3 +25,9 @@ Para hacer pruebas en **localhost:3000**
 Para colocarlo en un servidor web, recuerda cambiar el **homepage** en **package.json**
 
 `yarn build`
+
+
+## Revisar dependecias obsoletas
+
+`npm install -g npm-check-updates`
+ `ncu `

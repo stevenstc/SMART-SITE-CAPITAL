@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import Calculadora from "../components/Calculadora"
 import CopyToClipboard from "react-copy-to-clipboard";
 
 const BigNumber = require('bignumber.js');
@@ -7,257 +7,7 @@ const BigNumber = require('bignumber.js');
 let intervalId = null;
 let nextUpdate = 0;
 
-const imageSITE = "./img/logo-site.png";
-const imageUSDT = "./img/logo-usdt.png";
-const imageCOPT = "./img/logo-copt.png";
-
 const minTRX = 20;
-
-
-class Calculadora extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      CoptUsdt: 0.000260630465095065,
-      monedaIn: "SITE",
-      monedaOut: "USDT",
-      valueIn: "1",
-      precioOut: 0,
-      imageIn: imageSITE,
-      imageOut: imageUSDT,
-      listaIn: <>
-        <option value="SITE">SITE</option>
-        <option value="USDT">USDT</option>
-        <option value="COPT">COPT</option>
-      </>,
-      listaOut: <>
-        <option value="USDT">USDT</option>
-        <option value="SITE">SITE</option>
-        <option value="COPT">COPT</option>
-      </>,
-
-    };
-
-    this.handleChangeIN = this.handleChangeIN.bind(this);
-    this.handleChangeOUT = this.handleChangeOUT.bind(this);
-    this.calculo = this.calculo.bind(this);
-    this.change = this.change.bind(this);
-  }
-
-
-  handleChangeIN(event) {
-    var image = imageSITE;
-    var image2 = imageUSDT;
-    var moneda2 = "USDT";
-    switch (event.target.value) {
-
-      case "COPT":
-        image = imageCOPT;
-        image2 = imageSITE;
-        moneda2 = "SITE";
-        break;
-
-      case "USDT":
-        image = imageUSDT;
-        image2 = imageSITE;
-        moneda2 = "SITE";
-        break;
-
-      default:
-        image = imageSITE;
-        image2 = imageUSDT;
-        moneda2 = "USDT";
-        break;
-    }
-    document.getElementById("selIN").value = event.target.value;
-    document.getElementById("selOUT").value = moneda2;
-    this.setState({
-      monedaIn: event.target.value,
-      imageIn: image,
-      monedaOut: moneda2,
-      imageOut: image2
-    });
-  }
-
-  handleChangeOUT(event) {
-    var image = imageUSDT;
-    var image2 = imageSITE;
-    var moneda2 = "SITE";
-    switch (event.target.value) {
-
-      case "COPT":
-        image = imageCOPT;
-        image2 = imageSITE;
-        moneda2 = "SITE";
-        break;
-
-      case "SITE":
-        image = imageSITE;
-        image2 = imageUSDT;
-        moneda2 = "USDT";
-        break;
-
-      default:
-        image = imageUSDT;
-        image2 = imageSITE;
-        moneda2 = "SITE";
-        break;
-    }
-    document.getElementById("selIN").value = moneda2;
-    document.getElementById("selOUT").value = event.target.value;
-    this.setState({
-      monedaOut: event.target.value,
-      imageOut: image,
-      monedaIn: moneda2,
-      imageIn: image2
-    });
-  }
-
-  change() {
-    var moneda = this.state.monedaIn;
-    var imagen = this.state.imageIn;
-    document.getElementById("selIN").value = this.state.monedaOut;
-    document.getElementById("selOUT").value = moneda;
-    this.setState({
-      monedaIn: this.state.monedaOut,
-      imageIn: this.state.imageOut,
-      monedaOut: moneda,
-      imageOut: imagen
-    });
-  }
-
-  async calculo() {
-    const { precioSITE, CoptUsdt } = this.props
-    let { valueIn } = this.state
-
-    valueIn = document.getElementById("amountSITE").value;
-    valueIn = parseFloat(valueIn.replace(/,/g, "."))
-    if (isNaN(valueIn) || valueIn < 0) valueIn = 1
-
-    this.setState({ valueIn })
-
-    let par = this.state.monedaIn + "_" + this.state.monedaOut;
-
-    let precio = 0;
-    switch (par) {
-
-      case "SITE_USDT":
-        precio = valueIn * precioSITE;
-        break;
-
-      case "USDT_SITE":
-        precio = valueIn / precioSITE;
-        break;
-
-      case "SITE_COPT":
-        precio = valueIn * precioSITE;
-        precio = precio / CoptUsdt;
-        break;
-
-      case "COPT_SITE":
-        precio = valueIn * CoptUsdt;
-        precio = precio / precioSITE;
-        break;
-
-      case "COPT_USDT":
-        precio = valueIn * CoptUsdt;
-        break;
-
-      case "USDT_COPT":
-        precio = valueIn / CoptUsdt;
-        break;
-
-      default:
-        break;
-    }
-
-    this.setState({
-      precioOut: precio
-    });
-  }
-
-  async componentDidMount() {
-
-    this.calculo()
-
-    setInterval(() => {
-      this.calculo()
-
-    }, 120 * 1000)
-
-  };
-
-  render() {
-
-    return (
-
-      <section id="calculator" className="section-bg pt-5 pb-5">
-
-        <div className="container">
-
-          <div className="row text-center">
-
-            <div className="col-sm-6 col-md-10 offset-md-1 wow bounceInUp" data-wow-duration="1s">
-              <div className="box">
-
-                <div onClick={() => this.change()} style={{ "cursor": "pointer" }}><img src={this.state.imageIn} alt="usdt logo trx" width="50" /> <button type="button" className="btn btn-info"><i className="fa fa-exchange" aria-hidden="true"></i></button> <img src={this.state.imageOut} alt="usdt logo trx" width="50" /></div>
-                <input id="amountSITE" type="number" className="form-control mb-20 mt-3 text-center" onInput={() => this.calculo()} placeholder="Ingresa una cantidad"></input>
-
-              </div>
-            </div>
-
-          </div>
-
-          <div className="row text-center mt-4">
-
-            <div className="col-sm-6 col-md-5  offset-md-1 wow bounceInUp" data-wow-duration="1s">
-              <div className="box">
-
-                <img src={this.state.imageIn} alt="usdt logo trx" width="50" />
-
-                <div className="input-group-append">
-                  <select id="selIN" className="form-control mb-20 text-center" onInput={this.handleChangeIN} style={{ "cursor": "pointer" }}>
-                    {this.state.listaIn}
-                  </select>
-
-                </div>
-
-
-              </div>
-            </div>
-
-            <div className="col-sm-6 col-md-5  wow bounceInUp" data-wow-duration="1s">
-              <div className="box">
-                <div width="50" heigth="50"><img src={this.state.imageOut} alt="usdt logo trx" width="50" /></div>
-                <select id="selOUT" className="form-control mb-20 text-center" onChange={this.handleChangeOUT} style={{ "cursor": "pointer" }}>
-                  {this.state.listaOut}
-                </select>
-
-              </div>
-            </div>
-
-          </div>
-
-          <div className="row text-center">
-            <div className="col-sm-6 col-md-10  offset-md-1 wow bounceInUp" data-wow-duration="1s">
-              <div className="box">
-
-                <h4 className="title">
-                  <br />{(this.state.valueIn * 1).toFixed(6)} <b>{this.state.monedaIn}</b> = {(this.state.precioOut).toFixed(6)} <b>{this.state.monedaOut}</b>
-                </h4>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-    );
-  }
-}
-
 
 export default class Home extends Component {
 
@@ -458,9 +208,6 @@ export default class Home extends Component {
 
     // estimar Energia que consumira
 
-    let energyAmount = {}
-
-
     let inputs = [
       { type: 'uint256', value: MIN_DEPOSIT.shiftedBy(decimales).toString(10) },
       { type: 'uint256', value: opcion.toString(10) },
@@ -468,14 +215,16 @@ export default class Home extends Component {
     ]
 
     let funcion = "deposit(uint256,uint256,address)"
-    energyAmount = await tronWeb.transactionBuilder.estimateEnergy(tronWeb.address.toHex(contract.address), funcion, {}, inputs, tronWeb.address.toHex(wallet))
+    let energyAmount = await tronWeb.transactionBuilder.triggerConstantContract(tronWeb.address.toHex(contract.address), funcion, {}, inputs, tronWeb.address.toHex(wallet))
       .catch(() => {
         //console.log(e);
-        return {};
+        return 0;
       })
 
-    if (energyAmount.energy_required) {
-      energyAmount = energyAmount.energy_required + 1000
+      console.log(energyAmount)
+
+    if (energyAmount.energy_used) {
+      energyAmount = energyAmount.energy_used + 1000
     }
 
     if (energyAmount < 200000) {
@@ -979,7 +728,7 @@ export default class Home extends Component {
 
               <div style={{ textAlign: "center", width: "100%" }}>
 
-                <button className="btn btn-outline-secondary" type="button" onClick={async () => { verDepositos = !verDepositos; this.setState({ verDepositos }); this.estado() }}>{verDepositos ? "Ocultar" : "Mostrar"} ({countDeposits - listDeposits.length}) depósitos finalizados</button>
+                <button className="btn btn-outline-secondary" type="button" onClick={async () => { verDepositos = !verDepositos; this.setState({ verDepositos }); this.estado() }}>{verDepositos ? "Ocultar" : "Mostrar"} ({countDeposits - listDeposits.length}) contratos finalizados</button>
 
               </div>
 
