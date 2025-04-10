@@ -7,7 +7,15 @@ const imageCOPT = "./img/logo-copt.png";
 
 
 
-const Calculadora = (precioSITE, CoptUsdt = 0.000260630465095065) => {
+const Calculadora = ({precioSITE, CoptUsdt = 0.000260630465095065}) => {
+    const [monedaIn, setMonedaIn] = useState('SITE')
+    const [monedaOut, setMonedaOut] = useState('USDT')
+    const [imageIn, setImageIn] = useState(imageSITE)
+    const [imageOut, setImageOut] = useState(imageUSDT)
+
+    const [valueIn, setValueIn] = useState(0)
+    const [precioOut, setValueOut] = useState(0)
+    
     const listaIn = (<>
         <option value="SITE">SITE</option>
         <option value="USDT">USDT</option>
@@ -19,80 +27,73 @@ const Calculadora = (precioSITE, CoptUsdt = 0.000260630465095065) => {
         <option value="COPT">COPT</option>
     </>)
 
-    const [monedaIn, setMonedaIn] = useState('SITE')
-    const [monedaOut, setMonedaOut] = useState('USDT')
-    const [imageIn, setImageIn] = useState(imageSITE)
-    const [imageOut, setImageOut] = useState(imageUSDT)
-
-    const [valueIn, setValueIn] = useState(0)
-    const [precioOut, setValueOut] = useState(0)
-
+   
     const handleChangeIN = (event) => {
-        var image = imageSITE;
-        var image2 = imageUSDT;
-        var moneda2 = "USDT";
-        switch (event.target.value) {
+        const value = event.target.value;
+    let imgIn = imageSITE, imgOut = imageUSDT, monedaOut = 'USDT';
+        switch (value) {
 
             case "COPT":
-                image = imageCOPT;
-                image2 = imageSITE;
-                moneda2 = "SITE";
+                imgIn = imageCOPT;
+                imgOut = imageSITE;
+                monedaOut = "SITE";
                 break;
 
             case "USDT":
-                image = imageUSDT;
-                image2 = imageSITE;
-                moneda2 = "SITE";
+                imgIn = imageUSDT;
+                imgOut = imageSITE;
+                monedaOut = "SITE";
                 break;
 
             default:
-                image = imageSITE;
-                image2 = imageUSDT;
-                moneda2 = "USDT";
+                imgIn = imageSITE;
+                imgOut = imageUSDT;
+                monedaOut = "USDT";
                 break;
         }
-        document.getElementById("selIN").value = event.target.value;
-        document.getElementById("selOUT").value = moneda2;
-        setMonedaIn(event.target.value)
-        setMonedaOut(moneda2)
+        document.getElementById("selIN").value = value;
+        document.getElementById("selOUT").value = monedaOut;
+        setMonedaIn(value)
+        setMonedaOut(monedaOut)
 
-        setImageIn(image)
-        setImageOut(image2)
+        setImageIn(imgIn)
+        setImageOut(imgOut)
 
     }
 
     const handleChangeOUT = (event) => {
-        var image = imageUSDT;
-        var image2 = imageSITE;
-        var moneda2 = "SITE";
-        switch (event.target.value) {
+
+        const value = event.target.value;
+        let imgOut = imageUSDT, imgIn = imageSITE, monedaIn = 'SITE';
+
+        switch (value) {
 
             case "COPT":
-                image = imageCOPT;
-                image2 = imageSITE;
-                moneda2 = "SITE";
+                imgOut = imageCOPT;
+                imgIn = imageSITE;
+                monedaIn = "SITE";
                 break;
 
             case "SITE":
-                image = imageSITE;
-                image2 = imageUSDT;
-                moneda2 = "USDT";
+                imgOut = imageSITE;
+                imgIn = imageUSDT;
+                monedaIn = "USDT";
                 break;
 
             default:
-                image = imageUSDT;
-                image2 = imageSITE;
-                moneda2 = "SITE";
+                imgOut = imageUSDT;
+                imgIn = imageSITE;
+                monedaIn = "SITE";
                 break;
         }
-        document.getElementById("selIN").value = moneda2;
-        document.getElementById("selOUT").value = event.target.value;
+        document.getElementById("selIN").value = monedaIn;
+        document.getElementById("selOUT").value = value;
 
-        setMonedaIn(moneda2)
-        setMonedaOut(event.target.value)
+        setMonedaIn(monedaIn)
+        setMonedaOut(value)
 
-        setImageIn(image2)
-        setImageOut(image)
+        setImageIn(imgIn)
+        setImageOut(imgOut)
 
     }
 
@@ -104,13 +105,12 @@ const Calculadora = (precioSITE, CoptUsdt = 0.000260630465095065) => {
         setImageIn(imageOut)
         setImageOut(imageIn)
 
+        document.getElementById('selIN').value = monedaOut;
+        document.getElementById('selOUT').value = monedaIn;
 
     }
 
     const calculo = useCallback(() => {
-
-        console.log(precioSITE)
-
 
         let amount = document.getElementById("amountSITE").value;
         amount = parseFloat(amount.replace(/,/g, "."))
@@ -159,13 +159,9 @@ const Calculadora = (precioSITE, CoptUsdt = 0.000260630465095065) => {
     useEffect(() => {
         calculo();
 
-        let interval = setInterval(() => {
-            calculo();
-        }, 120 * 1000)
+        let interval = setInterval(calculo, 120 * 1000)
 
-        return () => {
-            clearInterval(interval)
-        }
+        return () => clearInterval(interval);
 
     }, [calculo])
 
