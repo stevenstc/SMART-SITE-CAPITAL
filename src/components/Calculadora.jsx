@@ -6,6 +6,14 @@ const imageUSDT = "./img/logo-usdt.png";
 const imageCOPT = "./img/logo-copt.png";
 
 
+const prices = { // un dolar
+    BRL: 1/5.8669,
+    COP: 1/4322.52105,
+    EUR: 1/0.880437,
+    MXN: 1/20.306825,
+    PEN: 1/3.724748,
+    PYG: 1/7983.940654
+}
 
 const Calculadora = ({precioSITE, CoptUsdt = 0.000260630465095065}) => {
     const [monedaIn, setMonedaIn] = useState('SITE')
@@ -133,20 +141,20 @@ const Calculadora = ({precioSITE, CoptUsdt = 0.000260630465095065}) => {
 
             case "SITE_COPT":
                 precio = amount * precioSITE;
-                precio = precio / CoptUsdt;
+                precio = precio / prices.COP;
                 break;
 
             case "COPT_SITE":
-                precio = amount * CoptUsdt;
+                precio = amount * prices.COP;
                 precio = precio / precioSITE;
                 break;
 
             case "COPT_USDT":
-                precio = amount * CoptUsdt;
+                precio = amount * prices.COP;
                 break;
 
             case "USDT_COPT":
-                precio = amount / CoptUsdt;
+                precio = amount / prices.COP;
                 break;
 
             default:
