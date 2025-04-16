@@ -221,8 +221,6 @@ export default class Home extends Component {
         return 0;
       })
 
-      console.log(energyAmount)
-
     if (energyAmount.energy_used) {
       energyAmount = energyAmount.energy_used + 1000
     }
@@ -283,7 +281,7 @@ export default class Home extends Component {
           <div className="box">
             <h4 className="title"><a href={"#dep-" + index}> Contrato #{index + 1} | Total ROI {porcentaje.toString(10)}%</a></h4>
             <div className="progress">
-              <div className={"progress-bar progress-bar-striped " + (avance >= 100 ?"bg-danger":"bg-success progress-bar-animated")} role="progressbar" style={{ width: avance+"%" }} aria-valuenow={avance} aria-valuemin="0" aria-valuemax="100"></div>
+              <div className={"progress-bar progress-bar-striped " + (avance >= 100 ? "bg-danger" : "bg-success progress-bar-animated")} role="progressbar" style={{ width: avance + "%" }} aria-valuenow={avance} aria-valuemin="0" aria-valuemax="100"></div>
             </div>
             <h4 className="title"><a href="#services">{tiempo / (86400 * 1000)} dias | {amount.times(porcentaje / 100).dp(3).toString(10)} SITE (${amount.times(porcentaje / 100).times(precioSITE).dp(2).toString(10)}) </a></h4>
             <p className="description">
