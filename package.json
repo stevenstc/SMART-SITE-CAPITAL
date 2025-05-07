@@ -18,7 +18,7 @@
   "license": "Apache 2.0",
   "homepage": "https://smartsitecapital.ml/",
   "dependencies": {
-    "@babel/core": "7.8.4",
+    "@babel/core": "^7.0.0-0",
     "@svgr/webpack": "4.3.3",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
@@ -99,8 +99,8 @@
     "@babel/plugin-transform-nullish-coalescing-operator": "^7.0.0-0",
     "@babel/plugin-transform-shorthand-properties": "^7.0.0-0",
     "@babel/plugin-transform-template-literals": "^7.0.0-0",
-    "react": "*",
-    "react-native": "*"
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
   },
   "devDependencies": {
     "@babel/helper-compilation-targets": "7.19.3",
@@ -154,7 +154,6 @@
     ],
     "modulePaths": [],
     "moduleNameMapper": {
-      "^react-native$": "react-native-web",
       "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
     },
     "moduleFileExtensions": [
