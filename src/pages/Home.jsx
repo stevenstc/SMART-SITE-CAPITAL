@@ -5,7 +5,6 @@ import CopyToClipboard from "react-copy-to-clipboard";
 const BigNumber = require('bignumber.js');
 
 let intervalId = null;
-let nextUpdate = 0;
 
 const minTRX = 20;
 
@@ -69,24 +68,18 @@ export default class Home extends Component {
 
   async componentDidMount() {
 
+    setTimeout(async () => {
+      await this.estado();
+      await this.Investors();
+    }, 3 * 1000);
+
     intervalId = setInterval(() => {
 
-      if (Date.now() >= nextUpdate) {
-
-        if (!this.props.tronlik.loggedIn) {
-          nextUpdate = Date.now() + 3 * 1000;
-        } else {
-          nextUpdate = Date.now() + 20 * 1000;
-        }
-
-        this.estado();
-
-      }
-
+      this.estado();
       this.Investors();
 
 
-    }, 3 * 1000);
+    }, 10 * 1000);
   };
 
   componentWillUnmount() {
