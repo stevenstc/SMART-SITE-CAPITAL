@@ -62,6 +62,7 @@ export default class Home extends Component {
     this.withdraw = this.withdraw.bind(this);
 
     this.depositos = this.depositos.bind(this);
+    this.handleSelectChange = this.handleSelectChange.bind(this);
 
   }
 
@@ -89,7 +90,7 @@ export default class Home extends Component {
   async estado() {
 
     const { contract, token, tokenUSDT, wallet, tronWeb } = this.props;
-    let { decimales, decimalsUSDT } = this.state;
+    let { decimales, decimalsUSDT, opcion } = this.state;
 
     this.rateSITE()
 
@@ -102,9 +103,6 @@ export default class Home extends Component {
     document.getElementsByClassName("login-my-wallet")[0].innerHTML = texto;
     document.getElementsByClassName("login-my-wallet")[1].innerHTML = texto;
 
-
-    let opcion = document.getElementById("days").value;
-    this.setState({ opcion })
 
     let dias = await contract.dias(opcion).call();
     dias = parseInt(dias)
@@ -348,6 +346,8 @@ export default class Home extends Component {
 
   async deposit() {
 
+    await this.estado()
+
     const { contract, tronWeb, token, wallet } = this.props;
     const { decimales, balanceSite, balanceTRX, min, opcion, registered } = this.state;
 
@@ -515,6 +515,10 @@ export default class Home extends Component {
     this.estado();
   };
 
+  handleSelectChange = (event) => {
+    this.setState({opcion: parseInt(event.target.value)})
+  };
+
   getMax() {
     document.getElementById("amount").value = this.state.balance;
   }
@@ -575,16 +579,15 @@ export default class Home extends Component {
                   </table>
 
                   <div className="mb-3">
-                    <b>{">>> "}Select Term: {" "}
-                      <select id="days" onInput={() => this.estado()} name="days">
-                        <option value="0">30</option>
-                        <option value="1">60</option>
-                        <option value="2">90</option>
-                        <option value="3">120</option>
-                        <option value="4">180</option>
-                        <option value="5">360</option>
+                    <b>{">>> Select Term:  "}
 
-                      </select> Days{" <<<"}</b>
+                      <select id="days" onInput={this.handleSelectChange} name="days">
+                        {[30,60,90,120,180,360].map((item, index)=>(<option key={item} value={index}>{item}</option>))}
+                     
+                      </select>
+                      {" Days <<<"}
+                      
+                    </b>
 
 
 
