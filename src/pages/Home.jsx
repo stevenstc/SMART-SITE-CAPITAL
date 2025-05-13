@@ -354,12 +354,12 @@ export default class Home extends Component {
     let amount = document.getElementById("amount").value;
     amount = parseFloat(amount.replace(/,/g, "."));
     if (isNaN(amount)) amount = 0;
-
     amount = new BigNumber(amount);
 
     let aprovado = parseInt(await token.allowance(wallet, contract.address).call());
+    aprovado = new BigNumber(aprovado).shiftedBy(-decimales)
 
-    if (amount.toNumber() > aprovado || aprovado === 0) {
+    if (amount.toNumber() > aprovado.toNumber() || aprovado.toNumber() === 0) {
 
       let inputs = [
         { type: 'address', value: this.props.tronWeb.address.toHex(contract.address) },
@@ -390,6 +390,13 @@ export default class Home extends Component {
     }
 
     aprovado = parseInt(await token.allowance(wallet, contract.address).call());
+    aprovado = new BigNumber(aprovado).shiftedBy(-decimales)
+
+    if (amount.toNumber() > aprovado.toNumber()) {
+      document.getElementById("amount").value = "";
+      alert("Debes aprovar una cantidad de SITE superior");
+      return;
+    }
 
     if (balanceSite < amount.toNumber()) {
       document.getElementById("amount").value = "";
