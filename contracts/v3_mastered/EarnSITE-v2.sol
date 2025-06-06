@@ -61,7 +61,6 @@ contract SITECapitalVMulti {
         uint256 tiempo;
         uint256 amount;
         uint256 at;
-        address token;
     }
 
     struct Investor {
@@ -200,19 +199,47 @@ contract SITECapitalVMulti {
         return (EA);
     }
 
-    function deposit(uint256 _value, uint256 _option, address _token) public {
+    function column(
+        address _from,
+        uint256 _lengt
+    ) public view returns (address[] memory res) {
+        res = new address[](_lengt);
+        for (uint256 index = 0; index < _lengt; index++) {
+            if (investors[_from].sponsor == address(0)) break;
+            res[index] = investors[_from].sponsor;
+            _from = investors[_from].sponsor;
+        }
+
+        return res;
+    }
+
+    function deposit(uint256 _value, uint256 _option, address _sponsor) public {
         Investor storage usuario = investors[msg.sender];
         require(_option < dias.length, "Fuera de rango");
         require(_value >= MIN_DEPOSIT, "Minimo de deposito alcanzado");
 
-        ITRC20(_token).transferFrom(msg.sender, address(this), _value);
+        ITRC20(TOKEN).transferFrom(msg.sender, address(this), _value);
+
+        if(sisReferidos){
+            if (usuario.sponsor == address(0) && _sponsor != address(0) ) {
+                usuario.sponsor = _sponsor;
+            }
+            if (usuario.sponsor != address(0)) {
+                uint256 p = deposits[msg.sender].length == 0 ? porcientos1[_option] : porcientos2[_option];
+                uint256 a = _value.mul(p).div(basePorcientos);
+
+                investors[usuario.sponsor].balanceRef += a;
+                investors[usuario.sponsor].totalRef += a;
+                totalRefRewards += a;
+            }
+        }
 
         if (registered(msg.sender) == false) {
             totalInvestors++;
         } 
 
         deposits[msg.sender].push(
-            Deposit(calcPercent(_option), tiempo(dias[_option]), _value, block.timestamp, _token)
+            Deposit(calcPercent(_option), tiempo(dias[_option]), _value, block.timestamp)
         );
         usuario.invested += _value;
         totalInvested += _value;
@@ -252,10 +279,6 @@ contract SITECapitalVMulti {
     }
 
     function withdrawable(address _user) public view returns (uint256 amount) {
-       return _withdrawable(_user);
-    }
-
-    function _withdrawable(address _user) private view returns (uint256 amount) {
         Investor memory investor = investors[_user];
         Deposit memory dep;
         uint256 since;
@@ -281,7 +304,7 @@ contract SITECapitalVMulti {
 
     function withdraw(address _user) external {
         require(registered(_user),"No registrado");
-        uint256 amount = _withdrawable(_user) + investors[_user].balanceRef;
+        uint256 amount = withdrawable(_user) + investors[_user].balanceRef;
         require(amount >= MIN_RETIRO, "The minimum withdrawal limit reached");
 
         ITRC20(TOKEN).transfer(_user, amount);
