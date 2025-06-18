@@ -1,0 +1,39 @@
+services:
+  app:
+    build: .
+    container_name: ${APP_NAME}-app
+    restart: always
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./.env:/app/.env
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+
+      # Router para dominio principal
+      - "traefik.http.routers.${APP_NAME}-main.rule=Host(`${APP_DOMAIN}`, `www.${APP_DOMAIN}`)"
+      - "traefik.http.routers.${APP_NAME}-main.entrypoints=websecure"
+      - "traefik.http.routers.${APP_NAME}-main.tls.certresolver=myresolver"
+      - "traefik.http.routers.${APP_NAME}-main.service=${APP_NAME}"
+
+      # Routers HTTP que redirigen a HTTPS
+      - "traefik.http.routers.${APP_NAME}-http.rule=Host(`${APP_DOMAIN}`,`www.${APP_DOMAIN}`)"
+      - "traefik.http.routers.${APP_NAME}-http.entrypoints=web"
+      - "traefik.http.routers.${APP_NAME}-http.middlewares=https-redirect"
+
+      # Middleware para redirigir a HTTPS
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
+
+      # Service compartido
+      - "traefik.http.services.${APP_NAME}.loadbalancer.server.port=${APP_PORT}"
+      
+networks:
+  web:
+    external: true

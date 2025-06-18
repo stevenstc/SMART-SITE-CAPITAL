@@ -5,7 +5,6 @@ import TronLinkGuide from "./components/TronLinkGuide";
 import utils from "./utils";
 
 let intervalId = null;
-let nextUpdate = 0;
 
 class App extends Component {
   constructor(props) {
@@ -27,20 +26,13 @@ class App extends Component {
 
   async componentDidMount() {
 
-    intervalId = setInterval(async () => {
-
-      if (Date.now() >= nextUpdate) {
-
-        await this.conectar();
-
-        if (!this.state.tronWeb.loggedIn) {
-          nextUpdate = Date.now() + 3 * 1000;
-        } else {
-          nextUpdate = Date.now() + 60 * 1000;
-        }
-      }
-
+    setTimeout(async() => {
+      await this.conectar();
     }, 3 * 1000);
+
+    intervalId = setInterval(async () => {
+      await this.conectar();
+    }, 300 * 1000);
 
   }
 
