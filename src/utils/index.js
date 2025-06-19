@@ -23,22 +23,6 @@ const utils = {
   abi_token: token.abi,
   abi_reserve: reserve.entrys,
 
-  getRed(test = false) {
-    let url = "https://api.nileex.io"
-    if (test) return url
-
-    let tokenList = env.REACT_APP_LIST_TRONQL ?? "";
-    tokenList = tokenList.split(",")
-
-    if (this.numberRed >= tokenList.length) this.numberRed = 0;
-
-    url = "https://" + tokenList[this.numberRed] + ".mainnet.tron.tronql.com/"
-    this.numberRed++;
-
-
-    return url;
-  },
-
   getToken() {
 
     let tokenList = env.REACT_APP_LIST_TRONQL ?? "";
@@ -48,7 +32,6 @@ const utils = {
 
     let token = tokenList[this.numberRed]
     this.numberRed++;
-
 
     return token;
   },
@@ -72,10 +55,10 @@ const utils = {
     const tronWeb = new TronWeb({
       //fullHost: this.getRed(testnet),
       fullHost: "https://mainnet.tron.tronql.com/",
+      headers: {"Authorization": this.getToken()},
 
       //fullHost: "https://api.trongrid.io",
       //headers: { "TRON-PRO-API-KEY": this.keyQuery() }
-      headers: {"Authorization": this.getToken()}
     })
 
     tronWeb.setAddress(wallet)
